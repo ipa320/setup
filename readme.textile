@@ -1,0 +1,11 @@
+Running the script:
+
+<pre>$ git clone git://github.com/help/setup.git
+$ setup/setup.sh
+GitHub username not found, please enter: tekkub
+GitHub token not found in global git config
+Please enter GitHub password for tekkub (this will not be saved):
+Fetching API token
+Saving GitHub token to global git config
+Enter git committer name (return to use 'tekkub'):
+Enter git committer email (return to use 'tekkub@gmail.com'):</pre>

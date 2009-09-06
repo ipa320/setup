@@ -83,7 +83,7 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 fi
 
 if [ -f ~/.ssh/id_rsa ]; then
-	read -n1 -p "Upload id_rsa key to your github account? (y/n) "
+	read -n1 -p "Upload id_rsa key to your GitHub account? (y/n) "
 	echo ""
 	if [[ $REPLY = [yY] ]]; then
 		sshkey=`cat ~/.ssh/id_rsa.pub`

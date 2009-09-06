@@ -1,4 +1,15 @@
-Running the script:
+This is a simple bash script to aid users with the git and GitHub setup process.  It will do a few things:
+
+* Set values in your global git config:
+** user.name
+** user.email (used by GitHub to match commits to their author)
+** github.user & github.token (used by third-party apps that interact with GitHub and Gist)
+* Help you create a new ssh key if one is not found
+* Upload your public ssh key to your GitHub account
+
+This script has been tested on OSX Snow Leopard and Msysgit.  You must have git installed before you run this script.
+
+h2. Downloading and running the script
 
 <pre>$ git clone git://github.com/help/setup.git
 $ setup/setup.sh
@@ -11,10 +22,10 @@ Enter git committer name (return to use 'tekkub'):
 Enter git committer email (return to use 'tekkub@gmail.com'):
 No id_rsa key found, generate one? (y/n) y
 
-***********************************************************************************
-*        GitHub highly recommends you use a strong passphrase on your key         *
-* Visit http://help.github.com/working-with-key-passphrases/ for more information *
-***********************************************************************************
+****************************************************************************
+*     GitHub highly recommends you use a strong passphrase on your key     *
+* Visit http://help.github.com/working-with-key-passphrases/ for more info *
+****************************************************************************
 
 Generating public/private rsa key pair.
 Enter passphrase (empty for no passphrase):

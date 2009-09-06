@@ -54,7 +54,7 @@ fi
 
 
 # Setup email
-ghemail=`echo "$acct" | grep 'class="address"' -m 1 | sed "s/.*>\(.*@[^<]*\)<.*/\1/"`
+ghemail=`echo "$acct" | grep 'class="address"' | head -n1 | sed "s/.*>\([^@]*@[^<]*\)<.*/\1/"`
 gitemail=`git config --global user.email`
 if [ -z "$gitemail" ]; then
 	gitemail=$ghemail

@@ -73,10 +73,10 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 	echo ""
 	if [[ $REPLY = [yY] ]]; then
 		echo ""
-		echo "***********************************************************************************"
-		echo "*        GitHub highly recommends you use a strong passphrase on your key         *"
-		echo "* Visit http://help.github.com/working-with-key-passphrases/ for more information *"
-		echo "***********************************************************************************"
+		echo "****************************************************************************"
+		echo "*     GitHub highly recommends you use a strong passphrase on your key     *"
+		echo "* Visit http://help.github.com/working-with-key-passphrases/ for more info *"
+		echo "****************************************************************************"
 		echo ""
 		ssh-keygen -t rsa -C "$newgitemail" -f ~/.ssh/id_rsa
 	fi

@@ -17,9 +17,7 @@ fi
 # Setup gh token
 if [ -z "$token" ]; then
 	echo "GitHub token not found in global git config"
-	stty -echo # Disable echo so we don't show the user's password to that guy behind him
-	read -p "Please enter GitHub password for $user (this will not be saved): " -e password
-	stty echo
+	read -s -p "Please enter GitHub password for $user (this will not be saved): " -e password
 	echo "" # Because we didn't echo the user's return key above
 
 	echo "Fetching API token"

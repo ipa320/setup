@@ -14,6 +14,7 @@ if [ -z "$user" ]; then
 fi
 
 
+# Setup gh token
 if [ -z "$token" ]; then
 	echo "GitHub token not found in global git config"
 	stty -echo # Disable echo so we don't show the user's password to that guy behind him
@@ -41,6 +42,7 @@ if [ -z "$acct" ]; then
 fi
 
 
+# Setup username
 gitname=`git config --global user.name`
 if [ -z "$gitname" ]; then
 	gitname=$user
@@ -53,6 +55,7 @@ fi
 `git config --global user.name "$newgitname"`
 
 
+# Setup email
 ghemail=`echo "$acct" | grep 'class="address"' -m 1 | sed "s/.*>\(.*@[^<]*\)<.*/\1/"`
 gitemail=`git config --global user.email`
 if [ -z "$gitemail" ]; then
@@ -64,3 +67,28 @@ if [ -z "$newgitemail" ]; then
 	newgitemail=$gitemail
 fi
 `git config --global user.email "$newgitemail"`
+
+
+# SSH keys!
+if [ ! -f ~/.ssh/id_rsa ]; then
+	read -n1 -p "No id_rsa key found, generate one? (y/n) "
+	echo ""
+	if [[ $REPLY = [yY] ]]; then
+		echo ""
+		echo "***********************************************************************************"
+		echo "*        GitHub highly recommends you use a strong passphrase on your key         *"
+		echo "* Visit http://help.github.com/working-with-key-passphrases/ for more information *"
+		echo "***********************************************************************************"
+		echo ""
+		ssh-keygen -t rsa -C "$newgitemail" -f ~/.ssh/id_rsa
+	fi
+fi
+
+if [ -f ~/.ssh/id_rsa ]; then
+	read -n1 -p "Upload id_rsa key to your github account? (y/n) "
+	echo ""
+	if [[ $REPLY = [yY] ]]; then
+		sshkey=`cat ~/.ssh/id_rsa.pub`
+		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[key]=$sshkey" 2> /dev/null`
+	fi
+fi

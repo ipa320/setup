@@ -8,4 +8,31 @@ Please enter GitHub password for tekkub (this will not be saved):
 Fetching API token
 Saving GitHub token to global git config
 Enter git committer name (return to use 'tekkub'):
-Enter git committer email (return to use 'tekkub@gmail.com'):</pre>
+Enter git committer email (return to use 'tekkub@gmail.com'):
+No id_rsa key found, generate one? (y/n) y
+
+***********************************************************************************
+*        GitHub highly recommends you use a strong passphrase on your key         *
+* Visit http://help.github.com/working-with-key-passphrases/ for more information *
+***********************************************************************************
+
+Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /Users/tekkub/.ssh/id_rsa.
+Your public key has been saved in /Users/tekkub/.ssh/id_rsa.pub.
+The key fingerprint is:
+67:f1:d6:da:55:22:e0:7f:22:f5:47:f1:16:a6:59:fc tekkub@gmail.com
+The key's randomart image is:
++--[ RSA 2048]----+
+|          .   .= |
+|         . .  =.+|
+|          o oo. *|
+|           = + +E|
+|        S + = + o|
+|         o o = o |
+|            . .  |
+|                 |
+|                 |
++-----------------+
+Upload id_rsa key to your github account? (y/n) y</pre>

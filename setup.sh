@@ -108,8 +108,7 @@ if [ $MSYSTEM ]; then
 			cp ${0%/*}/ssh-agent-loader.sh ~/.ssh/agent-loader.sh
 			echo "" >> ~/.bashrc
 			echo "source ~/.ssh/agent-loader.sh" >> ~/.bashrc
-			echo "Script installed, loading ssh-agent..."
-			~/.ssh/agent-loader.sh
+			echo "Script installed, you will need to re-open git bash to load your key."
 		fi
 	fi
 fi

@@ -90,3 +90,26 @@ if [ -f ~/.ssh/id_rsa ]; then
 		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[key]=$sshkey" 2> /dev/null`
 	fi
 fi
+
+
+# ssh-agent helper for msysgit
+if [ $MSYSTEM ]; then
+	script_installed=`grep "source ~/.ssh/agent-loader" ~/.bashrc 2> /dev/null`
+	if [ -z "$script_installed" ]; then
+		echo ""
+		echo "You appear to be running Msysgit, would you like to use the ssh-agent loader?"
+		echo "This script will load ssh-agent to save your passphrase so that you don't need"
+		echo "to re-enter the passphrase every time you use your ssh key."
+		echo "For more info visit http://help.github.com/working-with-key-passphrases/"
+		echo ""
+		read -n1 -p "Install script to your .bashrc file? (y/n) "
+		echo ""
+		if [[ $REPLY = [yY] ]]; then
+			cp ${0%/*}/ssh-agent-loader.sh ~/.ssh/agent-loader.sh
+			echo "" >> ~/.bashrc
+			echo "source ~/.ssh/agent-loader.sh" >> ~/.bashrc
+			echo "Script installed, loading ssh-agent..."
+			~/.ssh/agent-loader.sh
+		fi
+	fi
+fi

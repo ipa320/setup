@@ -22,7 +22,7 @@ if [ -z "$token" ]; then
 
 	echo "Fetching API token"
 	acct=`curl https://github.com/account --user $user:$password 2> /dev/null`
-	token=`echo "$acct" | grep -C 1 "API Token" | tail -1 | sed "s/.*<dd>\(.*\)<.dd>/\1/"`
+	token=`echo "$acct" | grep -C 1 "API token" | tail -1 | sed "s/.*<dd>\(.*\)<.dd>/\1/"`
 
 	if [ $token ]; then
 		echo "Saving GitHub token to global git config"
@@ -84,10 +84,9 @@ fi
 
 if [ -f ~/.ssh/id_rsa ]; then
 	read -n1 -p "Upload id_rsa key to your GitHub account? (y/n) "
-	echo ""
 	if [[ $REPLY = [yY] ]]; then
 		sshkey=`cat ~/.ssh/id_rsa.pub`
-		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[key]=$sshkey" 2> /dev/null`
+		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/ -F "public_key[key]=$sshkey" 2> /dev/null`
 	fi
 fi
 
@@ -112,3 +111,20 @@ if [ $MSYSTEM ]; then
 		fi
 	fi
 fi
+
+#setup ROS with cturtle
+bashrc=`cat ~/.bashrc`
+cturtle=`echo "$bashrc" | grep -C 1 "cturtle" | tail -1`
+if [ "$cturtle" == "" ]; then
+	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
+	. ~/.bashrc
+fi
+
+# clone repository
+#if [ ! -d ~/git/care-o-bot ]; then
+#	echo "Cloning care-o-bot repository"
+#	mkdir -p ~/git
+#	cd ~/git && git clone git@github.com:$user/care-o-bot.git
+#else
+#	echo "Care-o-bot repository already exists"
+#fi

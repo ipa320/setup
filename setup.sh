@@ -170,4 +170,4 @@ if [ "$robocup" == "" ]; then
 	`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
 fi
 
-source ~/.bashrc
+echo "Please logout and login again to activate settings."

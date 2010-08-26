@@ -69,7 +69,7 @@ fi
 
 # SSH keys!
 if [ ! -f ~/.ssh/id_rsa ]; then
-	read -n1 -p "No id_rsa key found, generate one? (y/n) "
+	read -n1 -p "No id_rsa key found, generate one? (y/N) "
 	echo ""
 	if [[ $REPLY = [yY] ]]; then
 		echo ""
@@ -83,11 +83,14 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 fi
 
 if [ -f ~/.ssh/id_rsa ]; then
-	read -n1 -p "Upload id_rsa key to your GitHub account? (y/n) "
+	read -n1 -p "Upload id_rsa key to your GitHub account? (y/N) "
 	if [[ $REPLY = [yY] ]]; then
 		sshkey=`cat ~/.ssh/id_rsa.pub`
-		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/ -F "public_key[key]=$sshkey" 2> /dev/null`
+		#acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/ -F "public_key[key]=$sshkey" 2> /dev/null`
+		echo "Please copy the id_rsa key and upload it to www.github.com/account manually:"
+		echo $sshkey
 	fi
+	echo ""
 fi
 
 
@@ -101,7 +104,7 @@ if [ $MSYSTEM ]; then
 		echo "to re-enter the passphrase every time you use your ssh key."
 		echo "For more info visit http://help.github.com/working-with-key-passphrases/"
 		echo ""
-		read -n1 -p "Install script to your .bashrc file? (y/n) "
+		read -n1 -p "Install script to your .bashrc file? (y/N) "
 		echo ""
 		if [[ $REPLY = [yY] ]]; then
 			cp ${0%/*}/ssh-agent-loader.sh ~/.ssh/agent-loader.sh
@@ -112,19 +115,58 @@ if [ $MSYSTEM ]; then
 	fi
 fi
 
-#setup ROS with cturtle
+# clone care-o-bot repository
+if [ ! -d ~/git/care-o-bot ]; then
+	read -n1 -p "Do you want to clone the care-o-bot repository? (y/N) "
+	if [[ $REPLY = [yY] ]]; then
+		echo ""
+		echo "Cloning care-o-bot repository"
+		mkdir -p ~/git
+		cd ~/git && git clone git@github.com:$user/care-o-bot.git
+	fi
+fi
+
+# clone cob3_intern repository
+if [ ! -d ~/git/cob3_intern ]; then
+	read -n1 -p "Do you want to clone the cob3_intern repository? (y/N) "
+	if [[ $REPLY = [yY] ]]; then
+		echo ""
+		echo "Cloning cob3_intern repository"
+		mkdir -p ~/git
+		cd ~/git && git clone git@github.com:$user/cob3_intern.git
+	fi
+fi
+
+# clone robocup repository
+if [ ! -d ~/git/robocup ]; then
+	read -n1 -p "Do you want to clone the robocup repository? (y/N) "
+	if [[ $REPLY = [yY] ]]; then
+		echo ""
+		echo "Cloning robocup repository"
+		mkdir -p ~/git
+		cd ~/git && git clone git@github.com:$user/robocup.git
+	fi
+fi
+
+#setup bashrc for ROS with cturtle
 bashrc=`cat ~/.bashrc`
 cturtle=`echo "$bashrc" | grep -C 1 "cturtle" | tail -1`
+care_o_bot=`echo "$bashrc" | grep -C 1 "care-o-bot" | tail -1`
+cob3_intern=`echo "$bashrc" | grep -C 1 "cob3_intern" | tail -1`
+robocup=`echo "$bashrc" | grep -C 1 "robocup" | tail -1`
 if [ "$cturtle" == "" ]; then
 	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
 	. ~/.bashrc
 fi
 
-# clone repository
-#if [ ! -d ~/git/care-o-bot ]; then
-#	echo "Cloning care-o-bot repository"
-#	mkdir -p ~/git
-#	cd ~/git && git clone git@github.com:$user/care-o-bot.git
-#else
-#	echo "Care-o-bot repository already exists"
-#fi
+if [ "$care_o_bot" == "" ]; then
+	`cd ~/git/care-o-bot && . makeconfig -a 2> /dev/null`
+fi
+
+if [ "$cob3_intern" == "" ]; then
+	`cd ~/git/cob3_intern && . makeconfig -a 2> /dev/null`
+fi
+
+if [ "$robocup" == "" ]; then
+	`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
+fi

@@ -156,7 +156,7 @@ cob3_intern=`echo "$bashrc" | grep -C 1 "cob3_intern" | tail -1`
 robocup=`echo "$bashrc" | grep -C 1 "robocup" | tail -1`
 if [ "$cturtle" == "" ]; then
 	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
-	. ~/.bashrc
+	source ~/.bashrc
 fi
 
 if [ "$care_o_bot" == "" ]; then

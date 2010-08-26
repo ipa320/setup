@@ -115,11 +115,24 @@ if [ $MSYSTEM ]; then
 	fi
 fi
 
-#setup bashrc for ROS with cturtle
-bashrc=`cat ~/.bashrc`
-cturtle=`echo "$bashrc" | grep -C 1 "cturtle" | tail -1`
-if [ "$cturtle" == "" ]; then
-	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
+# clone care-o-bot dependency repositories
+if [ ! -d ~/ros/ros_experimental ]; then
+	read -n1 -p "Do you want to chechout the ros_experimental repository? (y/N) "
+	if [[ $REPLY = [yY] ]]; then
+		mkdir -p ~/ros/ros_experimental
+		svn co https://code.ros.org/svn/ros/stacks/ros_experimental/trunk ~/ros/ros_experimental
+	fi
+else
+	cd ~/ros/ros_experimental && svn up
+fi
+if [ ! -d ~/ros/rosjava_deps ]; then
+	read -n1 -p "Do you want to chechout the rosjava_deps repository? (y/N) "
+	if [[ $REPLY = [yY] ]]; then
+		mkdir -p ~/ros/rosjava_deps
+		svn co https://tum-ros-pkg.svn.sourceforge.net/svnroot/tum-ros-pkg/utils/rosjava_deps ~/ros/rosjava_deps
+	fi
+else
+	cd ~/ros/rosjava_deps && svn up
 fi
 
 # clone care-o-bot repository
@@ -157,11 +170,16 @@ if [ ! -d ~/git/robocup ]; then
 	fi
 fi
 
-#setup bashrc for ROS with care-o-bot. First delete all entries and then add them in the correct order.
+#setup bashrc for ROS with cturtle and care-o-bot. First delete all entries and then add them in the correct order.
+sed -i '/ros/ d' ~/.bashrc
 sed -i '/care-o-bot/ d' ~/.bashrc
 sed -i '/cob3_intern/ d' ~/.bashrc
 sed -i '/robocup/ d' ~/.bashrc
 bashrc=`cat ~/.bashrc`
+cturtle=`echo "$bashrc" | grep -C 1 "cturtle" | tail -1`
+if [ "$cturtle" == "" ]; then
+	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
+fi
 care_o_bot=`echo "$bashrc" | grep -C 1 "care-o-bot" | tail -1`
 if [ "$care_o_bot" == "" ]; then
 	`cd ~/git/care-o-bot && . makeconfig -a 2> /dev/null`

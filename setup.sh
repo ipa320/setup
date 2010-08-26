@@ -115,6 +115,13 @@ if [ $MSYSTEM ]; then
 	fi
 fi
 
+#setup bashrc for ROS with cturtle
+bashrc=`cat ~/.bashrc`
+cturtle=`echo "$bashrc" | grep -C 1 "cturtle" | tail -1`
+if [ "$cturtle" == "" ]; then
+	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
+fi
+
 # clone care-o-bot repository
 if [ ! -d ~/git/care-o-bot ]; then
 	read -n1 -p "Do you want to clone the care-o-bot repository? (y/N) "
@@ -125,6 +132,7 @@ if [ ! -d ~/git/care-o-bot ]; then
 		cd ~/git && git clone git@github.com:$user/care-o-bot.git
 	fi
 fi
+
 
 # clone cob3_intern repository
 if [ ! -d ~/git/cob3_intern ]; then
@@ -137,6 +145,7 @@ if [ ! -d ~/git/cob3_intern ]; then
 	fi
 fi
 
+
 # clone robocup repository
 if [ ! -d ~/git/robocup ]; then
 	read -n1 -p "Do you want to clone the robocup repository? (y/N) "
@@ -148,26 +157,23 @@ if [ ! -d ~/git/robocup ]; then
 	fi
 fi
 
-#setup bashrc for ROS with cturtle
+#setup bashrc for ROS with care-o-bot. First delete all entries and then add them in the correct order.
+sed -i '/care-o-bot/ d' ~/.bashrc
+sed -i '/cob3_intern/ d' ~/.bashrc
+sed -i '/robocup/ d' ~/.bashrc
 bashrc=`cat ~/.bashrc`
-cturtle=`echo "$bashrc" | grep -C 1 "cturtle" | tail -1`
 care_o_bot=`echo "$bashrc" | grep -C 1 "care-o-bot" | tail -1`
-cob3_intern=`echo "$bashrc" | grep -C 1 "cob3_intern" | tail -1`
-robocup=`echo "$bashrc" | grep -C 1 "robocup" | tail -1`
-if [ "$cturtle" == "" ]; then
-	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
-fi
-
 if [ "$care_o_bot" == "" ]; then
 	`cd ~/git/care-o-bot && . makeconfig -a 2> /dev/null`
 fi
-
+cob3_intern=`echo "$bashrc" | grep -C 1 "cob3_intern" | tail -1`
 if [ "$cob3_intern" == "" ]; then
 	`cd ~/git/cob3_intern && . makeconfig -a 2> /dev/null`
 fi
-
+robocup=`echo "$bashrc" | grep -C 1 "robocup" | tail -1`
 if [ "$robocup" == "" ]; then
 	`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
 fi
 
+echo ""
 echo "Please logout and login again to activate settings."

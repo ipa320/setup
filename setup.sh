@@ -156,7 +156,6 @@ cob3_intern=`echo "$bashrc" | grep -C 1 "cob3_intern" | tail -1`
 robocup=`echo "$bashrc" | grep -C 1 "robocup" | tail -1`
 if [ "$cturtle" == "" ]; then
 	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
-	source ~/.bashrc
 fi
 
 if [ "$care_o_bot" == "" ]; then
@@ -170,3 +169,5 @@ fi
 if [ "$robocup" == "" ]; then
 	`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
 fi
+
+source ~/.bashrc

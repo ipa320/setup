@@ -22,9 +22,10 @@ if [ -z "$token" ]; then
 
 	echo "Fetching API token"
 	acct=`curl https://github.com/account --user $user:$password 2> /dev/null`
-	token=`echo "$acct" | grep -C 1 "API token" | tail -1 | sed "s/.*<dd>\(.*\)<.dd>/\1/"`
+	token=`echo "$acct" | grep "API token" | sed 's/<p>.*<code>//' |sed 's/<\/code>.*//'`
 
 	if [ $token ]; then
+		#echo $token
 		echo "Saving GitHub token to global git config"
 		`git config --global github.user $user`
 		`git config --global github.token $token`
@@ -78,7 +79,7 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 		echo "* Visit http://help.github.com/working-with-key-passphrases/ for more info *"
 		echo "****************************************************************************"
 		echo ""
-		ssh-keygen -t rsa -C "$newgitemail" -f ~/.ssh/id_rsa
+		ssh-keygen -t rsa -f ~/.ssh/id_rsa
 	fi
 fi
 
@@ -113,26 +114,6 @@ if [ $MSYSTEM ]; then
 			echo "Script installed, you will need to re-open git bash to load your key."
 		fi
 	fi
-fi
-
-# clone care-o-bot dependency repositories
-if [ ! -d ~/ros/ros_experimental ]; then
-	read -n1 -p "Do you want to chechout the ros_experimental repository? (y/N) "
-	if [[ $REPLY = [yY] ]]; then
-		mkdir -p ~/ros/ros_experimental
-		svn co https://code.ros.org/svn/ros/stacks/ros_experimental/trunk ~/ros/ros_experimental
-	fi
-else
-	cd ~/ros/ros_experimental && svn up
-fi
-if [ ! -d ~/ros/rosjava_deps ]; then
-	read -n1 -p "Do you want to chechout the rosjava_deps repository? (y/N) "
-	if [[ $REPLY = [yY] ]]; then
-		mkdir -p ~/ros/rosjava_deps
-		svn co https://tum-ros-pkg.svn.sourceforge.net/svnroot/tum-ros-pkg/utils/rosjava_deps ~/ros/rosjava_deps
-	fi
-else
-	cd ~/ros/rosjava_deps && svn up
 fi
 
 # clone care-o-bot repository
@@ -170,28 +151,57 @@ if [ ! -d ~/git/robocup ]; then
 	fi
 fi
 
-#setup bashrc for ROS with cturtle and care-o-bot. First delete all entries and then add them in the correct order.
+# clone robocup dependency repositories
+if [ -d ~/git/robocup ]; then
+	if [ ! -d ~/ros/ros_experimental ]; then
+		read -n1 -p "Do you want to checkout the ros_experimental repository? (y/N) "
+		if [[ $REPLY = [yY] ]]; then
+			echo ""
+			mkdir -p ~/ros/ros_experimental
+			svn co https://code.ros.org/svn/ros/stacks/ros_experimental/trunk ~/ros/ros_experimental
+		fi
+	fi
+	if [ ! -d ~/ros/rosjava_deps ]; then
+		read -n1 -p "Do you want to checkout the rosjava_deps repository? (y/N) "
+		if [[ $REPLY = [yY] ]]; then
+			echo ""
+			mkdir -p ~/ros/rosjava_deps
+			svn co https://tum-ros-pkg.svn.sourceforge.net/svnroot/tum-ros-pkg/utils/rosjava_deps ~/ros/rosjava_deps
+		fi
+	fi
+fi
+
+# setup bashrc for ROS with cturtle and care-o-bot. First delete all entries and then add them in the correct order.
 sed -i '/ros/ d' ~/.bashrc
 sed -i '/care-o-bot/ d' ~/.bashrc
 sed -i '/cob3_intern/ d' ~/.bashrc
 sed -i '/robocup/ d' ~/.bashrc
-bashrc=`cat ~/.bashrc`
-cturtle=`echo "$bashrc" | grep -C 1 "cturtle" | tail -1`
-if [ "$cturtle" == "" ]; then
+
+if [ -d /opt/ros/cturtle ]; then
 	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
+	ROS_PACKAGE_PATH="/opt/ros/cturtle/stacks"
+else
+	print "ERROR: No ROS cturtle release found"
 fi
-care_o_bot=`echo "$bashrc" | grep -C 1 "care-o-bot" | tail -1`
-if [ "$care_o_bot" == "" ]; then
+
+if [ -d ~/ros ]; then
+	`rm ~/ros/setup.sh 2> /dev/null`
+	touch ~/ros/setup.sh
+	`echo "export ROS_PACKAGE_PATH=$HOME/ros:$ROS_PACKAGE_PATH" >> ~/ros/setup.sh 2> /dev/null`
+	`echo "source $HOME/ros/setup.sh" >> ~/.bashrc 2> /dev/null`
+fi
+
+if [ -d ~/git/care-o-bot ]; then
 	`cd ~/git/care-o-bot && . makeconfig -a 2> /dev/null`
 fi
-cob3_intern=`echo "$bashrc" | grep -C 1 "cob3_intern" | tail -1`
-if [ "$cob3_intern" == "" ]; then
+
+if [ -d ~/git/cob3_intern ]; then
 	`cd ~/git/cob3_intern && . makeconfig -a 2> /dev/null`
 fi
-robocup=`echo "$bashrc" | grep -C 1 "robocup" | tail -1`
-if [ "$robocup" == "" ]; then
+
+if [ -d ~/git/robocup ]; then
 	`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
 fi
 
 echo ""
-echo "Please logout and login again to activate settings."
+echo "Please logout and login again to activate your settings."

@@ -87,9 +87,7 @@ if [ -f ~/.ssh/id_rsa ]; then
 	read -n1 -p "Upload id_rsa key to your GitHub account? (y/N) "
 	if [[ $REPLY = [yY] ]]; then
 		sshkey=`cat ~/.ssh/id_rsa.pub`
-		#acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/ -F "public_key[key]=$sshkey" 2> /dev/null`
-		echo "Please copy the id_rsa key and upload it to www.github.com/account manually:"
-		echo $sshkey
+		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[title]=$USER@$HOSTNAME" -F "public_key[key]=$sshkey" 2> /dev/null`
 	fi
 	echo ""
 fi

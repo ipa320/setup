@@ -31,6 +31,7 @@ if [ -z "$token" ]; then
 		`git config --global github.token $token`
 	else
 		echo "Error retrieving token"
+		echo "Is curl installed? Please install curl with 'sudo apt-get install curl'."
 		exit 1
 	fi
 fi

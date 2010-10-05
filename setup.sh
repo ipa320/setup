@@ -4,6 +4,18 @@
 # After the user enters his user/password, everything should be pre-populated.
 # The user can, of course, choose to override the values the script digs up for user.name and user.email
 
+# checking input parameters
+# $1 -i for ipa setup (optional)
+if [ "$#" -ge 2 ]; then
+	echo "ERROR: Wrong number of parameters"
+	echo "Usage: setup.sh [-i]"
+	exit 1
+elif [ "$1" = "-i" ]; then
+	echo "Setting up IPA configuration"
+	IPA=true
+else
+	IPA=false
+fi
 
 user=`git config --global github.user`
 token=`git config --global github.token`
@@ -126,46 +138,46 @@ if [ ! -d ~/git/care-o-bot ]; then
 	fi
 fi
 
-
-# clone cob3_intern repository
-if [ ! -d ~/git/cob3_intern ]; then
-	read -p "Do you want to clone the cob3_intern repository? (y/N) "
-	if [[ $REPLY = [yY] ]]; then
-		echo ""
-		echo "Cloning cob3_intern repository"
-		mkdir -p ~/git
-		cd ~/git && git clone git@github.com:$user/cob3_intern.git
-	fi
-fi
-
-
-# clone robocup repository
-if [ ! -d ~/git/robocup ]; then
-	read -p "Do you want to clone the robocup repository? (y/N) "
-	if [[ $REPLY = [yY] ]]; then
-		echo ""
-		echo "Cloning robocup repository"
-		mkdir -p ~/git
-		cd ~/git && git clone git@github.com:$user/robocup.git
-	fi
-fi
-
-# clone robocup dependency repositories
-if [ -d ~/git/robocup ]; then
-	if [ ! -d ~/ros/ros_experimental ]; then
-		read -p "Do you want to checkout the ros_experimental repository? (y/N) "
+if [ $IPA = true ]; then
+	# clone cob3_intern repository
+	if [ ! -d ~/git/cob3_intern ]; then
+		read -p "Do you want to clone the cob3_intern repository? (y/N) "
 		if [[ $REPLY = [yY] ]]; then
 			echo ""
-			mkdir -p ~/ros/ros_experimental
-			svn co https://code.ros.org/svn/ros/stacks/ros_experimental/trunk ~/ros/ros_experimental
+			echo "Cloning cob3_intern repository"
+			mkdir -p ~/git
+			cd ~/git && git clone git@github.com:$user/cob3_intern.git
 		fi
 	fi
-	if [ ! -d ~/ros/rosjava_deps ]; then
-		read -p "Do you want to checkout the rosjava_deps repository? (y/N) "
+
+	# clone robocup repository
+	if [ ! -d ~/git/robocup ]; then
+		read -p "Do you want to clone the robocup repository? (y/N) "
 		if [[ $REPLY = [yY] ]]; then
 			echo ""
-			mkdir -p ~/ros/rosjava_deps
-			svn co https://tum-ros-pkg.svn.sourceforge.net/svnroot/tum-ros-pkg/utils/rosjava_deps ~/ros/rosjava_deps
+			echo "Cloning robocup repository"
+			mkdir -p ~/git
+			cd ~/git && git clone git@github.com:$user/robocup.git
+		fi
+	fi
+
+	# clone robocup dependency repositories
+	if [ -d ~/git/robocup ]; then
+		if [ ! -d ~/ros/ros_experimental ]; then
+			read -p "Do you want to checkout the ros_experimental repository? (y/N) "
+			if [[ $REPLY = [yY] ]]; then
+				echo ""
+				mkdir -p ~/ros/ros_experimental
+				svn co https://code.ros.org/svn/ros/stacks/ros_experimental/trunk ~/ros/ros_experimental
+			fi
+		fi
+		if [ ! -d ~/ros/rosjava_deps ]; then
+			read -p "Do you want to checkout the rosjava_deps repository? (y/N) "
+			if [[ $REPLY = [yY] ]]; then
+				echo ""
+				mkdir -p ~/ros/rosjava_deps
+				svn co https://tum-ros-pkg.svn.sourceforge.net/svnroot/tum-ros-pkg/utils/rosjava_deps ~/ros/rosjava_deps
+			fi
 		fi
 	fi
 fi
@@ -194,12 +206,14 @@ if [ -d ~/git/care-o-bot ]; then
 	`cd ~/git/care-o-bot && . makeconfig -a 2> /dev/null`
 fi
 
-if [ -d ~/git/cob3_intern ]; then
-	`cd ~/git/cob3_intern && . makeconfig -a 2> /dev/null`
-fi
+if [ $IPA = true ]; then
+	if [ -d ~/git/cob3_intern ]; then
+		`cd ~/git/cob3_intern && . makeconfig -a 2> /dev/null`
+	fi
 
-if [ -d ~/git/robocup ]; then
-	`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
+	if [ -d ~/git/robocup ]; then
+		`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
+	fi
 fi
 
 echo ""

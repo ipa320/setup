@@ -71,7 +71,7 @@ fi
 
 # SSH keys!
 if [ ! -f ~/.ssh/id_rsa ]; then
-	read -n1 -p "No id_rsa key found, generate one? (y/N) "
+	read -p "No id_rsa key found, generate one? (y/N) "
 	echo ""
 	if [[ $REPLY = [yY] ]]; then
 		echo ""
@@ -85,7 +85,7 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 fi
 
 if [ -f ~/.ssh/id_rsa ]; then
-	read -n1 -p "Upload id_rsa key to your GitHub account? (y/N) "
+	read -p "Upload id_rsa key to your GitHub account? (y/N) "
 	if [[ $REPLY = [yY] ]]; then
 		sshkey=`cat ~/.ssh/id_rsa.pub`
 		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[title]=$USER@$HOSTNAME" -F "public_key[key]=$sshkey" 2> /dev/null`
@@ -104,7 +104,7 @@ if [ $MSYSTEM ]; then
 		echo "to re-enter the passphrase every time you use your ssh key."
 		echo "For more info visit http://help.github.com/working-with-key-passphrases/"
 		echo ""
-		read -n1 -p "Install script to your .bashrc file? (y/N) "
+		read -p "Install script to your .bashrc file? (y/N) "
 		echo ""
 		if [[ $REPLY = [yY] ]]; then
 			cp ${0%/*}/ssh-agent-loader.sh ~/.ssh/agent-loader.sh
@@ -117,7 +117,7 @@ fi
 
 # clone care-o-bot repository
 if [ ! -d ~/git/care-o-bot ]; then
-	read -n1 -p "Do you want to clone the care-o-bot repository? (y/N) "
+	read -p "Do you want to clone the care-o-bot repository? (y/N) "
 	if [[ $REPLY = [yY] ]]; then
 		echo ""
 		echo "Cloning care-o-bot repository"
@@ -129,7 +129,7 @@ fi
 
 # clone cob3_intern repository
 if [ ! -d ~/git/cob3_intern ]; then
-	read -n1 -p "Do you want to clone the cob3_intern repository? (y/N) "
+	read -p "Do you want to clone the cob3_intern repository? (y/N) "
 	if [[ $REPLY = [yY] ]]; then
 		echo ""
 		echo "Cloning cob3_intern repository"
@@ -141,7 +141,7 @@ fi
 
 # clone robocup repository
 if [ ! -d ~/git/robocup ]; then
-	read -n1 -p "Do you want to clone the robocup repository? (y/N) "
+	read -p "Do you want to clone the robocup repository? (y/N) "
 	if [[ $REPLY = [yY] ]]; then
 		echo ""
 		echo "Cloning robocup repository"
@@ -153,7 +153,7 @@ fi
 # clone robocup dependency repositories
 if [ -d ~/git/robocup ]; then
 	if [ ! -d ~/ros/ros_experimental ]; then
-		read -n1 -p "Do you want to checkout the ros_experimental repository? (y/N) "
+		read -p "Do you want to checkout the ros_experimental repository? (y/N) "
 		if [[ $REPLY = [yY] ]]; then
 			echo ""
 			mkdir -p ~/ros/ros_experimental
@@ -161,7 +161,7 @@ if [ -d ~/git/robocup ]; then
 		fi
 	fi
 	if [ ! -d ~/ros/rosjava_deps ]; then
-		read -n1 -p "Do you want to checkout the rosjava_deps repository? (y/N) "
+		read -p "Do you want to checkout the rosjava_deps repository? (y/N) "
 		if [[ $REPLY = [yY] ]]; then
 			echo ""
 			mkdir -p ~/ros/rosjava_deps

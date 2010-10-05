@@ -206,14 +206,12 @@ if [ -d ~/git/care-o-bot ]; then
 	`cd ~/git/care-o-bot && . makeconfig -a 2> /dev/null`
 fi
 
-if [ $IPA = true ]; then
-	if [ -d ~/git/cob3_intern ]; then
-		`cd ~/git/cob3_intern && . makeconfig -a 2> /dev/null`
-	fi
+if [ -d ~/git/cob3_intern ]; then
+	`cd ~/git/cob3_intern && . makeconfig -a 2> /dev/null`
+fi
 
-	if [ -d ~/git/robocup ]; then
-		`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
-	fi
+if [ -d ~/git/robocup ]; then
+	`cd ~/git/robocup && . makeconfig -a 2> /dev/null`
 fi
 
 echo ""

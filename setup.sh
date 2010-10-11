@@ -86,13 +86,8 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 	read -p "No id_rsa key found, generate one? (y/N) "
 	echo ""
 	if [[ $REPLY = [yY] ]]; then
-		echo ""
-		echo "****************************************************************************"
-		echo "*     GitHub highly recommends you use a strong passphrase on your key     *"
-		echo "* Visit http://help.github.com/working-with-key-passphrases/ for more info *"
-		echo "****************************************************************************"
-		echo ""
 		ssh-keygen -t rsa -f ~/.ssh/id_rsa
+		sleep 2
 	fi
 fi
 
@@ -103,28 +98,6 @@ if [ -f ~/.ssh/id_rsa ]; then
 		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[title]=$USER@$HOSTNAME" -F "public_key[key]=$sshkey" 2> /dev/null`
 	fi
 	echo ""
-fi
-
-
-# ssh-agent helper for msysgit
-if [ $MSYSTEM ]; then
-	script_installed=`grep "source ~/.ssh/agent-loader" ~/.bashrc 2> /dev/null`
-	if [ -z "$script_installed" ]; then
-		echo ""
-		echo "You appear to be running Msysgit, would you like to use the ssh-agent loader?"
-		echo "This script will load ssh-agent to save your passphrase so that you don't need"
-		echo "to re-enter the passphrase every time you use your ssh key."
-		echo "For more info visit http://help.github.com/working-with-key-passphrases/"
-		echo ""
-		read -p "Install script to your .bashrc file? (y/N) "
-		echo ""
-		if [[ $REPLY = [yY] ]]; then
-			cp ${0%/*}/ssh-agent-loader.sh ~/.ssh/agent-loader.sh
-			echo "" >> ~/.bashrc
-			echo "source ~/.ssh/agent-loader.sh" >> ~/.bashrc
-			echo "Script installed, you will need to re-open git bash to load your key."
-		fi
-	fi
 fi
 
 # clone care-o-bot repository

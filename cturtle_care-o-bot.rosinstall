@@ -1,0 +1,8 @@
+- other: {local-name: /opt/ros/cturtle/ros}
+- other: {local-name: /opt/ros/cturtle/stacks}
+
+- git: {local-name: cob_extern, uri: 'git@github.com:ipa320/cob_extern.git'}
+- git: {local-name: cob_common, uri: 'git@github.com:ipa320/cob_common.git'}
+- git: {local-name: cob_driver, uri: 'git@github.com:ipa320/cob_driver.git'}
+- git: {local-name: cob_simulation, uri: 'git@github.com:ipa320/cob_simulation.git'}
+- git: {local-name: cob_apps, uri: 'git@github.com:ipa320/cob_apps.git'}

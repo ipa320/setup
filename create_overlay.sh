@@ -64,16 +64,11 @@ else
 			`git config --global github.token $token`
 		else
 			echo "Error retrieving token"
+			echo "Did you enter the correct password?"
 			echo "Is curl installed? Please install curl with 'sudo apt-get install curl'."
 			exit 1
 		fi
 	fi
-
-	if [ -z "$acct" ]; then
-		echo "Fetching GitHub account details"
-		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account 2> /dev/null`
-	fi
-
 
 	# Setup username
 	gitname=`git config --global user.name`
@@ -107,7 +102,6 @@ else
 		echo ""
 		if [[ $REPLY = [yY] ]]; then
 			ssh-keygen -t rsa -f ~/.ssh/id_rsa
-			sleep 2
 		fi
 	fi
 
@@ -115,11 +109,13 @@ else
 		read -p "Upload id_rsa key to your GitHub account? (y/N) "
 		if [[ $REPLY = [yY] ]]; then
 			sshkey=`cat ~/.ssh/id_rsa.pub`
+			sshkey=`echo $sshkey`
+			user=`echo $user`
+			token=`echo $token`
 			acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[title]=$USER@$HOSTNAME" -F "public_key[key]=$sshkey" 2> /dev/null`
 		fi
 		echo ""
 	fi
-
 
 	# Fork stack on github
 	acct=`curl -F "login=$user" -F "token=$token" https://github.com/ipa320/$STACK/fork 2> /dev/null`

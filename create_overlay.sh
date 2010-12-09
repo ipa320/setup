@@ -177,4 +177,4 @@ if [ -d ~/git/care-o-bot ]; then
 fi
 
 echo ""
-echo "Please logout and login again to activate your settings."
+echo "Please logout and login again to activate your settings. (or type 'source ~/.bashrc')"

@@ -21,7 +21,13 @@ elif [ "$1" = "cob_simulation" ]; then
 elif [ "$1" = "cob_apps" ]; then
 	STACK=$1
 else
-	echo "ERROR: stack <<"$1">> not supported, aborting..."
+	echo "ERROR: stack <<"$1">> not supported, choose one of"
+	echo "    * cob_extern"
+	echo "    * cob_common"
+	echo "    * cob_driver"
+	echo "    * cob_simulation"
+	echo "    * cob_apps"
+	echo "aborting..."
 	exit 1
 fi
 

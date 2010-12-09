@@ -58,12 +58,11 @@ else
 		token=`echo "$acct" | grep "API token" | sed 's/<p>.*<code>//' |sed 's/<\/code>.*//'`
 
 		if [ $token ]; then
-			#echo $token
 			echo "Saving GitHub token to global git config"
 			`git config --global github.user $user`
 			`git config --global github.token $token`
 		else
-			echo "Error retrieving token"
+			echo "Error retrieving token:"
 			echo "Did you enter the correct password?"
 			echo "Is curl installed? Please install curl with 'sudo apt-get install curl'."
 			exit 1

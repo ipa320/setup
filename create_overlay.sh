@@ -97,7 +97,8 @@ if [ ! -f ~/.ssh/id_rsa ]; then
 	read -p "No id_rsa key found, generate one? (y/N) "
 	echo ""
 	if [[ $REPLY = [yY] ]]; then
-		ssh-keygen -t rsa -f ~/.ssh/id_rsa -N "No passphrase"
+		ssh-keygen -t rsa -f ~/.ssh/id_rsa
+		sleep 2
 	fi
 fi
 
@@ -118,7 +119,16 @@ acct=`curl -F "login=$user" -F "token=$token" https://github.com/ipa320/$STACK/f
 # Clone stack
 mkdir -p ~/git
 mkdir -p ~/git/care-o-bot
-cd ~/git/care-o-bot && git clone git@github.com:$user/$STACK.git
+if [ -d ~/git/care-o-bot/$STACK ]; then
+	read -p "Stack overlay already exists. Do you want to pull changes to your master branch? (y/N) "
+	if [[ $REPLY = [yY] ]]; then
+		echo ""
+		cd ~/git/care-o-bot/$STACK && git checkout master
+		cd ~/git/care-o-bot/$STACK && git pull origin master
+	fi
+else
+	cd ~/git/care-o-bot && git clone git@github.com:$user/$STACK.git
+fi
 
 
 # Setup bashrc for ROS with cturtle and care-o-bot stacks. First delete all entries and then add them in the correct order.
@@ -135,15 +145,23 @@ fi
 if [ -d ~/ros ]; then
 	`rm ~/ros/setup.sh 2> /dev/null`
 	touch ~/ros/setup.sh
-	`echo "export ROS_PACKAGE_PATH=$HOME/ros:$ROS_PACKAGE_PATH" >> ~/ros/setup.sh 2> /dev/null`
+	`echo 'export ROS_PACKAGE_PATH=$HOME/ros:$ROS_PACKAGE_PATH' >> ~/ros/setup.sh 2> /dev/null`
 	`echo "source $HOME/ros/setup.sh" >> ~/.bashrc 2> /dev/null`
 fi
 
 if [ -d ~/git/care-o-bot ]; then
-	touch ~/git/care-o-bot/setup.sh
-	`echo "export ROS_PACKAGE_PATH=$HOME/git/care-o-bot:$ROS_PACKAGE_PATH" >> ~/git/care-o-bot/setup.sh 2> /dev/null`
-	`echo "COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)" >> ~/git/care-o-bot/setup.sh 2> /dev/null`
-	`echo "COUNT=$(echo "$COUNT*2" | bc)" >> ~/git/care-o-bot/setup.sh 2> /dev/null`
-	`echo "export ROS_PARALLEL_JOBS=-j$COUNT" >> ~/git/care-o-bot/setup.sh 2> /dev/null`
+	if [ -f ~/git/care-o-bot/setup.sh ]; then
+		rm ~/git/care-o-bot/setup.sh
+	else
+		touch ~/git/care-o-bot/setup.sh
+	fi
+	`echo '#!/bin/bash' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
+	`echo 'export ROS_PACKAGE_PATH=$HOME/git/care-o-bot:$ROS_PACKAGE_PATH' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
+	`echo 'COUNT=$(cat /proc/cpuinfo | grep "processor" | wc -l)' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
+	`echo 'COUNT=$(echo "$COUNT*2" | bc)' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
+	`echo 'export ROS_PARALLEL_JOBS=-j$COUNT' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
 	`echo "source $HOME/git/care-o-bot/setup.sh" >> ~/.bashrc 2> /dev/null`
 fi
+
+echo ""
+echo "Please logout and login again to activate your settings."

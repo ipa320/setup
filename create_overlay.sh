@@ -132,9 +132,9 @@ if [ -d ~/git/care-o-bot/$STACK ]; then
 	fi
 else
 	if $readonly; then
-		cd ~/git/care-o-bot && git clone git://github.com/ipa320/$STACK.git
+		cd ~/git/care-o-bot && git clone --recursive git://github.com/ipa320/$STACK.git
 	else
-		cd ~/git/care-o-bot && git clone git@github.com:$user/$STACK.git
+		cd ~/git/care-o-bot && git clone --recursive git@github.com:$user/$STACK.git
 	fi
 fi
 

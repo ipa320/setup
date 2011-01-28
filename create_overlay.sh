@@ -97,7 +97,7 @@ else
 
 	# SSH keys!
 	if [ ! -f ~/.ssh/id_rsa ]; then
-		read -p "No id_rsa key found, generate one? (y/N) "
+		read -p "No id_rsa key found, generate one (recommendation: y)? (y/N) "
 		echo ""
 		if [[ $REPLY = [yY] ]]; then
 			ssh-keygen -t rsa -f ~/.ssh/id_rsa
@@ -105,15 +105,11 @@ else
 	fi
 
 	if [ -f ~/.ssh/id_rsa ]; then
-		read -p "Upload id_rsa key to your GitHub account? (y/N) "
-		if [[ $REPLY = [yY] ]]; then
-			sshkey=`cat ~/.ssh/id_rsa.pub`
-			sshkey=`echo $sshkey`
-			user=`echo $user`
-			token=`echo $token`
-			acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[title]=$USER@$HOSTNAME" -F "public_key[key]=$sshkey" 2> /dev/null`
-		fi
-		echo ""
+		sshkey=`cat ~/.ssh/id_rsa.pub`
+		sshkey=`echo $sshkey`
+		user=`echo $user`
+		token=`echo $token`
+		acct=`curl -F "login=$user" -F "token=$token" https://github.com/account/public_keys -F "public_key[title]=$USER@$HOSTNAME" -F "public_key[key]=$sshkey" 2> /dev/null`
 	fi
 
 	# Fork stack on github
@@ -126,9 +122,11 @@ mkdir -p ~/git/care-o-bot
 if [ -d ~/git/care-o-bot/$STACK ]; then
 	read -p "Stack overlay already exists. Do you want to pull changes to your master branch? (y/N) "
 	if [[ $REPLY = [yY] ]]; then
-		echo ""
 		cd ~/git/care-o-bot/$STACK && git checkout master
-		cd ~/git/care-o-bot/$STACK && git pull origin master
+		if !(cd ~/git/care-o-bot/$STACK && git pull origin master); then
+			echo "Error pulling from github. Is your ssh key uploaded?"
+			exit 1
+		fi
 	fi
 else
 	if $readonly; then
@@ -138,38 +136,14 @@ else
 	fi
 fi
 
-
-# Setup bashrc for ROS with cturtle and care-o-bot stacks. First delete all entries and then add them in the correct order.
-sed -i '/ros/ d' ~/.bashrc
-sed -i '/care-o-bot/ d' ~/.bashrc
-
-if [ -d /opt/ros/cturtle ]; then
-	`echo "source /opt/ros/cturtle/setup.sh" >> ~/.bashrc 2> /dev/null`
-	ROS_PACKAGE_PATH="/opt/ros/cturtle/stacks"
-else
-	print "ERROR: No ROS cturtle release found"
-fi
-
-if [ -d ~/ros ]; then
-	`rm ~/ros/setup.sh 2> /dev/null`
-	touch ~/ros/setup.sh
-	`echo 'export ROS_PACKAGE_PATH=$HOME/ros:$ROS_PACKAGE_PATH' >> ~/ros/setup.sh 2> /dev/null`
-	`echo "source $HOME/ros/setup.sh" >> ~/.bashrc 2> /dev/null`
-fi
-
-if [ -d ~/git/care-o-bot ]; then
-	if [ -f ~/git/care-o-bot/setup.sh ]; then
-		rm ~/git/care-o-bot/setup.sh
-	else
-		touch ~/git/care-o-bot/setup.sh
-	fi
-	`echo '#!/bin/bash' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
-	`echo 'export ROS_PACKAGE_PATH=$HOME/git/care-o-bot:$ROS_PACKAGE_PATH' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
-	`echo 'COUNT=$(cat /proc/cpuinfo | grep "processor" | wc -l)' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
-	`echo 'COUNT=$(echo "$COUNT*2" | bc)' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
-	`echo 'export ROS_PARALLEL_JOBS=-j$COUNT' >> ~/git/care-o-bot/setup.sh 2> /dev/null`
-	`echo "source $HOME/git/care-o-bot/setup.sh" >> ~/.bashrc 2> /dev/null`
-fi
-
+# display info for user to be added to his ~/.bashrc file
 echo ""
-echo "Please logout and login again to activate your settings. (or type 'source ~/.bashrc')"
+echo "------------------------------------------------"
+echo "Overlay for <<$STACK>> created successfully."
+echo "------------------------------------------------"
+echo ""
+echo "Please update your ROS_PACKAGE_PATH to include ~/git/care-o-bot: Either run the following line"
+echo "on each terminal or add the line at the end of your ~/.bashrc file and source it again."
+echo ""
+echo '    export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH'
+echo ""

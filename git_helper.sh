@@ -7,7 +7,7 @@ if [ "$#" -ge 2 ]; then
 	exit 1
 elif [ "$1" = "status" ]; then
 	COMMAND="git status -uno"
-elif [ "$1" = "checkout" ]; then
+elif [ "$1" = "master" ]; then
 	COMMAND="git checkout master"
 elif [ "$1" = "commit" ]; then
 	read -p "Commit message:"
@@ -25,7 +25,7 @@ elif [ "$1" = "mergeto320" ]; then
 else
 	echo "ERROR: command <<"$1">> not supported, choose one of"
 	echo "    * status"
-	echo "    * checkout"
+	echo "    * master"
 	echo "    * commit"
 	echo "    * pull"
 	echo "    * push"

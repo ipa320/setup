@@ -19,9 +19,9 @@ elif [ "$1" = "push" ]; then
 elif [ "$1" = "push320" ]; then
 	COMMAND="git checkout review-320 && git pull origin-320 master && git push origin-320 master && git checkout master"
 elif [ "$1" = "merge320" ]; then
-	COMMAND="git checkout review-320 && git pull origin-320 master && git checkout master && git merge review-320 && git push origin master"
+	COMMAND="git checkout master && git pull origin master && git checkout review-320 && git pull origin-320 master && git checkout master && git merge review-320 && git push origin master"
 elif [ "$1" = "mergeto320" ]; then
-	COMMAND="git checkout review-320 && git merge master && git push origin-320 master && git checkout master"
+	COMMAND="git checkout master && git pull origin master && git checkout review-320 && git pull origin-320 master && git merge master && git push origin-320 master && git checkout master"
 else
 	echo "ERROR: command <<"$1">> not supported, choose one of"
 	echo "    * status"

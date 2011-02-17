@@ -5,7 +5,6 @@
 # The user can, of course, choose to override the values the script digs up for user.name and user.email
 
 # checking input parameters
-# $1 -i for ipa setup (optional)
 if [ "$#" -ge 2 ]; then
 	echo "ERROR: Wrong number of parameters"
 	echo "Usage: create_overlay.sh STACK"
@@ -19,6 +18,8 @@ elif [ "$1" = "cob_driver" ]; then
 elif [ "$1" = "cob_simulation" ]; then
 	STACK=$1
 elif [ "$1" = "cob_apps" ]; then
+	STACK=$1
+elif [ "$1" = "cob_commercial" ]; then
 	STACK=$1
 else
 	echo "ERROR: stack <<"$1">> not supported, choose one of"

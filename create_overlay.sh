@@ -21,6 +21,8 @@ elif [ "$1" = "cob_apps" ]; then
 	STACK=$1
 elif [ "$1" = "cob_commercial" ]; then
 	STACK=$1
+elif [ "$1" = "srs" ]; then
+	STACK=$1
 else
 	echo "ERROR: stack <<"$1">> not supported, choose one of"
 	echo "    * cob_extern"

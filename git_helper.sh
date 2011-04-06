@@ -41,22 +41,12 @@ echo "Executing <<$COMMAND>>"
 echo "-------------------------------------------"
 echo ""
 
-echo ""
-echo "==> operating on ~/git/care-o-bot/cob_extern"
-cd ~/git/care-o-bot/cob_extern ; sh -c "$COMMAND"
-
-echo ""
-echo "==> operating on ~/git/care-o-bot/cob_common"
-cd ~/git/care-o-bot/cob_common; sh -c "$COMMAND"
-
-echo ""
-echo "==> operating on ~/git/care-o-bot/cob_driver"
-cd ~/git/care-o-bot/cob_driver; sh -c "$COMMAND"
-
-echo ""
-echo "==> operating on ~/git/care-o-bot/cob_simulation"
-cd ~/git/care-o-bot/cob_simulation; sh -c "$COMMAND"
-
-echo ""
-echo "==> operating on ~/git/care-o-bot/cob_apps"
-cd ~/git/care-o-bot/cob_apps; sh -c "$COMMAND"
+dirs=`ls ~/git/care-o-bot`
+echo "$dirs" >  ~/tmp/stacks.txt
+while read directory
+do
+	if [ -d ~/git/care-o-bot/$directory ]; then
+		echo "==> operating on $directory"
+		cd ~/git/care-o-bot/$directory ; sh -c "$COMMAND"
+	fi
+done < ~/tmp/stacks.txt

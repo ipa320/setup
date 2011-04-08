@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# check if ppp0 exists, otherwise create it and add route
+ret=`/sbin/ifconfig`
+if [[ "$ret" =~ "ppp0" ]]; then
+	echo "ppp0 already exists"
+else
+	echo "ppp0 doesn't exist, creating ppp0 with: pon cobkitchen"
+	sudo pon cobkitchen
+fi
+
+sleep 15
+
+# check if route exists, otherwise create it
+ret=`/sbin/route -n`
+if [[ "$ret" =~ "10.0.0.0" ]]; then
+	echo "route already exists"
+else
+	echo "route doesn't exist, creating route"
+	sudo route add -net 10.0.0.0 netmask 255.255.0.0 gw 10.0.1.1 dev ppp0
+	echo "route ceated"
+fi

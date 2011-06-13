@@ -13,9 +13,9 @@ elif [ "$1" = "commit" ]; then
 	read -p "Commit message:"
 	COMMAND="git commit -a -m'$REPLY'"
 elif [ "$1" = "pull" ]; then
-	COMMAND="git pull"
+	COMMAND="git pull origin master"
 elif [ "$1" = "push" ]; then
-	COMMAND="git pull && git push"
+	COMMAND="git pull origin master && git push origin master"
 elif [ "$1" = "push320" ]; then
 	COMMAND="git checkout review-320 && git pull origin-320 master && git push origin-320 master && git checkout master"
 elif [ "$1" = "merge320" ]; then
@@ -42,6 +42,7 @@ echo "-------------------------------------------"
 echo ""
 
 dirs=`ls ~/git/care-o-bot`
+mkdir -p ~/tmp
 echo "$dirs" >  ~/tmp/stacks.txt
 while read directory
 do

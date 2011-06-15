@@ -1,0 +1,9 @@
+BUS!="usb", SUBSYSTEM!=="usb_device", ACTION!="add", GOTO="kcontrol_rules_end"
+
+#Swissranger SR3k(old),SR3k,SR4k
+SYSFS{idVendor}=="0852", SYSFS{idProduct}=="0074", MODE="666", GROUP="usb"
+SYSFS{idVendor}=="1ad2", SYSFS{idProduct}=="0074", MODE="666", GROUP="usb"
+SYSFS{idVendor}=="1ad2", SYSFS{idProduct}=="0075", MODE="666", GROUP="usb"
+
+LABEL="kcontrol_rules_end"
+

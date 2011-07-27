@@ -3,7 +3,7 @@
 # checking input parameters
 if [ "$#" -ge 2 ]; then
 	echo "ERROR: Wrong number of parameters"
-	echo "Usage: create_overlay.sh STACK"
+	echo "Usage: git_helper.sh STACK"
 	exit 1
 elif [ "$1" = "status" ]; then
 	COMMAND="git status -uno"

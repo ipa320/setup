@@ -43,6 +43,7 @@ update(){
 #update "cob_common"
 
 dirs=`ls ~/git/care-o-bot`
+mkdir -p ~/tmp
 echo "$dirs" >  ~/tmp/stacks.txt
 while read directory
 do

@@ -1,0 +1,25 @@
+#pcan usb devices
+#upper usb plug, always plug in pcan module for neck/tablet
+KERNELS=="2-2" SUBSYSTEM=="usb_device",SYSFS{idVendor}=="0c72",SYMLINK+="pcanneck"
+#lower usb plug, always plug in pcan module for arm
+KERNELS=="2-1" SUBSYSTEM=="usb_device",SYSFS{idVendor}=="0c72",SYMLINK+="pcangarm"
+
+#firewire camera devices
+KERNEL=="raw1394*",GROUP="users",MODE="0664"
+KERNEL=="video1394*",GROUP="users",MODE="0664"
+
+#Logitech Joypad
+SUBSYSTEM=="usb",ATTR{idVendor}=="046d",ATTR{idProduct}=="c219",SYMLINK+="joypad"
+
+#Logitech Webcam
+SUBSYSTEM=="usb",ATTR{idVendor}=="046d",ATTR{idProduct}=="0809",SYMLINK+="video",GROUP="users"
+
+#Laserscanner
+SUBSYSTEM=="tty",ATTRS{interface}=="USB TO RS-422/485 ADAPTER",ATTRS{bInterfaceNumber}=="00",SYMLINK+="ttyScan0"
+SUBSYSTEM=="tty",ATTRS{interface}=="USB TO RS-422/485 ADAPTER",ATTRS{bInterfaceNumber}=="01",SYMLINK+="ttyScan1"
+
+#Relaisboard
+SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001",SYMLINK+="ttyRelais"
+
+#Tactile Sensors
+SUBSYSTEM=="tty",ATTRS{idVendor}=="067b",ATTRS{idProduct}=="2303",SYMLINK+="ttyTact"

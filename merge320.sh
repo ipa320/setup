@@ -21,26 +21,36 @@ update(){
 	cd ~/git/care-o-bot/$STACK ; status=`sh -c "$COMMAND"`
 
 	# create review branch
-	COMMAND="git branch review-320 -f && git checkout review-320"
+	COMMAND="git branch review-$GITHUBUSER -f && git checkout review-$GITHUBUSER"
 	cd ~/git/care-o-bot/$STACK ; status=`sh -c "$COMMAND"`
 
 	# create remote origin if not exists
 	COMMAND="git remote"
 	cd ~/git/care-o-bot/$STACK ; status=`sh -c "$COMMAND"`
 	echo "$status" > ~/tmp/response.txt
-	if [ $(grep -c "origin-320" ~/tmp/response.txt) == 0 ]; then
-		COMMAND="git remote add origin-320 git@github.com:ipa320/$STACK.git"
+	if [ $(grep -c "origin-$GITHUBUSER" ~/tmp/response.txt) == 0 ]; then
+		COMMAND="git remote add origin-$GITHUBUSER git@github.com:$GITHUBUSER/$STACK.git"
 		cd ~/git/care-o-bot/$STACK ; status=`sh -c "$COMMAND"`
 	fi
 
-	# pull from origin-320 and merge and push
-	COMMAND="git pull origin-320 master && git checkout master && git merge review-320 && git push origin master"
+	# pull from origin-$GITHUBUSER and merge and push
+	COMMAND="git pull origin-$GITHUBUSER master && git checkout master && git merge review-$GITHUBUSER && git push origin master"
 	cd ~/git/care-o-bot/$STACK ; status=`sh -c "$COMMAND"`
 }
 
-#update "cob_extern"
 
-#update "cob_common"
+####### main ########
+if [ "$#" -ge 2 ]; then
+	echo "ERROR: Wrong number of parameters"
+	echo "Usage: merge-user.sh GITHUBUSER"
+	exit 1
+elif [ "$#" == 0 ]; then
+	GITHUBUSER="ipa320"
+	echo "merging with default ipa320"
+else
+	GITHUBUSER=$1
+	echo "merging with $GITHUBUSER"
+fi
 
 dirs=`ls ~/git/care-o-bot`
 mkdir -p ~/tmp

@@ -17,7 +17,7 @@ update(){
 	fi
 
 	# push user's master
-	COMMAND="git checkout master && git push origin master"
+	COMMAND="git checkout master && git pull origin master && git push origin master"
 	cd ~/git/care-o-bot/$STACK ; status=`sh -c "$COMMAND"`
 
 	# create review branch

@@ -15,6 +15,9 @@ if [ "$#" -ge 3 ]; then
 	echo "ERROR: Wrong number of parameters, aborting..."
 	show_usage
 	exit 1
+elif [ "$1" = "help" ]; then
+	show_usage
+	exit 1
 elif [ "$1" = "status" ]; then
 	COMMAND="git status -uno"
 elif [ "$1" = "master" ]; then

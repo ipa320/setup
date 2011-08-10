@@ -53,7 +53,7 @@ merge(){
 	COMMAND="git status --porcelain -uno"
 	cd ~/git/care-o-bot/$STACK ; status=`sh -c "$COMMAND"`
 	if [ ! -z "$status" ]; then
-		echo "ERROR: found local changes: please commit them first before merging with $GITHUBUSER, aborting..."
+		echo "ERROR: found local changes in $STACK: please commit them first before merging with $GITHUBUSER, aborting..."
 		exit 1
 	fi
 

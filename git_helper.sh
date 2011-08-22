@@ -30,9 +30,9 @@ elif [ "$1" = "pull" ]; then
 elif [ "$1" = "push" ]; then
 	COMMAND="git pull origin master && git push origin master"
 elif [ "$1" = "merge" ]; then
-	if [ "$#" -ge 3 ]; then
+	if [ "$#" -ge 2 ]; then
+		GITHUBUSER="$2"
 		echo "merging with $GITHUBUSER"
-		GITHUBUSER=$2
 	else
 		echo "merging with default ipa320"
 		GITHUBUSER="ipa320"
@@ -81,7 +81,7 @@ merge(){
 
 dirs=`ls ~/git/care-o-bot`
 mkdir -p ~/tmp
-echo "$dirs" >  ~/tmp/stacks.txt
+echo "$dirs" > ~/tmp/stacks.txt
 while read directory
 do
 	if [ -d ~/git/care-o-bot/$directory ]; then

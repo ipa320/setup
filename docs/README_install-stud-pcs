@@ -28,6 +28,11 @@ add the line to /etc/apt/apt.conf.d/proxy
 -------------
 upgrade to 10.10
 -------------
+edit /etc/update-manager/release-upgrades to
+	
+	Prompt=normal
+
+
 sudo apt-get update
 sudo do-release-upgrade
 

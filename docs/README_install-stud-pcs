@@ -32,9 +32,12 @@ edit /etc/update-manager/release-upgrades to
 	
 	Prompt=normal
 
-
 sudo apt-get update
 sudo do-release-upgrade
+
+change back to lts updates only
+
+	Prompt=lts
 
 
 -------------

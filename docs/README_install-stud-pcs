@@ -3,6 +3,7 @@ install basic setup
 -------------
 sudo apt-get install vim tree openssh-server
 
+
 -------------
 add users
 -------------
@@ -15,6 +16,7 @@ sudo adduser jenkins admin
 
 sudo deluser ipa
 
+
 -------------
 add proxy for apt
 -------------
@@ -22,11 +24,13 @@ add the line to /etc/apt/apt.conf.d/proxy
 
 	Acquire::http { Proxy "http://cob-kitchen-server:3142"; };
 
+
 -------------
 upgrade to 10.10
 -------------
 sudo apt-get update
 sudo do-release-upgrade
+
 
 -------------
 setup nfs
@@ -37,6 +41,7 @@ sudo apt-get install portmap nfs-common
 edit /etc/fstab
 
 	cob-kitchen-server:/home /home nfs rw,hard,intr 0 0
+
 
 -------------
 install zentyal
@@ -50,3 +55,14 @@ Add one of the following lines to your /etc/apt/sources.list file:
 sudo apt-get update
 sudo apt-get install zentyal-desktop 
 
+
+-------------
+install ros and care-o-bot
+-------------
+see http://www.ros.org/wiki/Robots/Care-O-bot/electric
+
+
+-------------
+install additional tools
+-------------
+sudo apt-get install gitg meld curl

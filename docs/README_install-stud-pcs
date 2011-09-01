@@ -66,3 +66,10 @@ see http://www.ros.org/wiki/Robots/Care-O-bot/electric
 install additional tools
 -------------
 sudo apt-get install gitg meld curl
+
+-------------
+install nvidia driver
+-------------
+use the graphical installer
+System->Administration->Additional Drivers
+and select the Nvidia current driver

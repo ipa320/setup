@@ -1,0 +1,33 @@
+-------------
+install basic setup
+-------------
+sudo apt-get install vim tree openssh-server
+
+-------------
+add users
+-------------
+
+sudo adduser stud-admin --home /home-local/stud-admin
+sudo adduser stud-admin admin
+
+sudo adduser jenkins --home /home-local/jenkins
+sudo adduser jenkins admin
+
+sudo deluser ipa
+
+-------------
+add proxy for apt
+-------------
+add the line to /etc/apt/apt.conf.d/proxy
+
+	Acquire::http { Proxy "http://cob-kitchen-server:3142"; };
+
+-------------
+upgrade to 10.10
+-------------
+sudo apt-get update
+sudo do-release-upgrade
+
+
+
+

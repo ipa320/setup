@@ -28,6 +28,25 @@ upgrade to 10.10
 sudo apt-get update
 sudo do-release-upgrade
 
+-------------
+setup nfs
+-------------
 
+sudo apt-get install portmap nfs-common
 
+edit /etc/fstab
+
+	cob-kitchen-server:/home /home nfs rw,hard,intr 0 0
+
+-------------
+install zentyal
+-------------
+see http://trac.zentyal.org/wiki/Documentation/Community/ZentyalDesktop/Ubuntu
+
+Add one of the following lines to your /etc/apt/sources.list file:
+
+	deb  http://ppa.launchpad.net/zentyal/desktop/ubuntu maverick main 
+
+sudo apt-get update
+sudo apt-get install zentyal-desktop 
 

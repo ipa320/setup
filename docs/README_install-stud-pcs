@@ -70,7 +70,7 @@ see http://www.ros.org/wiki/Robots/Care-O-bot/electric
 -------------
 install additional tools
 -------------
-sudo apt-get install gitg meld curl
+sudo apt-get install gitg meld curl openjdk-6-jdk
 
 -------------
 install nvidia driver

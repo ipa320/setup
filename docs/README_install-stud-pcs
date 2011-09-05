@@ -74,8 +74,11 @@ see http://www.ros.org/wiki/Robots/Care-O-bot/electric
 install additional tools
 -------------
 sudo apt-get install gitg meld curl openjdk-6-jdk zsh terminator
-sudo apt-get install ros-diamondback-care-o-bot
-sudo apt-get install ros-electric-care-o-bot
+
+sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot
+sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons
+
+sudo apt-get install libtbb-dev libtbb2
 
 
 -------------

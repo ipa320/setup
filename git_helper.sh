@@ -94,6 +94,7 @@ do
 		elif [ "$1" = "mergeto320" ]; then
 			merge $directory
 			COMMAND="git checkout review-ipa320 && git merge master && git push origin-ipa320 master && git checkout master"
+			cd ~/git/care-o-bot/$directory ; sh -c "$COMMAND"
 		else
 			cd ~/git/care-o-bot/$directory ; sh -c "$COMMAND"
 		fi

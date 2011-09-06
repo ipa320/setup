@@ -1,7 +1,7 @@
 -------------
 install basic setup
 -------------
-sudo apt-get install vim tree openssh-server
+sudo apt-get install vim tree openssh-server ntp
 
 
 -------------
@@ -78,7 +78,7 @@ sudo apt-get install gitg meld curl openjdk-6-jdk zsh terminator
 sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot
 sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons
 
-sudo apt-get install libtbb-dev libtbb2
+sudo apt-get install libtbb-dev libtbb2 libsuitesparse-dev libxerces-c2-dev libann-dev
 
 
 -------------
@@ -87,3 +87,8 @@ install nvidia driver
 use the graphical installer
 System->Administration->Additional Drivers
 and select the Nvidia current driver
+
+-------------
+setup ntp time synchronisation
+-------------
+edit /etc/ntp.conf and change server to cob-kitchen-server

@@ -9,29 +9,8 @@ if [ "$#" -ge 2 ]; then
 	echo "ERROR: Wrong number of parameters"
 	echo "Usage: create_overlay.sh STACK"
 	exit 1
-elif [ "$1" = "cob_extern" ]; then
-	STACK=$1
-elif [ "$1" = "cob_common" ]; then
-	STACK=$1
-elif [ "$1" = "cob_driver" ]; then
-	STACK=$1
-elif [ "$1" = "cob_simulation" ]; then
-	STACK=$1
-elif [ "$1" = "cob_apps" ]; then
-	STACK=$1
-elif [ "$1" = "cob_commercial" ]; then
-	STACK=$1
-elif [ "$1" = "srs" ]; then
-	STACK=$1
 else
-	echo "ERROR: stack <<"$1">> not supported, choose one of"
-	echo "    * cob_extern"
-	echo "    * cob_common"
-	echo "    * cob_driver"
-	echo "    * cob_simulation"
-	echo "    * cob_apps"
-	echo "aborting..."
-	exit 1
+	STACK=$1
 fi
 
 echo "-------------------------------------------"
@@ -100,9 +79,12 @@ else
 
 	# SSH keys!
 	if [ ! -f ~/.ssh/id_rsa ]; then
-		read -p "No id_rsa key found, generate one (recommendation: y)? (y/N) "
+		read -p "No id_rsa key found, generate one (recommendation: Y)? (Y/n) "
 		echo ""
-		if [[ $REPLY = [yY] ]]; then
+		if [[ $REPLY = [nN] ]]; then
+			"Need ssh-key, aborting..."
+			exit 1
+		else
 			ssh-keygen -t rsa -f ~/.ssh/id_rsa
 		fi
 	fi
@@ -118,6 +100,14 @@ else
 	# Fork stack on github
 	acct=`curl -F "login=$user" -F "token=$token" https://github.com/ipa320/$STACK/fork 2> /dev/null`
 fi
+
+# Check if stack is forked on github
+wget --post-data "login=$user&token=$token" --spider https://github.com/"$user"/"$STACK"/blob/master/Makefile --no-check-certificate 2> /tmp/response
+if [ `echo $(grep -c "200 OK" /tmp/response)` -eq 0 ]; then
+	echo "Error: Stack $STACK not found on github.com"
+	exit 1
+fi
+ 
 
 # Clone stack
 mkdir -p ~/git

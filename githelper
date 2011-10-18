@@ -146,7 +146,7 @@ def git_pull():
 	# merge own origin/master
 	os.system("git merge origin/master > /dev/null")
 	if has_conflicts():
-		print "Conflicts found, reset changes and abort..."
+		print "ERROR: Conflicts found. Please pull manually and resolve conflicts! Resetting changes and aborting..."
 		os.system("git reset --hard HEAD")
 		exit(1)
 
@@ -177,10 +177,10 @@ def git_merge(stack, options):
 	os.system("git fetch origin-" + options.githubuser + " > /dev/null 2>&1")
 	os.system("git merge origin-" + options.githubuser + "/master > /dev/null 2>&1")
 	if has_conflicts():
-		print "Conflicts found, reset changes and abort..."
-		os.system("git reset --hard HEAD")
-		os.system("git checkout master")
-		os.system("git branch -D automerge")
+		print "ERROR: conflicts found. Please merge manually and resolve conflicts! Resetting changes and aborting..."
+		os.system("git reset --hard HEAD > /dev/null 2>&1")
+		os.system("git checkout master > /dev/null 2>&1")
+		os.system("git branch -D automerge > /dev/null 2>&1")
 		exit(1)
 	
 	os.system("git checkout master > /dev/null 2>&1")
@@ -212,7 +212,7 @@ def check_for_changes():
 	status = p.read()
 	p.close()
 	if status != "":
-		print "ERROR: found local changes in " + os.getcwd() + ": please commit or undo them first before continuing, aborting..."
+		print "ERROR: found local changes in " + os.getcwd() + ": please commit or reset them first before continuing, aborting..."
 		print "Status: \n" + status
 		exit(1)
 

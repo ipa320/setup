@@ -1,0 +1,97 @@
+-------------
+install basic setup
+-------------
+sudo apt-get install vim tree openssh-server ntp
+
+
+-------------
+add users
+-------------
+
+sudo adduser stud-admin --home /home-local/stud-admin
+sudo adduser stud-admin admin
+
+sudo adduser jenkins --home /home-local/jenkins
+sudo adduser jenkins admin
+
+sudo deluser ipa
+
+
+-------------
+add proxy for apt
+-------------
+add the line to /etc/apt/apt.conf.d/proxy
+
+	Acquire::http { Proxy "http://cob-kitchen-server:3142"; };
+
+
+-------------
+upgrade to 10.10
+-------------
+edit /etc/update-manager/release-upgrades to
+	
+	Prompt=normal
+
+sudo apt-get update
+sudo do-release-upgrade
+
+change back to lts updates only
+
+	Prompt=lts
+
+
+-------------
+setup nfs
+-------------
+
+sudo apt-get install portmap nfs-common
+
+edit /etc/fstab
+
+	cob-kitchen-server:/home /home nfs rw,hard,intr 0 0
+
+
+-------------
+install zentyal
+-------------
+see http://trac.zentyal.org/wiki/Documentation/Community/ZentyalDesktop/Ubuntu
+
+Add one of the following lines to your /etc/apt/sources.list file:
+
+	deb  http://ppa.launchpad.net/zentyal/desktop/ubuntu maverick main 
+
+sudo apt-get update
+sudo apt-get install zentyal-desktop 
+
+
+-------------
+install ros and care-o-bot
+-------------
+see http://www.ros.org/wiki/Robots/Care-O-bot/electric
+
+
+-------------
+install additional tools
+-------------
+sudo apt-get install gitg meld curl openjdk-6-jdk zsh terminator
+
+sudo apt-get install python-setuptools
+sudo easy_install -U rosinstall
+
+sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot
+sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons
+
+sudo apt-get install libtbb-dev libtbb2 libsuitesparse-dev libxerces-c2-dev libann-dev flashplugin-nonfree emacs chromium-browser gimp ipython geany meshlab
+
+
+-------------
+install nvidia driver
+-------------
+use the graphical installer
+System->Administration->Additional Drivers
+and select the Nvidia current driver
+
+-------------
+setup ntp time synchronisation
+-------------
+edit /etc/ntp.conf and change server to cob-kitchen-server

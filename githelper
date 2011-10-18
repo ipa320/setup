@@ -156,7 +156,7 @@ def git_push():
 	git_pull()
 
 	# push to origin master
-	os.system("git pull origin master > /dev/null 2>&1")
+	os.system("git push origin master > /dev/null 2>&1")
 
 
 def git_merge(stack, options):

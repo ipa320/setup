@@ -67,25 +67,29 @@ from optparse import OptionParser
 # Parses arguments and starts helping. Everything is done regarding the local master branch
 def main():
 	parser = OptionParser(usage="usage: %prog <command> [options]", prog=os.path.basename(sys.argv[0]))
+	
 	parser.add_option("-u", "--user",
 		dest="githubuser", default="ipa320",
 		help="Username on http://www.github.com. Default: ipa320")
+	
 	parser.add_option("-s", "--stacks",
 		dest="stacks", metavar="STACK_NAMES_LIST,COMMA_SEPERATED", default="",
 		help="Comma separated list of stacks to operate on. Default: all stacks in ~/git/care-o-bot")
+	
 	parser.add_option("-d", "--directory",
 		dest="install_dir", default="~/git/care-o-bot",
 		help="Installation directory of care-o-bot stacks. Default: ~/git/care-o-bot")
+	
 	(options, args) = parser.parse_args()
 
-
+	# check for input parameters
 	if len(args) == 0:
 		parser.error("You must supply a command to githelper.")
 	if len(args) != 1:
 		parser.error("githelper only accepts a single command.")
 
 	# start helping
-	print 'DEBUG: githelper starting with args %s, options %s'%(args, options)
+	#print 'DEBUG: githelper starting with args %s, options %s'%(args, options)
 	print ""
 
 	if options.stacks == "":
@@ -114,13 +118,17 @@ def main():
 		if args[0] == "status":
 			git_status()
 		elif args[0] == "pull":
+			print "pulling..."
 			git_pull()
 		elif args[0] == "push":
+			print "pushing..."
 			git_push()
 		elif args[0] == "merge":
+			print "merging..."
 			git_merge(stack, options)
 		else:
 			parser.error("command \"" + args[0] + "\" not supported.")
+		print "...done."
 		print ""
 
 
@@ -133,11 +141,14 @@ def git_pull():
 	check_for_changes()
 
 	# fetch from origin
-	os.system("git fetch origin")
+	os.system("git fetch origin > /dev/null 2>&1")
 	
-	# merge TODO check for conflicts
-	os.system("git merge origin/master")
-	check_for_conflicts()
+	# merge own origin/master
+	os.system("git merge origin/master > /dev/null")
+	if has_conflicts():
+		print "Conflicts found, reset changes and abort..."
+		os.system("git reset --hard HEAD")
+		exit(1)
 
 
 def git_push():
@@ -145,34 +156,37 @@ def git_push():
 	git_pull()
 
 	# push to origin master
-	os.system("git pull origin master")
+	os.system("git pull origin master > /dev/null 2>&1")
 
 
 def git_merge(stack, options):
-	print "merge" #TODO do the merge with a lot of checking
 	check_for_changes()
 	git_push()
 
-#	# create review branch if not exists
-#	p = os.popen("git branch")
-#	status = p.read()
-#	p.close()
-#	if status.count("review-" + options.githubuser) <= 0:
-#		os.system("git branch review-" + options.githubuser + " -f")
-
-	# change to review branch
-	os.system("git checkout review-" + options.githubuser)
-	
 	# create remote origin if not exists
 	p = os.popen("git remote")
 	status = p.read()
 	p.close()
 	if status.count("origin-" + options.githubuser) <= 0:
 		os.system("git remote add origin-" + options.githubuser + " git@github.com:" + options.githubuser + "/" + stack + ".git")
+
+	# change to automerge branch
+	os.system("git checkout -b automerge > /dev/null 2>&1")
 	
-	# pull from origin-githubuser and merge and push
-	# TODO check for merge conflicts: create merge-branch from master, fetch and merge, see if conflict. If conflict: revert?/reset? conflict, checkout master again, delete merge-branch and tell the user. If no conflict: checkout master, merge merge-branch, delete merge-branch, all fine
-	os.system("git pull origin-" + options.githubuser + " master && git checkout master && git merge review-" + options.githubuser + " && git push origin master")
+	# fetch from origin-githubuser and merge and push
+	os.system("git fetch origin-" + options.githubuser + " > /dev/null 2>&1")
+	os.system("git merge origin-" + options.githubuser + "/master > /dev/null 2>&1")
+	if has_conflicts():
+		print "Conflicts found, reset changes and abort..."
+		os.system("git reset --hard HEAD")
+		os.system("git checkout master")
+		os.system("git branch -D automerge")
+		exit(1)
+	
+	os.system("git checkout master > /dev/null 2>&1")
+	os.system("git merge automerge > /dev/null 2>&1")
+	os.system("git branch -D automerge > /dev/null 2>&1")
+	git_push()
 
 
 ## returns a list of all stacks in options.install_dir
@@ -204,8 +218,18 @@ def check_for_changes():
 
 
 ## check if a merge is conflicting
-def check_for_conflicts(): #TODO fetch, merge, check, revert/reset
-	print "check for conflicts"
+def has_conflicts():
+	p = os.popen("git status -uno")
+	status = p.read()
+	p.close()
+	
+	if status.count("Unmerged paths") <= 0:
+		# no conflict found
+		return False
+	else: 
+		# conflict found
+		return True
+	
 
 
 ## Main routine for running the githelper script

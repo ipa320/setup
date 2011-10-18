@@ -1,0 +1,214 @@
+#!/usr/bin/python
+#################################################################
+##\file
+#
+# \note
+#   Copyright (c) 2010 \n
+#   Fraunhofer Institute for Manufacturing Engineering
+#   and Automation (IPA) \n\n
+#
+#################################################################
+#
+# \note
+#   Project name: care-o-bot
+# \note
+#   ROS stack name: setup
+# \note
+#   ROS package name: setup
+#
+# \author
+#   Author: Florian Weisshardt, email:florian.weisshardt@ipa.fhg.de
+# \author
+#   Supervised by: Florian Weisshardt, email:florian.weisshardt@ipa.fhg.de
+#
+# \date Date of creation: Oct 2011
+#
+# \brief
+#   Implements helper script for working with git and the care-o-bot stacks.
+#
+#################################################################
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#     - Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer. \n
+#     - Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution. \n
+#     - Neither the name of the Fraunhofer Institute for Manufacturing
+#       Engineering and Automation (IPA) nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission. \n
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License LGPL as 
+# published by the Free Software Foundation, either version 3 of the 
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Lesser General Public License LGPL for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public 
+# License LGPL along with this program. 
+# If not, see <http://www.gnu.org/licenses/>.
+#
+#################################################################
+
+import os
+import sys
+import shlex
+from optparse import OptionParser
+
+## Main githelper script
+#
+# Parses arguments and starts helping. Everything is done regarding the local master branch
+def main():
+	parser = OptionParser(usage="usage: %prog <command> [options]", prog=os.path.basename(sys.argv[0]))
+	parser.add_option("-u", "--user",
+		dest="githubuser", default="ipa320",
+		help="Username on http://www.github.com. Default: ipa320")
+	parser.add_option("-s", "--stacks",
+		dest="stacks", metavar="STACK_NAMES_LIST,COMMA_SEPERATED", default="",
+		help="Comma separated list of stacks to operate on. Default: all stacks in ~/git/care-o-bot")
+	parser.add_option("-d", "--directory",
+		dest="install_dir", default="~/git/care-o-bot",
+		help="Installation directory of care-o-bot stacks. Default: ~/git/care-o-bot")
+	(options, args) = parser.parse_args()
+
+
+	if len(args) == 0:
+		parser.error("You must supply a command to githelper.")
+	if len(args) != 1:
+		parser.error("githelper only accepts a single command.")
+
+	# start helping
+	print 'DEBUG: githelper starting with args %s, options %s'%(args, options)
+	print ""
+
+	if options.stacks == "":
+		stacks = get_all_stacks(options)
+	else:
+		# convert comma separated string to list of stacks
+		splitter = shlex.shlex(options.stacks, posix=True)
+		splitter.whitespace += ','
+		splitter.whitespace_split = True
+		stacks = list(splitter)
+
+	# operate git command on selected stacks
+	for stack in stacks:
+		# change environment to stack path
+		full_dir = os.path.expanduser(options.install_dir + "/" + stack)
+		if not os.path.exists(full_dir):
+			parser.error("selected stack " + stack + " not found in " + options.install_dir + ", aborting...")
+			exit(1)
+		
+		# set working directory to stack directory
+		os.chdir(full_dir)
+		print "-------------------------------------------"
+		print "==> operating on " + os.getcwd()
+		print "-------------------------------------------"
+
+		if args[0] == "status":
+			git_status()
+		elif args[0] == "pull":
+			git_pull()
+		elif args[0] == "push":
+			git_push()
+		elif args[0] == "merge":
+			git_merge(stack, options)
+		else:
+			parser.error("command \"" + args[0] + "\" not supported.")
+		print ""
+
+
+def git_status():
+	os.system("git status -uno")
+
+
+def git_pull():
+	# check for uncommited changes
+	check_for_changes()
+
+	# fetch from origin
+	os.system("git fetch origin")
+	
+	# merge TODO check for conflicts
+	os.system("git merge origin/master")
+	check_for_conflicts()
+
+
+def git_push():
+	# first pull from origin master
+	git_pull()
+
+	# push to origin master
+	os.system("git pull origin master")
+
+
+def git_merge(stack, options):
+	print "merge" #TODO do the merge with a lot of checking
+	check_for_changes()
+	git_push()
+
+#	# create review branch if not exists
+#	p = os.popen("git branch")
+#	status = p.read()
+#	p.close()
+#	if status.count("review-" + options.githubuser) <= 0:
+#		os.system("git branch review-" + options.githubuser + " -f")
+
+	# change to review branch
+	os.system("git checkout review-" + options.githubuser)
+	
+	# create remote origin if not exists
+	p = os.popen("git remote")
+	status = p.read()
+	p.close()
+	if status.count("origin-" + options.githubuser) <= 0:
+		os.system("git remote add origin-" + options.githubuser + " git@github.com:" + options.githubuser + "/" + stack + ".git")
+	
+	# pull from origin-githubuser and merge and push
+	# TODO check for merge conflicts: create merge-branch from master, fetch and merge, see if conflict. If conflict: revert?/reset? conflict, checkout master again, delete merge-branch and tell the user. If no conflict: checkout master, merge merge-branch, delete merge-branch, all fine
+	os.system("git pull origin-" + options.githubuser + " master && git checkout master && git merge review-" + options.githubuser + " && git push origin master")
+
+
+## returns a list of all stacks in options.install_dir
+def get_all_stacks(options):
+	# get all directories
+	dirs = os.walk(os.path.expanduser(options.install_dir)).next()[1]
+	
+	# check if directory is a stack
+	stacks = []
+	for directory in dirs:
+		if os.path.exists(os.path.expanduser(options.install_dir) + "/" + directory + "/stack.xml"):
+			#print "directory, "is a stack"
+			stacks.append(directory)
+		else:
+			#print directory, "is not a stack"
+			pass
+	return stacks
+
+
+## checks for uncommited changes
+def check_for_changes():
+	p = os.popen('git status -uno --porcelain')
+	status = p.read()
+	p.close()
+	if status != "":
+		print "ERROR: found local changes in " + os.getcwd() + ": please commit or undo them first before continuing, aborting..."
+		print "Status: \n" + status
+		exit(1)
+
+
+## check if a merge is conflicting
+def check_for_conflicts(): #TODO fetch, merge, check, revert/reset
+	print "check for conflicts"
+
+
+## Main routine for running the githelper script
+#
+if __name__ == '__main__':
+	main()

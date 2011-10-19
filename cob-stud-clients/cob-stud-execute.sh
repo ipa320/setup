@@ -25,7 +25,7 @@ for client in $client_list; do
 	echo "Executing <<"$*">> on $client"
 	echo "-------------------------------------------"
 	echo ""
-	`ssh jenkins@$client "$*"`
+	ssh $client "$*"
 	ret=${PIPESTATUS[0]}
 	if [ $ret != 0 ] ; then
 		echo "command return an error (error code: $ret), aborting..."

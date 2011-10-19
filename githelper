@@ -126,6 +126,9 @@ def main():
 		elif args[0] == "merge":
 			print "merging..."
 			git_merge(stack, options)
+		elif args[0] == "mergeto":
+			print "merging to..."
+			git_mergeto(stack, options)
 		else:
 			parser.error("command \"" + args[0] + "\" not supported.")
 		print "...done."
@@ -160,7 +163,6 @@ def git_push():
 
 
 def git_merge(stack, options):
-	check_for_changes()
 	git_push()
 
 	# create remote origin if not exists
@@ -188,6 +190,9 @@ def git_merge(stack, options):
 	os.system("git branch -D automerge > /dev/null 2>&1")
 	git_push()
 
+def git_mergeto(stack, options):
+	git_merge(stack, options)
+	os.system("git push origin-" + options.githubuser + " master > /dev/null 2>&1")
 
 ## returns a list of all stacks in options.install_dir
 def get_all_stacks(options):

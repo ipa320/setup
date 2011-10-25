@@ -62,11 +62,34 @@ import sys
 import shlex
 from optparse import OptionParser
 
+_usage = """usage: %prog [options] <command>
+
+Commands:
+
+%prog status...
+  Executes 'git status -uno' 
+  (use option -s to specify stacks, default is all stacks)
+
+%prog pull...
+  Pulls latest changes from your origin master 
+  (use option -s to specify stacks, default is all stacks)
+
+%prog push...
+  Pushes local commits to origin master 
+  (use option -s to specify stacks, default is all stacks)
+
+%prog merge...
+  Merges from a remote branch 
+  (use option -u, default is "ipa320")
+"""
+
+
 ## Main githelper script
 #
 # Parses arguments and starts helping. Everything is done regarding the local master branch
+#TODO: check for latest version before executing command
 def main():
-	parser = OptionParser(usage="usage: %prog <command> [options]", prog=os.path.basename(sys.argv[0]))
+	parser = OptionParser(usage=_usage, prog=os.path.basename(sys.argv[0]))
 	
 	parser.add_option("-u", "--user",
 		dest="githubuser", default="ipa320",
@@ -119,15 +142,19 @@ def main():
 			git_status()
 		elif args[0] == "pull":
 			print "pulling..."
+			check_for_update()
 			git_pull()
 		elif args[0] == "push":
 			print "pushing..."
+			check_for_update()
 			git_push()
 		elif args[0] == "merge":
 			print "merging..."
+			check_for_update()
 			git_merge(stack, options)
 		elif args[0] == "mergeto":
 			print "merging to..."
+			check_for_update()
 			git_mergeto(stack, options)
 		else:
 			parser.error("command \"" + args[0] + "\" not supported.")
@@ -193,6 +220,13 @@ def git_merge(stack, options):
 def git_mergeto(stack, options):
 	git_merge(stack, options)
 	os.system("git push origin-" + options.githubuser + " master > /dev/null 2>&1")
+
+def check_for_update():#TODO check for new version, use timeout if no internet connection available
+	#print "There is a new version of githelper available. Please use the following commands to update:\n"
+	#print "wget http://www.github.com/ipa320/setup... "
+	#print "chmod +x githelper"
+	pass
+	
 
 ## returns a list of all stacks in options.install_dir
 def get_all_stacks(options):

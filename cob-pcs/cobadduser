@@ -1,0 +1,36 @@
+#!/bin/bash
+HOSTNAME=`/bin/hostname` 
+if [ "$USER" != "root" ] ; 
+then
+	echo "FATAL: CAN ONLY BE EXECUTED AS ROOT"
+	exit
+fi
+if [ "$HOSTNAME" == "cob3-3-pc1" ] ; 
+then
+	echo "pc1 found"
+	echo "FATAL: CAN ONLY BE EXECUTED ON PC2"
+	exit
+fi
+if [ "$HOSTNAME" == "cob3-3-pc3" ] ; 
+then
+	echo "pc3 found"
+	echo "FATAL: CAN ONLY BE EXECUTED ON PC2"
+	exit
+fi
+
+
+
+echo "Executing adduser"
+/usr/sbin/adduser $1
+echo "Syncing passwd file to other cob-pcs"
+if [ "$HOSTNAME" == "cob3-3-pc2" ] ;
+then
+	echo "pc2 found"
+	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/passwd root@cob3-3-pc1:/etc/passwd
+	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/shadow root@cob3-3-pc1:/etc/shadow
+	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/group root@cob3-3-pc1:/etc/group
+	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/passwd root@cob3-3-pc3:/etc/passwd
+	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/shadow root@cob3-3-pc3:/etc/shadow
+	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/group root@cob3-3-pc3:/etc/group
+fi
+echo "done adding user"

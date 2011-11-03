@@ -102,7 +102,7 @@ fi
 source /etc/cob.bash.bashrc
 
 # provide setup scripts for all users
-export PATH=~/etc/robot/setup:$PATH
+export PATH=/etc/robot/setup:$PATH
 
 source /opt/ros/electric/setup.bash
 export ROS_PACKAGE_PATH=~/ros:$ROS_PACKAGE_PATH

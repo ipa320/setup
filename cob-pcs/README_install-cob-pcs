@@ -46,4 +46,7 @@ edit /etc/ntp.conf and change server to cob3-X-pc1
 -------------
 setup bash environment
 -------------
-copy pcX.bash.bashrc to /etc/bash.bashrc
+for all robot pcs 
+	copy cob.bash.bashrc.pcX to /etc/cob.bash.bashrc 
+and for all users copy 
+	user.bashrc to ~/.bashrc

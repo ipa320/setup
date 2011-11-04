@@ -105,6 +105,7 @@ source /etc/cob.bash.bashrc
 export PATH=/u/robot/git/setup:$PATH
 
 source /opt/ros/electric/setup.bash
+export ROS_PACKAGE_PATH=/u/robot/git/care-o-bot:$ROS_PACKAGE_PATH
 export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 

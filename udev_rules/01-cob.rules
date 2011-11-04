@@ -15,11 +15,14 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="046d",ATTR{idProduct}=="c219",SYMLINK+="joypad
 SUBSYSTEM=="usb",ATTR{idVendor}=="046d",ATTR{idProduct}=="0809",SYMLINK+="video",GROUP="users"
 
 #Laserscanner
-SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="00",ATTRS{../idProduct}=="6010",SYMLINK+="ttyScan0"
-SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="01",ATTRS{../idProduct}=="6010",SYMLINK+="ttyScan1"
+SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="00",ATTRS{../idProduct}=="6010",MODE="0666",SYMLINK+="ttyScan0"
+SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="01",ATTRS{../idProduct}=="6010",MODE="0666",SYMLINK+="ttyScan1"
 
 #Relaisboard
-SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001",SYMLINK+="ttyRelais"
+SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001",MODE="0666",SYMLINK+="ttyRelais"
+
+#Hokyuo
+SUBSYSTEMS=="usb", KERNEL=="ttyACM[0-9]*",MODE="0666"
 
 #Tactile Sensors
 SUBSYSTEM=="tty",ATTRS{idVendor}=="067b",ATTRS{idProduct}=="2303",SYMLINK+="ttyTact"

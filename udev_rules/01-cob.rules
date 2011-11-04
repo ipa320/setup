@@ -15,8 +15,8 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="046d",ATTR{idProduct}=="c219",SYMLINK+="joypad
 SUBSYSTEM=="usb",ATTR{idVendor}=="046d",ATTR{idProduct}=="0809",SYMLINK+="video",GROUP="users"
 
 #Laserscanner
-SUBSYSTEM=="tty",ATTRS{interface}=="USB TO RS-422/485 ADAPTER",ATTRS{bInterfaceNumber}=="00",SYMLINK+="ttyScan0"
-SUBSYSTEM=="tty",ATTRS{interface}=="USB TO RS-422/485 ADAPTER",ATTRS{bInterfaceNumber}=="01",SYMLINK+="ttyScan1"
+SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="00",ATTRS{../idProduct}=="6010",SYMLINK+="ttyScan0"
+SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="01",ATTRS{../idProduct}=="6010",SYMLINK+="ttyScan1"
 
 #Relaisboard
 SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001",SYMLINK+="ttyRelais"

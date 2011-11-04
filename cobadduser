@@ -32,5 +32,7 @@ then
 	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/passwd root@cob3-3-pc3:/etc/passwd
 	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/shadow root@cob3-3-pc3:/etc/shadow
 	rsync -avz -e ssh --rsync-path=/usr/bin/rsync /etc/group root@cob3-3-pc3:/etc/group
+	echo "copy .bashrc"
+	cp /u/robot/git/setup/cob-pcs/user.bashrc /u/$1/.bashrc
 fi
 echo "done adding user"

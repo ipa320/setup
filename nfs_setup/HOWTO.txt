@@ -1,0 +1,25 @@
+on server (pc2):
+* sudo apt-get install nfs-kernel-server
+* sudo mkdir /u
+* add following to /etc/fstab:
+	/home	/u	none	bind	0	0
+* sudo mount /u
+* activate IDMAPD in /etc/default/nfs-common by changing the corrisponding line to:
+	NEED_IDMAPD=yes
+* copy the file server/exports to /etc/exports
+* change the home directory of all (cob)-users from /home/username to /u/username in the /etc/passwd file
+* reboot the pc (sudo reboot)
+
+on client (pc1 and pc3)
+* sudo apt-get install nfs-kernel-server autofs
+* sudo mkdir /u
+* activate IDMAPD in /etc/default/nfs-common by changing the corrisponding line to:
+        NEED_IDMAPD=yes
+* add the following to /etc/auto.master
+	/-      /etc/auto.direct
+* copy file client/auto.direct to /etc/auto.direct 
+* sudo update-rc.d autofs defaults
+* sudo service autofs restart	
+* sudo modprobe nfs
+* change the home directory of all (cob)-users from /home/username to /u/username in the /etc/passwd file
+* restart pc (sudo reboot)

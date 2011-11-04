@@ -8,4 +8,4 @@
 # /srv/nfs4        gss/krb5i(rw,sync,fsid=0,crossmnt,no_subtree_check)
 # /srv/nfs4/homes  gss/krb5i(rw,sync,no_subtree_check)
 #
-/u	129.233.125.145(rw,sync,no_subtree_check)
+/u	192.168.0.0/24(rw,fsid=0,sync,no_subtree_check)

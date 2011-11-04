@@ -112,6 +112,7 @@ export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 export ROBOT=cob3-3
 #export ROBOT_ENV=ipa-kitchen
 export ROBOT_ENV=ipa-kitchen
+export ROS_MASTER_URI=http://cob3-3-pc1:11311
 
 COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)
 COUNT=$(echo "$COUNT*2" | bc)

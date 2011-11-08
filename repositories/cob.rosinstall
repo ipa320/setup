@@ -1,0 +1,64 @@
+- git:
+    uri: 'git://github.com/ipa320/cob_calibration.git'
+    local-name: cob_calibration
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_command_tools.git'
+    local-name: cob_command_tools
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_common.git'
+    local-name: cob_common
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_driver.git'
+    local-name: cob_driver
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_environment_perception.git'
+    local-name: cob_environment_perception
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_environments.git'
+    local-name: cob_environments
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_extern.git'
+    local-name: cob_extern
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_manipulation.git'
+    local-name: cob_manipulation
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_navigation.git'
+    local-name: cob_navigation
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_object_perception.git'
+    local-name: cob_object_perception
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_people_perception.git'
+    local-name: cob_people_perception
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_robots.git'
+    local-name: cob_robots
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_simulation.git'
+    local-name: cob_simulation
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_web.git'
+    local-name: cob_web
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/schunk_modular_robotics.git'
+    local-name: schunk_modular_robotics
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/schunk_robots.git'
+    local-name: schunk_robots
+    version: master

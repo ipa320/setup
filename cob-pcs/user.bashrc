@@ -50,7 +50,7 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -98,18 +98,20 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-export PATH=~/git/setup:$PATH
+# use global color settings
+source /etc/cob.bash.bashrc
+
+# provide setup scripts for all users
+export PATH=/u/robot/git/setup:$PATH
 
 source /opt/ros/electric/setup.bash
-export ROS_PACKAGE_PATH=~/ros:$ROS_PACKAGE_PATH
+export ROS_PACKAGE_PATH=/u/robot/git/care-o-bot:$ROS_PACKAGE_PATH
 export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH
-export ROS_PACKAGE_PATH=~/git/cob3_intern:$ROS_PACKAGE_PATH
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 
-export ROS_MASTER_URI=http://cob3-3-pc1:11311
 
+export ROS_MASTER_URI=http://cob3-3-pc1:11311
 export ROBOT=cob3-3
-#export ROBOT_ENV=ipa-kitchen
 export ROBOT_ENV=ipa-kitchen
 
 COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)

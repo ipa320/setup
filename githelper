@@ -169,6 +169,9 @@ def git_status():
 def git_pull():
 	# check for uncommited changes
 	check_for_changes()
+	
+	# operate on master branch
+	os.system("git checkout master > /dev/null 2>&1")
 
 	# fetch from origin
 	os.system("git fetch origin > /dev/null 2>&1")

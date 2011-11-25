@@ -27,6 +27,7 @@ fi
 
 readonly=false
 if [ -z "$user" ]; then
+	user="ipa320"
 	readonly=true
 else
 	# Setup gh token
@@ -102,7 +103,12 @@ else
 fi
 
 # Check if stack is forked on github
-wget --post-data "login=$user&token=$token" --spider https://github.com/"$user"/"$STACK"/blob/master/Makefile --no-check-certificate 2> /tmp/response
+if $readonly; then
+	wget --post-data --spider https://github.com/"$user"/"$STACK"/blob/master/Makefile --no-check-certificate
+else
+	wget --post-data "login=$user&token=$token" --spider https://github.com/"$user"/"$STACK"/blob/master/Makefile --no-check-certificate 2> /tmp/response
+fi
+
 if [ `echo $(grep -c "200 OK" /tmp/response)` -eq 0 ]; then
 	echo "Error: Stack $STACK not found on github.com"
 	exit 1

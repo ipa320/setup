@@ -104,7 +104,7 @@ fi
 
 # Check if stack is forked on github
 if $readonly; then
-	wget --post-data --spider https://github.com/"$user"/"$STACK"/blob/master/Makefile --no-check-certificate
+	wget --post-data --spider https://github.com/"$user"/"$STACK"/blob/master/Makefile --no-check-certificate 2> /tmp/response
 else
 	wget --post-data "login=$user&token=$token" --spider https://github.com/"$user"/"$STACK"/blob/master/Makefile --no-check-certificate 2> /tmp/response
 fi

@@ -60,7 +60,16 @@
 import os
 import sys
 import shlex
+import platform
 from optparse import OptionParser
+
+# Check for filesystem
+if platform.system() == 'Linux':
+	_dev_null = "/dev/null"
+elif platform.system() == 'Windows':
+	_dev_null = "nul"
+else:
+	_dev_null = "nul"
 
 _usage = """usage: %prog [options] <command>
 
@@ -89,6 +98,7 @@ Commands:
 # Parses arguments and starts helping. Everything is done regarding the local master branch
 #TODO: check for latest version before executing command
 def main():
+	#print "main ..."
 	parser = OptionParser(usage=_usage, prog=os.path.basename(sys.argv[0]))
 	
 	parser.add_option("-u", "--user",
@@ -163,21 +173,23 @@ def main():
 
 
 def git_status():
+	#print "git_status ... "
 	os.system("git status -uno")
 
 
 def git_pull():
+	#print "git_pull ... "
 	# check for uncommited changes
 	check_for_changes()
 	
 	# operate on master branch
-	os.system("git checkout master > /dev/null 2>&1")
+	os.system("git checkout master > " + _dev_null + " 2>&1")
 
 	# fetch from origin
-	os.system("git fetch origin > /dev/null 2>&1")
+	os.system("git fetch origin > " + _dev_null + " 2>&1")
 	
 	# merge own origin/master
-	os.system("git merge origin/master > /dev/null")
+	os.system("git merge origin/master > " + _dev_null)
 	if has_conflicts():
 		print "ERROR: Conflicts found. Please pull manually and resolve conflicts! Resetting changes and aborting..."
 		os.system("git reset --hard HEAD")
@@ -185,14 +197,16 @@ def git_pull():
 
 
 def git_push():
+	#print "git_push ... "
 	# first pull from origin master
 	git_pull()
 
 	# push to origin master
-	os.system("git push origin master > /dev/null 2>&1")
+	os.system("git push origin master > " + _dev_null + " 2>&1")
 
 
 def git_merge(stack, options):
+	#print "git_merge ... "
 	git_push()
 
 	# create remote origin if not exists
@@ -203,28 +217,30 @@ def git_merge(stack, options):
 		os.system("git remote add origin-" + options.githubuser + " git@github.com:" + options.githubuser + "/" + stack + ".git")
 
 	# change to automerge branch
-	os.system("git checkout -b automerge > /dev/null 2>&1")
+	os.system("git checkout -b automerge > " + _dev_null + " 2>&1")
 	
 	# fetch from origin-githubuser and merge and push
-	os.system("git fetch origin-" + options.githubuser + " > /dev/null 2>&1")
-	os.system("git merge origin-" + options.githubuser + "/master > /dev/null 2>&1")
+	os.system("git fetch origin-" + options.githubuser + " > " + _dev_null + " 2>&1")
+	os.system("git merge origin-" + options.githubuser + "/master > " + _dev_null + " 2>&1")
 	if has_conflicts():
 		print "ERROR: conflicts found. Please merge manually and resolve conflicts! Resetting changes and aborting..."
-		os.system("git reset --hard HEAD > /dev/null 2>&1")
-		os.system("git checkout master > /dev/null 2>&1")
-		os.system("git branch -D automerge > /dev/null 2>&1")
+		os.system("git reset --hard HEAD > " + _dev_null + " 2>&1")
+		os.system("git checkout master > " + _dev_null + " 2>&1")
+		os.system("git branch -D automerge > " + _dev_null + " 2>&1")
 		exit(1)
 	
-	os.system("git checkout master > /dev/null 2>&1")
-	os.system("git merge automerge > /dev/null 2>&1")
-	os.system("git branch -D automerge > /dev/null 2>&1")
+	os.system("git checkout master > " + _dev_null + " 2>&1")
+	os.system("git merge automerge > " + _dev_null + " 2>&1")
+	os.system("git branch -D automerge > " + _dev_null + " 2>&1")
 	git_push()
 
 def git_mergeto(stack, options):
+	#print "git_mergeto ... "
 	git_merge(stack, options)
-	os.system("git push origin-" + options.githubuser + " master > /dev/null 2>&1")
+	os.system("git push origin-" + options.githubuser + " master > " + _dev_null + " 2>&1")
 
 def check_for_update():#TODO check for new version, use timeout if no internet connection available
+	#print "check_for_update ... "
 	#print "There is a new version of githelper available. Please use the following commands to update:\n"
 	#print "wget http://www.github.com/ipa320/setup... "
 	#print "chmod +x githelper"
@@ -233,6 +249,7 @@ def check_for_update():#TODO check for new version, use timeout if no internet c
 
 ## returns a list of all stacks in options.install_dir
 def get_all_stacks(options):
+	#print "get_all_stacks ..."
 	# get all directories
 	dirs = os.walk(os.path.expanduser(options.install_dir)).next()[1]
 	
@@ -250,6 +267,7 @@ def get_all_stacks(options):
 
 ## checks for uncommited changes
 def check_for_changes():
+	#print "check_for_changes ..."
 	p = os.popen('git status -uno --porcelain')
 	status = p.read()
 	p.close()
@@ -261,6 +279,7 @@ def check_for_changes():
 
 ## check if a merge is conflicting
 def has_conflicts():
+	#print "has_conflicts ..."
 	p = os.popen("git status -uno")
 	status = p.read()
 	p.close()

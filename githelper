@@ -75,8 +75,16 @@ _usage = """usage: %prog [options] <command>
 
 Commands:
 
-%prog status...
-  Executes 'git status -uno' 
+%prog status / st...
+  Executes 'git status -uno'
+  (use option -s to specify stacks, default is all stacks)
+
+%prog branch / br...
+  Executes 'git branch'
+  (use option -s to specify stacks, default is all stacks)
+  
+%prog remote...
+  Executes 'git remote -v'
   (use option -s to specify stacks, default is all stacks)
 
 %prog pull...
@@ -150,6 +158,10 @@ def main():
 
 		if args[0] == "status":
 			git_status()
+		elif args[0] == "branch" or args[0] == "br":
+			git_branch()
+		elif args[0] == "remote":
+			git_remote()
 		elif args[0] == "pull":
 			print "pulling..."
 			check_for_update()
@@ -168,8 +180,16 @@ def main():
 			git_mergeto(stack, options)
 		else:
 			parser.error("command \"" + args[0] + "\" not supported.")
-		print "...done."
+#		print "...done."
 		print ""
+
+
+def git_branch():
+	os.system("git branch")
+
+
+def git_remote():
+	os.system("git remote -v")
 
 
 def git_status():

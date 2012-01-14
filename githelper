@@ -156,7 +156,7 @@ def main():
 		print "==> operating on " + os.getcwd()
 		print "-------------------------------------------"
 
-		if args[0] == "status":
+		if args[0] == "status" or args[0] == "st":
 			git_status()
 		elif args[0] == "branch" or args[0] == "br":
 			git_branch()

@@ -1,0 +1,230 @@
+
+\chapter{Administrator manual}   
+\definecolor{light-gray}{gray}{0.85}
+\section{Setup robot pcs}
+
+\subsection{install operating system}
+ubuntu 10.4 64-bit
+
+user password
+
+
+\subsection{Install basic tools}
+  \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+	sudo apt-get install vim tree openssh-server ntp
+         \end{minipage} }
+
+
+You can use the instructions of the setup repository, to obtain it you can use git: 
+\\
+ \colorbox{light-gray} {
+         \begin{minipage}{1.0\textwidth} 
+  	sudo apt-get update \\ 
+	sudo apt-get git-core \\
+	git clone git@github.com:ipa320/setup.git
+         \end{minipage} 
+         }  \\
+\\
+\subsection{Install nfs}
+
+\subsubsection{Install server (pc2)}
+
+%\\ {\bf On server (pc2): }
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+	sudo apt-get install nfs-kernel-server \\
+	sudo mkdir /u 
+         \end{minipage} 
+         } \\
+%\\
+\\ Add the following following line to /etc/fstab: \\
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		/home	/u	none	bind	0	0
+         \end{minipage}  
+         } \\
+      \\   
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo mount /u
+         \end{minipage}  } \\
+\\Activate IDMAPD in /etc/default/nfs-common by changing the NEED\_IDMAPD to yes (\colorbox{cyan}{NEED\_IDMAPD=yes}):\\
+\\   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo vi /etc/default/nfs-common
+         \end{minipage}  } \\
+\\Copy the file setup/nfs\_setup/server/exports to /etc/exports\\
+\\Change the home directory of all (cob)-users from /home/username to /u/username in the /etc/passwd file\\
+\\Reboot the pc:
+\\
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo reboot
+         \end{minipage}  } \\
+\\
+\subsubsection{Install clients (Pc1)} 
+%\\ {\bf On client (pc1 and pc3):}\\
+%\\
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo apt-get install nfs-kernel-server autofs \\
+		sudo mkdir /u
+        \end{minipage}  } \\
+Activate IDMAPD in /etc/default/nfs-common by changing the NEED\_IDMAPD to yes: \\
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo vi /etc/default/nfs-common
+         \end{minipage}  } \\
+\\Add the following  line: " \colorbox{cyan}{/-      /etc/auto.direct}" to  /etc/auto.master:\\
+\\   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo vi /etc/auto.master
+         \end{minipage}  } \\
+	\\
+Copy file client/auto.direct to /etc/auto.direct and: \\
+\\
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth}
+	sudo update-rc.d autofs defaults\\
+	sudo service autofs restart	\\
+	sudo modprobe nfs
+         \end{minipage}  } \\
+\\
+\\Change the home directory of all (cob)-users from /home/username to /u/username in the /etc/passwd file.\\
+\\Restart pc :
+\\
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo reboot
+         \end{minipage}  } \\
+         \\          
+         
+%{\bf Install ros and Care-O-bot: } \\
+\subsection{Install Ros and Care-O-bot driver Software}
+You can see how to do it in http://www.ros.org/wiki/Robots/Care-O-bot/electric \\
+\\
+
+{\bf Install additional tools:}\\
+\\
+   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo apt-get install gitg meld curl openjdk-6-jdk zsh terminator\\
+		sudo apt-get install python-setuptools\\
+		sudo easy\_install -U rosinstall\\
+		sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot\\
+		sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons ros-electric-pr2-desktop ros-electric-pr2-robot ros-electric-pr2-apps pr2-power-drivers
+         \end{minipage}  } \\
+
+setup ntp time synchronisation
+\\
+\\
+\subsection{Ntp Synchronitation}
+{ \bf Edit the ntp.conf change the server to cob3-X-pc1:}\\
+\\   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo vi /etc/ntp.conf 
+         \end{minipage}  } \\
+	\\
+\\
+{ \bf Setup bash environment:} \\
+\\For the three PC's you have to copy cob-bash-bashrc.pcX to /etc/cob-bash-bashrc and for all the users copy user.bashrc to \ /.bashrc you have these files on the setup folder.
+
+\section{PC's Overview}
+In PC1 usually bringup the components of the robot, PC2 is used to run the cameras and visual sensors and PC3 can be used to run extra nodes.
+When you launch the robot with the bringup file you have these nodes:
+\begin{itemize}
+\item PC1:
+\\ Send the robot\_description to the param server
+\\ Start the the robot\_state\_publisher
+\\Startup the Hardware , launch the components
+\\ Diagnostics
+\\ Teleop
+\\ Sounds
+ \item PC2:
+\\ Cameras (left, right, kinects)
+\end{itemize}
+\section{Network} 
+\subsection{Using a route}
+You can setup a route to the internal network addresses. Please change the robot name and your network device to t fit your settings. E.g. for connecting to:
+\begin{itemize}
+\item cob3-X on eth0
+\\
+\\   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo route add -net 192.168.0.0 netmask 255.255.0.0 gw cob3-X dev eth0
+         \end{minipage}  } \\
+	\\
+
+\item or cob3-X on wlan0
+\\
+\\   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo route add -net 192.168.0.0 netmask 255.255.0.0 gw cob3-X dev wlan0
+         \end{minipage}  } \\
+	\\
+
+\end{itemize}
+You can check the settings with: \\
+\\   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		ping 192.168.0.101
+         \end{minipage}  } \\
+	\\
+
+\subsection{Setup name resolution} 
+To satisfy the ROS communication you need a full DNS name lockup for all machines. Therefore add the following addresses to your /etc/hosts. Please change the robot name to fit your settings 
+\\
+\\ \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		192.168.0.101 cob3-X-pc1\\
+		192.168.0.102 cob3-X-pc2\\
+		192.168.0.103 cob3-X-pc3
+         \end{minipage} }
+
+You can check the settings with:
+\\
+\\   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		ping cob3-X-pc1
+         \end{minipage}  } \\
+
+
+\section{Getting an account}
+On PC2 and with administration rights you can add an user with the following instruction:
+\\
+\\   \colorbox{light-gray}{
+         \begin{minipage}{1.0\textwidth} 
+		sudo adduser new\_user\_name
+         \end{minipage}  } 
+	\\
+	\\
+If you want that this new user have also sudo rights you have to add it to the admin group in all PCs.
+
+\section{Calibration}
+Now is not working....
+\section{Backup and restoring users}   
+Now is not working...    
+
+\section{todo}
+\begin{itemize}
+\item {udev from git\/setup\/udev\_rules\/01-cob.rules copy to \/etc\/udev\/rules.d on pc1}
+
+to check it: ls -l /dev/ and you should have these lines
+
+lrwxrwxrwx 1 root root           7 2012-01-17 10:27 ttyRelais -> ttyUSB0\\
+lrwxrwxrwx 1 root root           7 2012-01-17 10:27 ttyScan0 -> ttyUSB1\\
+lrwxrwxrwx 1 root root           7 2012-01-17 10:27 ttyScan1 -> ttyUSB2\\
+lrwxrwxrwx 1 root root           7 2012-01-17 10:27 ttyTact -> ttyUSB3\\
+
+
+
+\item {Camera config you have to change the ip adrrees in the (eth1?) in /etc/network/interfaces it should be on pc2}
+
+
+auto eth3
+iface eth3 inet static
+address 192.168.21.99   \# IP of network adapter to cameras
+netmask 255.255.255.0   \# netmask
+
+\end{itemize}

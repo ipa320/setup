@@ -285,23 +285,6 @@ ssh-keygen
 ssh-copy-id cob3-X-pc1
 \end{lstlisting}
 
-%#################################################################################################
-
-\section{bringup}
-Pc1 is used as the main pc for users to login and work with. Lateron the roscore will be running there and 
-When you launch the robot with the bringup file you have these nodes:
-\begin{itemize}
-\item PC1:
-\\ Send the robot\_description to the param server
-\\ Start the the robot\_state\_publisher
-\\Startup the Hardware , launch the components
-\\ Diagnostics
-\\ Teleop
-\\ Sounds
- \item PC2:
-\\ Cameras (left, right, kinects)
-\end{itemize}
-
 
 \section{Network}
 Make sure you have name resolution and access to the robot pcs from your external pc. To satisfy the ROS communication you need a full DNS name lockup for all machines. Check it from your remote pc with

@@ -1,137 +1,293 @@
+\chapter{Administrator manual}
+\label{chap:admin}
 
-\chapter{Administrator manual}   
-\definecolor{light-gray}{gray}{0.85}
+%#################################################################################################
 \section{Setup robot pcs}
+%#################################################################################################
+On all Care-O-bots there are at least two pcs. Some Care-O-bots have an optional third pc, which is not coveres by this manual. Within this section we will guide you through setting up new pcs. When nothing otherwise is mentioned the following instructions are for both pc1 and pc2, please do the same steps on both pcs.
 
-\subsection{install operating system}
-ubuntu 10.4 64-bit
+To pc1 all actuators are connected, sensors are connected both, to pc1 and pc2. All camera sensors are connected to pc2, whereas all other sensors like e.g. laser scanners are connected to pc1. By default pc3 is not connected to any hardware and therefore can be used as additional computing power.
 
-user password
+\subsection{Install operating system}
+The first step is to install the operating system for each pc, which means pc1 and pc2 (optionally pc3). We are using Ubuntu as the main operating system for the robot. We recommend to install the \textbf{Ubuntu 10.4 LTS (long term stable) 64-bit} version because this version is well tested to work with the hardware. 
 
+For the first installating please install Ubuntu (english version) creating a normal swap partition. Please choose \textit{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \textit{cob3-X-pc1} and \textit{cob3-X-pc2}.
 
 \subsection{Install basic tools}
-  \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-	sudo apt-get install vim tree openssh-server ntp
-         \end{minipage} }
+Next we have to install some basic tools for the further setup of the pcs. In order to install the packages a internet connection is needed.
+
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install vim tree openssh-server gitg meld curl
+\end{lstlisting}
+
+To facilitate the further setup we created a setup repository with some helpfull scripts. To checkout the setup repository use:
+
+\begin{lstlisting}
+mkdir ~/git
+cd ~/git
+git clone git@github.com:ipa320/setup.git	
+\end{lstlisting}
+
+\subsection{Setup internal robot network}
+Inside the robot there's a router which connects the pcs and acts as gateway to the building network. Setup the router with the following configuration. 
+
+The ip adress of the router should be \textbf{192.168.0.1} and for the internal network dhcp should be activated. Use \textbf{cob3-X} as hostname for the router. Register the MAC adresses of pc1 and pc2 so that they get a fixed ip adress over dhcp. Use \textbf{192.168.0.101 for pc1} and \textbf{192.168.0.102 for pc2}. Enable \textbf{portforwarding} for port 2201 to 192.168.0.101 and for port 2202 to 192.168.0.102.
+
+After ensuring that the network configuration of the router is setup correctly, we can configure the pcs. All pcs should have two ethernet ports. The upper one should be connected to the internal router. Sometimes the graphical network manager causes troubles, so it is best to remove it
+
+\begin{lstlisting}
+sudo apt-get remove network-manager
+\end{lstlisting}
+
+After removing the network manager we will have to edit \textit{/etc/network/interfaces} manually. 
+
+\subsubsection{Network configuration on pc1}
+
+\begin{lstlisting}
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.0.101 # internal ip adress of pc1
+netmask 255.255.255.0 # netmask
+
+auto eth1
+iface eth1 inet static
+address 192.168.42.1 # ip adress for controller network
+netmask 255.255.255.0 # netmask
+\end{lstlisting}
+
+\subsubsection{Network configuration on pc2}
+
+\begin{lstlisting} 
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet static
+address 192.168.0.102 # internal ip adress of pc2
+netmask 255.255.255.0 # netmask
+
+auto eth1
+iface eth1 inet static
+address 192.168.21.99 # ip adress for camera network
+netmask 255.255.255.0 # netmask
+\end{lstlisting}
+
+\subsection{Install NFS}
+After the network is configured properly we can setup a NFS netween the robot pcs. pc2 will act as the NFS server and pc1 as NFS client.
+
+\subsubsection{NFS configuration on pc2 (server)}
+Install the NFS server package and create the NFS directory
+
+\begin{lstlisting}
+sudo apt-get install nfs-kernel-server
+sudo mkdir /u 
+\end{lstlisting}
+
+Add the following following line to \textit{/etc/fstab}:
+
+\begin{lstlisting}
+/home	/u	none	bind	0	0
+\end{lstlisting}
+
+Now we can mount the drive
+
+\begin{lstlisting}
+sudo mount /u
+\end{lstlisting}
+
+Activate IDMAPD in \textit{/etc/default/nfs-common} by changing the NEED\_IDMAPD to yes
+
+\begin{lstlisting}
+NEED_IDMAPD=yes
+\end{lstlisting}
+
+Copy the file \textit{$\sim$/git/setup/nfs\_setup/server/exports} to \textit{/etc/exports}
+
+\begin{lstlisting}
+cp ~/git/setup/nfs_setup/server/exports /etc/exports
+\end{lstlisting}
+
+Change the home directory of the \textit{robot} user from \textit{/home/username} to \textit{/u/username} in the \textit{/etc/passwd} file.
+
+After finishing you need to reboot the pc
+
+\begin{lstlisting}
+sudo reboot
+\end{lstlisting}
+
+\subsubsection{NFS configuration on pc1 (client)}
+Install the NFS client package and create the NFS directory
+
+\begin{lstlisting}
+sudo apt-get install nfs-kernel-server autofs
+sudo mkdir /u
+\end{lstlisting}
+
+Activate IDMAPD in \textit{/etc/default/nfs-common} by changing the NEED\_IDMAPD to yes
+
+\begin{lstlisting} 
+NEED_IDMAPD=yes
+\end{lstlisting}
+
+Edit \textit{/etc/auto.master} and add
+
+\begin{lstlisting}
+/-	/etc/auto.direct
+\end{lstlisting}
+
+Copy the file \textit{$\sim$/git/setup/nfs\_setup/client/auto.direct} to \textit{/etc/auto.direct}
+
+\begin{lstlisting}
+cp ~/git/setup/nfs\_setup/client/auto.direct /etc/auto.direct
+\end{lstlisting}
+
+Activate the NFS
+
+\begin{lstlisting}
+sudo update-rc.d autofs defaults
+sudo service autofs restart
+sudo modprobe nfs
+\end{lstlisting}
+
+Change the home directory of the \textit{robot} user from \textit{/home/username} to \textit{/u/username} in the \textit{/etc/passwd} file.
+
+After finishing you need to reboot the pc
+
+\begin{lstlisting} 
+sudo reboot
+\end{lstlisting}
+
+\subsection{Setup NTP time synchronitation}
+Install the ntp package
+
+\begin{lstlisting}
+sudo apt-get install ntp
+\end{lstlisting}
+
+\subsubsection{NTP configuration on pc1 (NTP server)}
+Edit \textit{/etc/ntp.conf}, change the server to \textit{cob3-X-pc1} and add the restrict line
+
+\begin{lstlisting} 
+server 0.pool.ntp.org
+restrict 192.168.0.0 mask 255.255.255.0 nomodify notrap
+\end{lstlisting}
+
+\subsubsection{NTP configuration on pc2 (NTP client)}
+
+\begin{lstlisting}
+server server cob3-X-pc1
+\end{lstlisting}
+
+\subsection{Install ROS and Care-O-bot driver software}
+For genreal instructions see \url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}.
+
+\subsubsection{Install ROS and additional tools}
+\begin{lstlisting}
+sudo apt-get install openjdk-6-jdk zsh terminator
+sudo apt-get install python-setuptools
+sudo easy_install -U rosinstall
+sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot
+sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons ros-electric-pr2-desktop ros-electric-pr2-robot ros-electric-pr2-apps pr2-power-drivers
+\end{lstlisting}
+
+\subsubsection{Setup bash environment}
+We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ from pc1, pc2 and pc3. Copy the \textit{cob-bash-bashrc.pcX} to \textit{/etc/cob-bash-bashrc} on each pc.
+
+\begin{lstlisting}
+sudo cp ~/git/setup/cob-pcs/cob-bash-bashrc.pcX /etc/cob-bash-bashrc
+\end{lstlisting}
+
+All users have a pre-configured bash environment too, therefore copy \textit{user.bashrc} to \textit{$\sim$/.bashrc}
+\begin{lstlisting}
+cp ~/git/setup/cob-pcs/user.bashrc ~/.bashrc
+\end{lstlisting}
+
+If you logout and login again or source your \textit{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \textit{ROS\_PACKAGE\_PATH} should be configured. If you check 
+\begin{lstlisting}
+roscd cob_bringup
+\end{lstlisting}
+you should end up in \textit{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}
+
+\subsubsection{Setup hardware components}
+In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \textit{cob\_hardware\_config} package.
+
+\paragraph{Setup udev rules}
+TIn order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \textit{/etc/udev/rules.d}
+\begin{lstlisting}
+sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
+\end{lstlisting}
+
+\paragraph{Sick S300 laser scanners}
+The sick S300 scanners on the frontside and backside of the robot are connected via USB to pc1. To recevice data from the sick S300 scanners check if the user is in the \textit{dialout} group
+\begin{lstlisting}
+groups
+\end{lstlisting}
+
+For testing you can run the front laser scanner with
+\begin{lstlisting}
+roslaunch cob_bringup laser_front.launch
+\end{lstlisting}
+
+To check if there is some data published use
+\begin{lstlisting}
+rostopic hz /scan_front
+\end{lstlisting}
+
+Check the rear scanner in the same way.
+
+tbd, setup safety region
+
+\paragraph{Hokuyo URG laser scanner}
+tbd
+
+\paragraph{Relayboard}
+tbd
+
+\paragraph{Base}
+tbd, configure elmo controllers
+
+\paragraph{Tray sensors}
+tbd, phidget
+
+\paragraph{Schunk SDH with tactile sensors}
+tbd, firmware version
+
+\paragraph{Schunk powercubes}
+tbd, pcan
+
+\paragraph{Head axis}
+tbd
+
+\paragraph{Prosilica cameras}
+pc2
+
+switch setup, ip adresses, ...
+
+\paragraph{Kinect}
+pc2
 
 
-You can use the instructions of the setup repository, to obtain it you can use git: 
-\\
- \colorbox{light-gray} {
-         \begin{minipage}{1.0\textwidth} 
-  	sudo apt-get update \\ 
-	sudo apt-get git-core \\
-	git clone git@github.com:ipa320/setup.git
-         \end{minipage} 
-         }  \\
-\\
-\subsection{Install nfs}
+\subsection{Create a new user account}
+Due to the fact that all users need to be in the correct user groups, that the bash environment needs so setup correctly and that user ids need to be synchonised between all pcs for the NFS to work, we facilitate the creation of a new user with a \textit{cobadduser} script. On pc2 and with administration rights you can add a new user with the following instruction
+\begin{lstlisting}
+cd ~/git/setup
+sudo ./cobadduser new_user_name
+\end{lstlisting}
 
-\subsubsection{Install server (pc2)}
+All you need to do now is to login as the new user, create an ssh-key and add the key to the authorized keys to be able to login to all pcs without password. This is neccesarry for launching nodes remotely on all pcs.
+\begin{lstlisting}
+ssh-keygen
+ssh-copy-id cob3-X-pc1
+\end{lstlisting}
 
-%\\ {\bf On server (pc2): }
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-	sudo apt-get install nfs-kernel-server \\
-	sudo mkdir /u 
-         \end{minipage} 
-         } \\
-%\\
-\\ Add the following following line to /etc/fstab: \\
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		/home	/u	none	bind	0	0
-         \end{minipage}  
-         } \\
-      \\   
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo mount /u
-         \end{minipage}  } \\
-\\Activate IDMAPD in /etc/default/nfs-common by changing the NEED\_IDMAPD to yes (\colorbox{cyan}{NEED\_IDMAPD=yes}):\\
-\\   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo vi /etc/default/nfs-common
-         \end{minipage}  } \\
-\\Copy the file setup/nfs\_setup/server/exports to /etc/exports\\
-\\Change the home directory of all (cob)-users from /home/username to /u/username in the /etc/passwd file\\
-\\Reboot the pc:
-\\
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo reboot
-         \end{minipage}  } \\
-\\
-\subsubsection{Install clients (Pc1)} 
-%\\ {\bf On client (pc1 and pc3):}\\
-%\\
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo apt-get install nfs-kernel-server autofs \\
-		sudo mkdir /u
-        \end{minipage}  } \\
-Activate IDMAPD in /etc/default/nfs-common by changing the NEED\_IDMAPD to yes: \\
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo vi /etc/default/nfs-common
-         \end{minipage}  } \\
-\\Add the following  line: " \colorbox{cyan}{/-      /etc/auto.direct}" to  /etc/auto.master:\\
-\\   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo vi /etc/auto.master
-         \end{minipage}  } \\
-	\\
-Copy file client/auto.direct to /etc/auto.direct and: \\
-\\
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth}
-	sudo update-rc.d autofs defaults\\
-	sudo service autofs restart	\\
-	sudo modprobe nfs
-         \end{minipage}  } \\
-\\
-\\Change the home directory of all (cob)-users from /home/username to /u/username in the /etc/passwd file.\\
-\\Restart pc :
-\\
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo reboot
-         \end{minipage}  } \\
-         \\          
-         
-%{\bf Install ros and Care-O-bot: } \\
-\subsection{Install Ros and Care-O-bot driver Software}
-You can see how to do it in http://www.ros.org/wiki/Robots/Care-O-bot/electric \\
-\\
+%#################################################################################################
 
-{\bf Install additional tools:}\\
-\\
-   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo apt-get install gitg meld curl openjdk-6-jdk zsh terminator\\
-		sudo apt-get install python-setuptools\\
-		sudo easy\_install -U rosinstall\\
-		sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot\\
-		sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons ros-electric-pr2-desktop ros-electric-pr2-robot ros-electric-pr2-apps pr2-power-drivers
-         \end{minipage}  } \\
-
-setup ntp time synchronisation
-\\
-\\
-\subsection{Ntp Synchronitation}
-{ \bf Edit the ntp.conf change the server to cob3-X-pc1:}\\
-\\   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo vi /etc/ntp.conf 
-         \end{minipage}  } \\
-	\\
-\\
-{ \bf Setup bash environment:} \\
-\\For the three PC's you have to copy cob-bash-bashrc.pcX to /etc/cob-bash-bashrc and for all the users copy user.bashrc to \ /.bashrc you have these files on the setup folder.
-
-\section{PC's Overview}
-In PC1 usually bringup the components of the robot, PC2 is used to run the cameras and visual sensors and PC3 can be used to run extra nodes.
+\section{bringup}
+Pc1 is used as the main pc for users to login and work with. Lateron the roscore will be running there and 
 When you launch the robot with the bringup file you have these nodes:
 \begin{itemize}
 \item PC1:
@@ -144,6 +300,8 @@ When you launch the robot with the bringup file you have these nodes:
  \item PC2:
 \\ Cameras (left, right, kinects)
 \end{itemize}
+
+
 \section{Network} 
 \subsection{Using a route}
 You can setup a route to the internal network addresses. Please change the robot name and your network device to t fit your settings. E.g. for connecting to:
@@ -190,16 +348,6 @@ You can check the settings with:
          \end{minipage}  } \\
 
 
-\section{Getting an account}
-On PC2 and with administration rights you can add an user with the following instruction:
-\\
-\\   \colorbox{light-gray}{
-         \begin{minipage}{1.0\textwidth} 
-		sudo adduser new\_user\_name
-         \end{minipage}  } 
-	\\
-	\\
-If you want that this new user have also sudo rights you have to add it to the admin group in all PCs.
 
 \section{Calibration}
 Now is not working....
@@ -226,5 +374,7 @@ auto eth3
 iface eth3 inet static
 address 192.168.21.99   \# IP of network adapter to cameras
 netmask 255.255.255.0   \# netmask
+
+sdh add to dialout group
 
 \end{itemize}

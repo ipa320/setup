@@ -1,32 +1,133 @@
-\documentclass[]{report}   % list options between brackets
-\usepackage{hyperref}
-\usepackage{fancybox}
+%##########################################################################
+%                                                                     
+%                         Care-O-bot Manual                                                        
+%                                     
+%##########################################################################
+
+
+%##########################################################################
+% Formatierungsoptionen
+% fuer Bilder die Option "draft" entfernen
+\documentclass[12pt,twoside]{report}
+
+% Standard Style-Files
+%\usepackage{german}
+\usepackage{a4}
+%\usepackage{psfig}
 \usepackage{graphicx}
-%\usepackage{color}
-\usepackage[usenames, dvipsnames]{color}
-% type user-defined commands here
-\date{}
-\begin{document}
+\usepackage{subfigure}
+%\usepackage{equations}
+\usepackage{thb}
+\usepackage{amssymb}
+\usepackage{listings}
 
-\title{Care-O-bot Manual}  
-
-\maketitle
-
-\tableofcontents
-
+% define colors
+\usepackage{color}
 \definecolor{light-gray}{gray}{0.85}
 
-\input{Introduction}
-\input{Administrator_manual}
-\input{User_manual}
+% Abruerzungsverzeichnis
+\usepackage{nomencl}
 
-       
-%\appendix
+% Hyperlinks
+\usepackage[bookmarksnumbered=true,backref=page,breaklinks=true,pdftitle={Care-O-bot manual},
+pdfauthor={Nadia Hammoudeh Garcia, Florian Weisshardt},pdfsubject={Care-O-bot administration and user manual},
+pdfkeywords={Care-O-bot, ROS, setup, install, manual}]{hyperref}
 
-%\newpage
-%\chapter{LBR- KUKA}
-%telnet 192.168.42.146
-%\\ < l 
-%\\EM stop
+
+% Seitenstil
+\pagestyle{headings}
+%
+% Abstand zwischen Abs"atzen
+\setlength{\parskip}{1.5ex}
+
+% Einr"uckung der ersten Zeile eines Absatzes unterdr"ucken
+\setlength{\parindent}{0pt}
+
+% Grosszuegigere Wortabstaende
+\sloppy
+
+% Tiefe der numerierten Kapitel definieren
+\setcounter{secnumdepth}{3}
+
+% Tiefe der Kapitel im Inahltsverzeichnis definieren
+\setcounter{tocdepth}{2}
+
+
+% Damit Bilder m"oglichst da sind, wo man sie will
+\setcounter{topnumber}{20}
+\setcounter{bottomnumber}{20}
+\setcounter{totalnumber}{20}
+\renewcommand{\topfraction}{.9999}
+\renewcommand{\bottomfraction}{.9999}
+\renewcommand{\textfraction}{0}
+
+% source code
+\lstset{
+basicstyle=\footnotesize,
+frame=single,
+breaklines=true,
+backgroundcolor=\color{light-gray}
+}
+
+
+%##########################################################################
+% Abkuerzungen 
+\let\abbrev\nomenclature
+\renewcommand{\nomname}{Abk"urzungsverzeichnis} 
+\setlength{\nomlabelwidth}{.24\hsize} % Punkte zw. Abkrzung und Erklrung
+\renewcommand{\nomlabel}[1]{#1 \dotfill}
+%\setlength{\nomitemsep}{-\parsep} % Zeilenabstnde verkleinern
+\makenomenclature 
+% einfuegen mit \abbrev{Abkuerzung}{Beschreibung}
+
+
+%###########################################################################
+% Bearbeitung von einzelnen Kapiteln
+
+%\includeonly{berichttitle}
+%\includeonly{berichttoc}
+%\includeonly{bericht1}
+%\includeonly{bericht2}
+%\includeonly{bericht3}
+%\includeonly{bericht4}
+%\includeonly{bericht5}
+%\includeonly{berichtapp}
+%\includeonly{berichtlof}
+%\includeonly{berichtloc}
+%\includeonly{berichtlot}
+%\includeonly{berichtbib}
+
+
+%###########################################################################
+\begin{document}
+
+% Titelseite einfgen
+\include{Title}
+\thispagestyle{empty}\cleardoublepage % Inhalt auf der rechten Seite beginnen
+
+% Raendereinstellungen fuer Doppelseitigen Ausdruck
+\evensidemargin=2pt
+\oddsidemargin=40pt
+
+% Zeilenabstand strecken
+\renewcommand{\baselinestretch}{1.15}\normalsize
+
+
+\pagenumbering{roman}
+
+% Inhaltsverzeichnis einfgen
+\tableofcontents
+\thispagestyle{empty}\cleardoublepage
+
+% Abkrzungsverzeichnis einfgen
+%\include{berichtnom}
+%\thispagestyle{empty}\cleardoublepage
+
+% Kapitel einfgen
+\pagenumbering{arabic}
+\include{Introduction}
+\include{Administrator_manual}
+\include{User_manual}
 
 \end{document}
+%##########################################################################

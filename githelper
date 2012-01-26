@@ -60,36 +60,42 @@
 import os
 import sys
 import shlex
+import time
 import platform
 from optparse import OptionParser
 
 # Check for filesystem
 if platform.system() == 'Linux':
-	_dev_null = "/dev/null"
+	# write to log file instead of /dev/null
+	_output = "/tmp/githelper/log.txt"
+	# check if log file exists, if not create dir and file, if yes delete old file
+	if not os.path.exists(os.path.dirname(_output)):
+		os.makedirs(os.path.dirname(_output))
+		os.system("touch " + _output)
+	else:
+		os.system("rm -r " + _output)
+	# start new log with time information
+	os.system("echo new log from " + time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()) + " > " + _output + " 2>&1")
 elif platform.system() == 'Windows':
-	_dev_null = "nul"
+	_output = "nul"
 else:
-	_dev_null = "nul"
+	_output = "/dev/null"
 
 _usage = """usage: %prog [options] <command>
 
 Commands:
 
-%prog status...
+%prog status [-s STACK, default=all stacks]
   Executes 'git status -uno' 
-  (use option -s to specify stacks, default is all stacks)
 
-%prog pull...
+%prog pull [-s STACK, default=all stacks]
   Pulls latest changes from your origin master 
-  (use option -s to specify stacks, default is all stacks)
 
-%prog push...
+%prog push [-s STACK, default=all stacks]
   Pushes local commits to origin master 
-  (use option -s to specify stacks, default is all stacks)
 
-%prog merge...
+%prog merge [-u GITHUBUSER, default="ipa320"] | [-s STACK, default=all stacks]
   Merges from a remote branch 
-  (use option -u, default is "ipa320")
 """
 
 
@@ -149,27 +155,39 @@ def main():
 		print "-------------------------------------------"
 
 		if args[0] == "status":
+			write_to_log("status of stack " + stack + "...")
 			git_status()
 		elif args[0] == "pull":
 			print "pulling..."
+			write_to_log("pulling stack " + stack + "...")
 			check_for_update()
 			git_pull()
 		elif args[0] == "push":
 			print "pushing..."
+			write_to_log("pushing stack " + stack + "...")
 			check_for_update()
 			git_push()
 		elif args[0] == "merge":
 			print "merging..."
+			write_to_log("merging stack " + stack + "...")
 			check_for_update()
 			git_merge(stack, options)
 		elif args[0] == "mergeto":
 			print "merging to..."
+			write_to_log("merging to for stack " + stack + "...")
 			check_for_update()
 			git_mergeto(stack, options)
 		else:
+			write_to_log("command \"" + args[0] + "\" not supported.")
 			parser.error("command \"" + args[0] + "\" not supported.")
 		print "...done."
+		write_to_log("...done")
 		print ""
+		write_to_log("")
+
+
+def write_to_log(message):
+	os.system("echo " + message + " >> " + _output + " 2>&1")
 
 
 def git_status():
@@ -183,13 +201,13 @@ def git_pull():
 	check_for_changes()
 	
 	# operate on master branch
-	os.system("git checkout master > " + _dev_null + " 2>&1")
+	os.system("git checkout master >> " + _output + " 2>&1")
 
 	# fetch from origin
-	os.system("git fetch origin > " + _dev_null + " 2>&1")
+	os.system("git fetch origin >> " + _output + " 2>&1")
 	
 	# merge own origin/master
-	os.system("git merge origin/master > " + _dev_null)
+	os.system("git merge origin/master >> " + _output)
 	if has_conflicts():
 		print "ERROR: Conflicts found. Please pull manually and resolve conflicts! Resetting changes and aborting..."
 		os.system("git reset --hard HEAD")
@@ -202,7 +220,7 @@ def git_push():
 	git_pull()
 
 	# push to origin master
-	os.system("git push origin master > " + _dev_null + " 2>&1")
+	os.system("git push origin master >> " + _output + " 2>&1")
 
 
 def git_merge(stack, options):
@@ -217,27 +235,27 @@ def git_merge(stack, options):
 		os.system("git remote add origin-" + options.githubuser + " git@github.com:" + options.githubuser + "/" + stack + ".git")
 
 	# change to automerge branch
-	os.system("git checkout -b automerge > " + _dev_null + " 2>&1")
+	os.system("git checkout -b automerge >> " + _output + " 2>&1")
 	
 	# fetch from origin-githubuser and merge and push
-	os.system("git fetch origin-" + options.githubuser + " > " + _dev_null + " 2>&1")
-	os.system("git merge origin-" + options.githubuser + "/master > " + _dev_null + " 2>&1")
+	os.system("git fetch origin-" + options.githubuser + " >> " + _output + " 2>&1")
+	os.system("git merge origin-" + options.githubuser + "/master >> " + _output + " 2>&1")
 	if has_conflicts():
 		print "ERROR: conflicts found. Please merge manually and resolve conflicts! Resetting changes and aborting..."
-		os.system("git reset --hard HEAD > " + _dev_null + " 2>&1")
-		os.system("git checkout master > " + _dev_null + " 2>&1")
-		os.system("git branch -D automerge > " + _dev_null + " 2>&1")
+		os.system("git reset --hard HEAD >> " + _output + " 2>&1")
+		os.system("git checkout master >> " + _output + " 2>&1")
+		os.system("git branch -D automerge >> " + _output + " 2>&1")
 		exit(1)
 	
-	os.system("git checkout master > " + _dev_null + " 2>&1")
-	os.system("git merge automerge > " + _dev_null + " 2>&1")
-	os.system("git branch -D automerge > " + _dev_null + " 2>&1")
+	os.system("git checkout master >> " + _output + " 2>&1")
+	os.system("git merge automerge >> " + _output + " 2>&1")
+	os.system("git branch -D automerge >> " + _output + " 2>&1")
 	git_push()
 
 def git_mergeto(stack, options):
 	#print "git_mergeto ... "
 	git_merge(stack, options)
-	os.system("git push origin-" + options.githubuser + " master > " + _dev_null + " 2>&1")
+	os.system("git push origin-" + options.githubuser + " master >> " + _output + " 2>&1")
 
 def check_for_update():#TODO check for new version, use timeout if no internet connection available
 	#print "check_for_update ... "

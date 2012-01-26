@@ -85,21 +85,17 @@ _usage = """usage: %prog [options] <command>
 
 Commands:
 
-%prog status...
+%prog status [-s STACK, default=all stacks]
   Executes 'git status -uno' 
-  (use option -s to specify stacks, default is all stacks)
 
-%prog pull...
+%prog pull [-s STACK, default=all stacks]
   Pulls latest changes from your origin master 
-  (use option -s to specify stacks, default is all stacks)
 
-%prog push...
+%prog push [-s STACK, default=all stacks]
   Pushes local commits to origin master 
-  (use option -s to specify stacks, default is all stacks)
 
-%prog merge...
+%prog merge [-u GITHUBUSER, default="ipa320"] | [-s STACK, default=all stacks]
   Merges from a remote branch 
-  (use option -u, default is "ipa320")
 """
 
 

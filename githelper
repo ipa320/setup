@@ -155,6 +155,7 @@ def main():
 		print "-------------------------------------------"
 
 		if args[0] == "status":
+			write_to_log("status of stack " + stack + "...")
 			git_status()
 		elif args[0] == "pull":
 			print "pulling..."

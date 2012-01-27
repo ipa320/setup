@@ -177,13 +177,13 @@ restrict 192.168.0.0 mask 255.255.255.0 nomodify notrap
 \end{lstlisting}
 
 \subsubsection{NTP configuration on pc2 (NTP client)}
-
+Edit \textit{/etc/ntp.conf}, change the server to \textit{cob3-X-pc1}:
 \begin{lstlisting}
-server server cob3-X-pc1
+server cob3-X-pc1
 \end{lstlisting}
 
 \subsection{Install ROS and Care-O-bot driver software}
-For genreal instructions see \url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}.
+For general instructions see \url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}.
 
 \subsubsection{Install ROS and additional tools}
 \begin{lstlisting}
@@ -191,7 +191,7 @@ sudo apt-get install openjdk-6-jdk zsh terminator
 sudo apt-get install python-setuptools
 sudo easy_install -U rosinstall
 sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot
-sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons ros-electric-pr2-desktop ros-electric-pr2-robot ros-electric-pr2-apps pr2-power-drivers
+sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons ros-electric-pr2-desktop ros-electric-pr2-robot ros-electric-pr2-apps pr2-power-drivers 
 \end{lstlisting}
 
 \subsubsection{Setup bash environment}
@@ -216,7 +216,7 @@ you should end up in \textit{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}
 In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \textit{cob\_hardware\_config} package.
 
 \paragraph{Setup udev rules}
-TIn order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \textit{/etc/udev/rules.d}
+TIn order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \textit{/etc/udev/rules.d} on pc1:
 \begin{lstlisting}
 sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
 \end{lstlisting}
@@ -255,6 +255,7 @@ tbd, phidget
 
 \paragraph{Schunk SDH with tactile sensors}
 tbd, firmware version
+Add the robot user to the group dialout in the /etc/group file.
 
 \paragraph{Schunk powercubes}
 tbd, pcan
@@ -263,9 +264,13 @@ tbd, pcan
 tbd
 
 \paragraph{Prosilica cameras}
-pc2
-
-switch setup, ip adresses, ...
+You have to define the ip address for the cameras, on pc2 in the file /etc/network/interfaces you can copy these lines:
+\begin{lstlisting}
+auto eth1 
+iface eth1 inet static
+address 192.168.21.99   # IP of network adapter to cameras 
+netmask 255.255.255.0   # netmask
+\end{lstlisting}
 
 \paragraph{Kinect}
 pc2
@@ -324,33 +329,9 @@ For name resolution you will probably have to edit the file \textit{/etc/hosts} 
 
 Add your ip adress and hostname to the \textit{/etc/hosts} of all robot pcs.
 
-
 \section{Calibration}
 Now is not working....
 \section{Backup and restoring users}   
 Now is not working...    
 
-\section{todo}
-\begin{itemize}
-\item {udev from git\/setup\/udev\_rules\/01-cob.rules copy to \/etc\/udev\/rules.d on pc1}
 
-to check it: ls -l /dev/ and you should have these lines
-
-lrwxrwxrwx 1 root root           7 2012-01-17 10:27 ttyRelais -> ttyUSB0\\
-lrwxrwxrwx 1 root root           7 2012-01-17 10:27 ttyScan0 -> ttyUSB1\\
-lrwxrwxrwx 1 root root           7 2012-01-17 10:27 ttyScan1 -> ttyUSB2\\
-lrwxrwxrwx 1 root root           7 2012-01-17 10:27 ttyTact -> ttyUSB3\\
-
-
-
-\item {Camera config you have to change the ip adrrees in the (eth1?) in /etc/network/interfaces it should be on pc2}
-
-
-auto eth3
-iface eth3 inet static
-address 192.168.21.99   \# IP of network adapter to cameras
-netmask 255.255.255.0   \# netmask
-
-sdh add to dialout group
-
-\end{itemize}

@@ -30,12 +30,16 @@ Please be aware that not all robot movements are safe for you as an user, the ro
 \subsection{Emergency stop buttons}
 Press the red buttons on the left and right side of the torso. To release the emergency stop, turn the buttons so that they come out again. After that turn the key to position II until you hear a "click".
 
-tbd picture
+\begin{center}
+\includegraphics[width=0.65\textwidth]{images/em_stop.jpg}
+\end{center}
 
 \subsection{Safety field from the Sick S300 scanners}
 If you step into the safety fields of the laser scanners the emergency stop is activated automatically. After the safety fields are free from any obstacle again the emergency stop is released on its own after a few seconds.
 
-tbd picture
+\begin{center}
+\includegraphics[width=0.65\textwidth]{images/protection_areas.png}
+\end{center}
 
 \subsection{Remote emergency stop control}
 You can press the red button to stop the robot. To release the emergency stop you have to lift the red button and afterwards press the green button.
@@ -43,9 +47,6 @@ You can press the red button to stop the robot. To release the emergency stop yo
 
 \textbf{NOTE}: If you hear a "click" while releasing the emergency stop, but the dashboard and command\_gui still show that the emergency stop is activated, turn the key to position II again and hold it for some seconds until the dashboard or command\_gui show no more emergency stop.
 
-\begin{center}
-\includegraphics[width=0.15\textwidth]{images/em_stop.png}
-\end{center}
 
 \section{Running the robot}
 First you have to connect the power supply to the robot or you can use the battery pressing the battery button on the base. To switch the robot on you have to use the key. If you move it to position II and hold for a few seconds the robot will turn on. To turn of the robot turn the key to position I. 
@@ -74,7 +75,7 @@ roscore
 
 If you want to run the robot you have a launch file for launching all the components of the robot. It is located in the package cob\_bringup.
 \begin{lstlisting}
-roslaunch cob\_bringup robot.launch
+roslaunch cob_bringup robot.launch
 \end{lstlisting}
 
 Now all drivers and core components should be started so you can continue and have a look at the robot status in the dashboard or moving the robot using joystick or command\_gui.
@@ -82,7 +83,7 @@ Now all drivers and core components should be started so you can continue and ha
 \subsection{Using dashboard and command\_gui}
 To know the state of all the components of the robot you can use the dashboard tool. To move the robot you can use the command\_gui. You can start both with
 \begin{lstlisting}
-roslaunch cob\_bringup dashboard.launch
+roslaunch cob_bringup dashboard.launch
 \end{lstlisting}
 
 After launching this file you will see two guis on your screen: the smaler one is the dashboard, which gives you information about the current status of the robot and its components as well as the emergency stop status. The bigger one is called command\_gui and offers a wide range of buttons to move the robot to predefined positions using low level control commands. It also offers buttons for initialising and recovering the actuators. The emergency stop status is visible in the upper left corner of the command\_gui. Before initialising or moving the robot, check that the status is OK.
@@ -124,7 +125,7 @@ export ROS_MASTER_URI=http://cob3-X-pc1:11311
 roslaunch cob_bringup rviz.launch
 \end{lstlisting}
 
-You will see a screen like this: !!!!TODO without map!!!!
+You will see a screen like this:
 \begin {center}
 \includegraphics[width=1\textwidth]{images/rviz.png}
 \end{center}

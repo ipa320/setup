@@ -57,20 +57,29 @@
 
 #--------------------------------------------------------------------
 # list all packages here
-PACKAGE_BRINGUP=\
+PACKAGES_BRINGUP=\
+libpcan,\
 cob_sick_s300,\
+cob_description,\
 cob_bringup,\
 cob_bringup_sim,\
 cob_hardware_config,\
 schunk_powercube_chain,\
-schunk_hardware_config
+schunk_hardware_config,\
+cob_command_gui,\
+cob_default_robot_config,\
+cob_default_env_config,\
+cob_forcetorque,\
+cob_joint_state_aggregator
 
 PACKAGES_NAVIGATION=\
 cob_2dnav,\
+cob_platform_ctrl,\
 cob_2dslam
 
 PACKAGES_MANIPULATION=\
-cob_manipulator
+cob_manipulator,\
+cob_object_manipulation_launch
 
 PACKAGES_PERCEPTION=\
 cob_people_detection,\
@@ -81,8 +90,9 @@ cob_3d_mapping_msgs,\
 cob_3d_mapping_pipeline
 
 PACKAGES_SCENARIOS=\
-cob_fetch_and_carry,\
-cob_wimicare
+cob_generic_states,\
+cob_iros2011,\
+cob_webportal
 
 #--------------------------------------------------------------------
 # choose stacks
@@ -103,7 +113,7 @@ fi
 echo $PACKAGES
 
 # create dependency tree
-rxdeps --one --cluster -l --target=$PACKAGES
+rxdeps --cluster --target=$PACKAGES
 
 # show dependency tree
 evince deps.pdf&

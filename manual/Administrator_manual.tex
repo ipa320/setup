@@ -278,7 +278,13 @@ pc2
 
 \subsection{Create a new user account}
 \label{sec:account}
-Due to the fact that all users need to be in the correct user groups, that the bash environment needs so setup correctly and that user ids need to be synchonised between all pcs for the NFS to work, we facilitate the creation of a new user with a \textit{cobadduser} script. On pc2 and with administration rights you can add a new user with the following instruction
+Due to the fact that all users need to be in the correct user groups, that the bash environment needs to be setup correctly and that user ids need to be synchronised between all pcs for the NFS to work, we facilitate the creation of a new user with a \textit{cobadduser} script. Before you add the first user using the \textit{cobadduser} script, please uncomment the following two lines in \textit{/etc/adduser.conf} on pc2
+\begin{lstlisting}
+EXTRA_GROUPS="dialout cdrom floppy audio video plugdev users"
+ADD_EXTRA_GROUPS=1
+\end{lstlisting}
+
+After that you can add a new user. On pc2 and with administration rights you can use the following instruction
 \begin{lstlisting}
 cd ~/git/setup
 sudo ./cobadduser new_user_name

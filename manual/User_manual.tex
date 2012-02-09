@@ -63,13 +63,15 @@ For safety reasons if the robot is not supervised any more, e.g. during a break,
 
 
 \subsection{Logging in to the robot pcs}
-For logging in with a remote PC to the robot pcs you have to have an account on the robot. If you don't have an account contact your local robot administrator to create one for you (see the section \ref{sec:account}). Use ssh to login
+For logging in with a remote PC to the robot pcs you have to have an account on the robot. If you don't have an account contact your local robot administrator to create one for you (see the section \ref{sec:account}). Use ssh to login (in this example to pc1 of cob3-3)
 
 \begin{lstlisting}
-ssh -X user_name@cob3-X-pcX
+ssh -X user_name@cob3-3-pc1
 \end{lstlisting}
 
 \subsection{Bringup the robot}
+\textbf{Note: The following steps can only be done once by one person at the same time. It is not possible to start for example mulitple roscore or brinup.}
+
 The first step to bringup the robot is to start a roscore, this is necessary to have communication between the nodes. You can run it using
 \begin{lstlisting}
 roscore
@@ -102,20 +104,22 @@ If you click the first button, you will see a new window popping up with three l
 \includegraphics[width=0.45\textwidth]{images/diagnostics.png}
 \end{center}
 
-\subsubsection{cob\_command\_gui}
+All diagnostics information for the actors and sensors should be green after successfully initializing the components, see section \ref{subsec:command_gui}.
+
+\subsubsection{cob\_command\_gui}\label{subsec:command_gui}
 The command gui can be used for sending low level movement commands to the robot components. The standard view of the command\_gui is:
 \begin{center}
  \includegraphics[width=1\textwidth]{images/cob_command_gui.png}
 \end{center}
 
-In this screen-shot you can see different columns: general, base, torso, tray, arm settings, arm pos, arm traj, sdh and eyes. The first column is very important, when you run the robot. If you want to move it, first initialize all components with a click on \textit{init all} and make sure that the emergency stop is not active. It will take some time and the actuators will do their homing sequence if necessary. After an emergency stop was activated, each component has to be recovered. Therefore press the button \textit{recover all}. 
+In this screen-shot you can see different columns: general, base, torso, tray, arm settings, arm pos, arm traj, sdh and eyes. The first column is very important, when you run the robot. If you want to move it, first initialize all components with a click on \textit{init all} and make sure that the \textbf{emergency stop is not active}. It will take some time and the actuators will do their homing sequence if necessary. After an emergency stop was activated, each component has to be recovered. Therefore press the button \textit{recover all}. 
 
 The other columns of the components have different predefined positions where you can move to. Additionally Each component has a \textit{stop}, \textit{init} and \textit{recover} button, to stop, initialize or recover a single component.
 
 \subsection{Rviz}
 RVIZ is a tool that visualizes data from the robot, e.g. the sensor data from the laser scanners, but also information about the coordinate systems and transformations or the images from the cameras. You can add your own items to RVIZ to visualize topics, see more information at \url{http://www.ros.org/wiki/rviz}.
 
-To be able to visualize topics from the robot export your \textit{ROS\_MASTER\_URI} to the robot
+RVIZ needs to be started on your \textbf{local machine}. To be able to visualize topics from the robot export your \textit{ROS\_MASTER\_URI} to the robot
 \begin{lstlisting}
 export ROS_MASTER_URI=http://cob3-X-pc1:11311
 rosrun rviz rviz

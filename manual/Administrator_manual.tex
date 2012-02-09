@@ -299,12 +299,14 @@ cd ~/git/setup
 sudo ./cobadduser new_user_name
 \end{lstlisting}
 
-All you need to do now is to login as the new user, create an ssh-key and add the key to the authorized keys to be able to login to all pcs without password. This is neccesarry for launching nodes remotely on all pcs.
+All you need to do now is to login as the new user, create an ssh-key and add the key to the authorized keys to be able to login to all pcs without password. This is necessary for launching nodes remotely on all pcs.
 \begin{lstlisting}
 ssh-keygen
-ssh-copy-id cob3-X-pc1
+ssh-copy-id cob3-3-pc1
+ssh cob3-3-pc1
+ssh cob3-3-pc2
+ssh cob3-3-pc3
 \end{lstlisting}
-
 
 \section{Network}
 Make sure you have name resolution and access to the robot pcs from your external pc. To satisfy the ROS communication you need a full DNS name lockup for all machines. Check it from your remote pc with

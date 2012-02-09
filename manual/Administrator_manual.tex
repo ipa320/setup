@@ -194,6 +194,15 @@ sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-a
 sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons ros-electric-pr2-desktop ros-electric-pr2-robot ros-electric-pr2-apps pr2-power-drivers 
 \end{lstlisting}
 
+\subsubsection{Creating an overlay for stacks}
+If the release version of the stacks are not working for you, you can install overlays for individual stacks on the \textit{robot} user account. To facilitate this process we have created a \textit{create\_overlay.sh} script which automatically generates ssh-keys, uploads them to github, forkes the stack (if necessary) and clones it to your machine. You can either install a read-only version from our main fork (\textit{ipa320}) or insert your own username and password to fork and clone your own version of the stack. The script can be used by simply typing
+\begin{lstlisting}
+cd ~/git/setup
+./create_overlay.sh [stack]
+\end{lstlisting}
+
+All stacks needed for the bringup layer are listed at section \ref{sec:software_overview}.
+
 \subsubsection{Setup bash environment}
 We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ from pc1, pc2 and pc3. Copy the \textit{cob-bash-bashrc.pcX} to \textit{/etc/cob-bash-bashrc} on each pc.
 
@@ -336,8 +345,8 @@ For name resolution you will probably have to edit the file \textit{/etc/hosts} 
 Add your ip adress and hostname to the \textit{/etc/hosts} of all robot pcs.
 
 \section{Calibration}
-Now is not working....
+tbd
 \section{Backup and restoring users}   
-Now is not working...    
+tdb
 
 

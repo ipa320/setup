@@ -182,16 +182,16 @@ Edit \textit{/etc/ntp.conf}, change the server to \textit{cob3-X-pc1}:
 server cob3-X-pc1
 \end{lstlisting}
 
-\subsection{Install ROS and Care-O-bot driver software}
+\subsection{Install ROS and 
+ driver software}
 For general instructions see \url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}.
 
 \subsubsection{Install ROS and additional tools}
 \begin{lstlisting}
 sudo apt-get install openjdk-6-jdk zsh terminator
-sudo apt-get install python-setuptools
-sudo easy_install -U rosinstall
-sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot
-sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons ros-electric-pr2-desktop ros-electric-pr2-robot ros-electric-pr2-apps pr2-power-drivers 
+sudo apt-get install python-pip
+sudo pip install -U rosrelease
+sudo apt-get install ros-electric-care-o-bot-robot
 \end{lstlisting}
 
 \subsubsection{Creating an overlay for stacks}

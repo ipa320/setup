@@ -1,3 +1,4 @@
+
 \chapter{Administrator manual}
 \label{chap:admin}
 
@@ -40,7 +41,7 @@ After ensuring that the network configuration of the router is setup correctly, 
 sudo apt-get remove network-manager
 \end{lstlisting}
 
-After removing the network manager we will have to edit \textit{/etc/network/interfaces} manually. 
+After removing the network manager we will have to edit \textit{/etc/network/interfaces} manually,  you can do it copying the following lines on the pc's.
 
 \subsubsection{Network configuration on pc1}
 
@@ -204,17 +205,17 @@ cd ~/git/setup
 All stacks needed for the bringup layer are listed at section \ref{sec:software_overview}.
 
 \subsubsection{Setup bash environment}
-We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ from pc1, pc2 and pc3. Copy the \textit{cob-bash-bashrc.pcX} to \textit{/etc/cob-bash-bashrc} on each pc.
+We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ from pc1, pc2 and pc3. Copy the \textit{cob.bash.bashrc.pcX} to \textit{/etc/cob.bash.bashrc} on each pc.
 
 \begin{lstlisting}
-sudo cp ~/git/setup/cob-pcs/cob-bash-bashrc.pcX /etc/cob-bash-bashrc
+sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcX /etc/cob.bash.bashrc
 \end{lstlisting}
 
 All users have a pre-configured bash environment too, therefore copy \textit{user.bashrc} to \textit{$\sim$/.bashrc}
 \begin{lstlisting}
 cp ~/git/setup/cob-pcs/user.bashrc ~/.bashrc
 \end{lstlisting}
-
+In the bashrc of the users you have to define the correct ROBOT (cob3-X), lines 113 and 114, and the ROBOT\_ENV line 115.\\
 If you logout and login again or source your \textit{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \textit{ROS\_PACKAGE\_PATH} should be configured. If you check 
 \begin{lstlisting}
 roscd cob_bringup
@@ -225,7 +226,7 @@ you should end up in \textit{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}
 In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \textit{cob\_hardware\_config} package.
 
 \paragraph{Setup udev rules}
-TIn order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \textit{/etc/udev/rules.d} on pc1:
+In order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \textit{/etc/udev/rules.d} on pc1:
 \begin{lstlisting}
 sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
 \end{lstlisting}

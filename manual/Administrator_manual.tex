@@ -215,7 +215,7 @@ All users have a pre-configured bash environment too, therefore copy \textit{use
 \begin{lstlisting}
 cp ~/git/setup/cob-pcs/user.bashrc ~/.bashrc
 \end{lstlisting}
-In the bashrc of the users you have to define the correct ROBOT (cob3-X), lines 113 and 114, and the ROBOT\_ENV line 115.\\
+In the bashrc of the users you have to define on the bottom the \textit{ROS\_MASTER\_URI}(http://cob3-X-pc1:11311), the \textit{ROBOT} (cob3-X) and the \textit{ROBOT\_ENV}.\\
 If you logout and login again or source your \textit{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \textit{ROS\_PACKAGE\_PATH} should be configured. If you check 
 \begin{lstlisting}
 roscd cob_bringup
@@ -300,7 +300,7 @@ cd ~/git/setup
 sudo ./cobadduser new_user_name
 \end{lstlisting}
 
-All you need to do now is to login as the new user, create an ssh-key and add the key to the authorized keys to be able to login to all pcs without password. This is necessary for launching nodes remotely on all pcs.
+All you need to do now is to login as the new user, create an ssh-key and add the key to the authorized keys to be able to login to all pcs without password. This is necessary for launching nodes remotely on all pcs. The following lines are an example for cob3-3:
 \begin{lstlisting}
 ssh-keygen
 ssh-copy-id cob3-3-pc1

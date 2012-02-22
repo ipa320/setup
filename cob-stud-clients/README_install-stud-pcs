@@ -1,10 +1,4 @@
 -------------
-install basic setup
--------------
-sudo apt-get install vim tree openssh-server ntp
-
-
--------------
 add users
 -------------
 
@@ -15,6 +9,14 @@ sudo adduser jenkins --home /home-local/jenkins
 sudo adduser jenkins admin
 
 sudo deluser ipa
+
+
+----------------
+In the new PCs cob-stud-10X CoolerMaster 
+----------------
+
+Install the e1000e driver for the ethernet controller
+http://www.intel.com/support/network/sb/CS-032514.htm?wapkw=e1000e
 
 
 -------------
@@ -41,6 +43,12 @@ change back to lts updates only
 
 
 -------------
+install basic setup
+-------------
+sudo apt-get install vim tree openssh-server ntp
+
+
+-------------
 setup nfs
 -------------
 
@@ -62,7 +70,11 @@ Add one of the following lines to your /etc/apt/sources.list file:
 
 sudo apt-get update
 sudo apt-get install zentyal-desktop 
+In the options define the ip addrees of the cob-kitchen-server
 
+(If does not work:
+sudo apt-get purge zentyal-desktop 
+sudo apt-get install zentyal-desktop)
 
 -------------
 install ros and care-o-bot
@@ -81,7 +93,12 @@ sudo easy_install -U rosinstall
 sudo apt-get install ros-diamondback-care-o-bot ros-diamondback-perception-pcl-addons ros-diamondback-erratic-robot
 sudo apt-get install ros-electric-care-o-bot ros-electric-perception-pcl-addons ros-electric-pr2-desktop ros-electric-pr2-robot
 
-sudo apt-get install libtbb-dev libtbb2 libsuitesparse-dev libxerces-c2-dev libann-dev flashplugin-nonfree emacs chromium-browser gimp ipython geany meshlab postgresql pgadmin3
+sudo apt-get install libtbb-dev libtbb2 libsuitesparse-dev libxerces-c2-dev libann-dev flashplugin-nonfree emacs chromium-browser gimp ipython geany meshlab postgresql pgadmin3 inkscape wmctrl dia
+
+-------------
+setup ntp time synchronisation
+-------------
+edit /etc/ntp.conf and change server to cob-kitchen-server
 
 
 -------------
@@ -91,7 +108,4 @@ sudo add-apt-repository ppa:ubuntu-x-swat/x-updates
 sudo apt-get update
 sudo apt-get install nvidia-current-dev
 
--------------
-setup ntp time synchronisation
--------------
-edit /etc/ntp.conf and change server to cob-kitchen-server
+

@@ -268,7 +268,18 @@ tbd, firmware version
 Add the robot user to the group dialout in the /etc/group file.
 
 \paragraph{Schunk powercubes}
-tbd, pcan
+The stack cob\_extern include the pcan library necesary to setup schunk powercubes, to install you can use install\_pcan.sh: 
+\begin{lstlisting}
+rosdep install libpcan
+rosmake libpcan
+roscd libpcan
+sudo ./install_pcan.sh
+\end{lstlisting}
+
+To activate the driver you have to restart the system or activate this driver with:
+\begin{lstlisting}
+sudo modprobe pcan
+\end{lstlisting}
 
 \paragraph{Head axis}
 tbd

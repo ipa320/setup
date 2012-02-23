@@ -230,6 +230,7 @@ In order to have fixed device names we setup udev rules for Care-O-bot. Copy the
 \begin{lstlisting}
 sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
 \end{lstlisting}
+To activate these changes you have to restart the system.
 
 \paragraph{Sick S300 laser scanners}
 The Sick S300 scanners on the frontside and backside of the robot are connected via USB to pc1. To recevice data from the Sick S300 scanners check if the user is in the \textit{dialout} group
@@ -260,8 +261,12 @@ tbd
 \paragraph{Base}
 tbd, configure elmo controllers
 
-\paragraph{Tray sensors}
-tbd, phidget
+\paragraph{Tray sensors} tbd, phidget
+The tray sensors are defined in udev\_rules, to setup it you have to build the library:
+\begin{lstlisting}
+rosdep install libphidgets
+rosmake libphidgets
+\end{lstlisting}
 
 \paragraph{Schunk SDH with tactile sensors}
 tbd, firmware version
@@ -276,7 +281,7 @@ roscd libpcan
 sudo ./install_pcan.sh
 \end{lstlisting}
 
-To activate the driver you have to restart the system or activate this driver with:
+To activate the driver you have to restart the system or modprobe with sudo rights: 
 \begin{lstlisting}
 sudo modprobe pcan
 \end{lstlisting}

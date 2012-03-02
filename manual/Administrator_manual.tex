@@ -232,6 +232,12 @@ sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
 \end{lstlisting}
 To activate these changes you have to restart the system.
 
+\paragraph{Build the bringup level packages}
+Before setup the components you can build all the bringup level packages and you have not to do it for each library ir driver:
+\begin{lstlisting}
+rosmake --rosdep-install cob_bringup
+\end{lstlisting}
+
 \paragraph{Sick S300 laser scanners}
 The Sick S300 scanners on the frontside and backside of the robot are connected via USB to pc1. To recevice data from the Sick S300 scanners check if the user is in the \textit{dialout} group
 \begin{lstlisting}
@@ -261,30 +267,15 @@ tbd
 \paragraph{Base}
 tbd, configure elmo controllers
 
-\paragraph{Tray sensors} tbd, phidget
-The tray sensors are defined in udev\_rules, to setup it you have to build the library:
-\begin{lstlisting}
-rosdep install libphidgets
-rosmake libphidgets
-\end{lstlisting}
+\paragraph{Tray sensors}
+The tray sensors are defined in udev\_rules and the library libphidgets ( \url{http://www.ros.org/wiki/libphidgets} ) for this component is already built in the bringup level.
 
 \paragraph{Schunk SDH with tactile sensors}
 tbd, firmware version
 Add the robot user to the group dialout in the /etc/group file.
 
 \paragraph{Schunk powercubes}
-The stack cob\_extern include the pcan library necesary to setup schunk powercubes, to install you can use install\_pcan.sh: 
-\begin{lstlisting}
-rosdep install libpcan
-rosmake libpcan
-roscd libpcan
-sudo ./install_pcan.sh
-\end{lstlisting}
-
-To activate the driver you have to restart the system or modprobe with sudo rights: 
-\begin{lstlisting}
-sudo modprobe pcan
-\end{lstlisting}
+The stack cob\_extern include the pcan library necesary to setup schunk powercubes, to install you can use install\_pcan.sh, it is explained in \url{http://www.ros.org/wiki/libpcan}.
 
 \paragraph{Head axis}
 tbd
@@ -319,10 +310,9 @@ sudo ./cobadduser new_user_name
 All you need to do now is to login as the new user, create an ssh-key and add the key to the authorized keys to be able to login to all pcs without password. This is necessary for launching nodes remotely on all pcs. The following lines are an example for cob3-3:
 \begin{lstlisting}
 ssh-keygen
-ssh-copy-id cob3-3-pc1
-ssh cob3-3-pc1
-ssh cob3-3-pc2
-ssh cob3-3-pc3
+ssh-copy-id cob3-X-pc1
+ssh cob3-X-pc1
+ssh cob3-X-pc2
 \end{lstlisting}
 
 \section{Network}

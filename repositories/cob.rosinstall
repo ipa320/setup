@@ -55,6 +55,10 @@
     local-name: cob_simulation
     version: master
 - git:
+    uri: 'git://github.com/ipa320/cob_tutorials.git'
+    local-name: cob_tutorials
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_web.git'
     local-name: cob_web
     version: master

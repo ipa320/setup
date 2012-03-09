@@ -238,8 +238,13 @@ Before setup the components you can build all the bringup level packages and you
 rosmake --rosdep-install cob_bringup
 \end{lstlisting}
 
+\paragraph{Setup Can bus drivers}
+This step is neccesary for all drivers with can bus interface (schunk powercubes, schunk sdh, head axis, base). In general both can drivers from \url{Peak Systems} (libpcan) and \url{ESD} (libntcan) can be used. Installation instructions can be found in the package documentation of libpcan \url{http://www.ros.org/wiki/libpcan} and libntcan \url{http://www.ros.org/wiki/libntcan}
+
 \paragraph{Sick S300 laser scanners}
-The Sick S300 scanners on the frontside and backside of the robot are connected via USB to pc1. To recevice data from the Sick S300 scanners check if the user is in the \textit{dialout} group
+The Sick S300 scanners on the frontside and backside of the robot are connected via USB to pc1. Configuration is done in \url{http://ros.org/wiki/cob_hardware_config} \textit{/config/laser\_front.yaml} and \textit{/config/laser\_rear.yaml}, documentation about parameters in \url{http://www.ros.org/wiki/cob_sick_s300}
+
+To recevice data from the Sick S300 scanners check if the user is in the \textit{dialout} group
 \begin{lstlisting}
 groups
 \end{lstlisting}
@@ -265,7 +270,7 @@ tbd
 tbd
 
 \paragraph{Base}
-tbd, configure elmo controllers
+You have to configurate the elmo controllers, all the information about the driver is in  \url{http://www.ros.org/wiki/cob_base_drive_chain},  you find the parameters of this configuration in  cob\_hardware\_config package in \textit{/config/base}
 
 \paragraph{Tray sensors}
 The tray sensors are defined in udev\_rules and the library libphidgets ( \url{http://www.ros.org/wiki/libphidgets} ) for this component is already built in the bringup level.
@@ -274,11 +279,11 @@ The tray sensors are defined in udev\_rules and the library libphidgets ( \url{h
 tbd, firmware version
 Add the robot user to the group dialout in the /etc/group file.
 
-\paragraph{Schunk powercubes}
-The stack cob\_extern include the pcan library necesary to setup schunk powercubes, to install you can use install\_pcan.sh, it is explained in \url{http://www.ros.org/wiki/libpcan}.
+\paragraph{Schunk powercubes (lwa, torso, tray)}
+Configuration in \url{http://www.ros.org/wiki/cob_hardware_config} \textit{/config/lwa.yaml} or \textit{/config/torso.yaml}, documentation about parameters in \url{http://www.ros.org/wiki/schunk_powercube_chain} and \url{http://www.ros.org/wiki/cob_trajectory_controller}.
 
 \paragraph{Head axis}
-tbd
+Configuration in \url{http://www.ros.org/wiki/cob_hardware_config} \textit{/config/head.yaml} , documentation about parameters in \url{http://www.ros.org/wiki/cob_head_axis}.
 
 \paragraph{Prosilica cameras}
 You have to define the ip address for the cameras, on pc2 in the file /etc/network/interfaces you can copy these lines:
@@ -354,7 +359,12 @@ For name resolution you will probably have to edit the file \textit{/etc/hosts} 
 Add your ip adress and hostname to the \textit{/etc/hosts} of all robot pcs.
 
 \section{Calibration}
-tbd
+divided into two steps (manual and automatic). parameters need to be filled in cob\_hardware\_config calibration/calibration.urdf.xacro
+\subsection{Manual calibration}\label{sec:manual_calibration}
+calibration for torso, tray with water balance
+\subsection{Automatic calibration}
+needs calibration from section \ref{sec:manual_calibration} used for intrinsic and extrinsic camera calibration, as well as for hand eye calibtarion. see \url{cob_calibration}
+
 \section{Backup and restoring users}   
 tdb
 

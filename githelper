@@ -74,8 +74,13 @@ if platform.system() == 'Linux':
 		os.system("touch " + _output)
 	else:
 		os.system("rm -r " + _output)
+	
 	# start new log with time information
 	os.system("echo new log from " + time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()) + " > " + _output + " 2>&1")
+
+	# make logfile editable by everyone
+	os.system("chmod a+rw -R " + _output)
+
 elif platform.system() == 'Windows':
 	_output = "nul"
 else:

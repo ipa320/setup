@@ -230,9 +230,21 @@ In order to have fixed device names we setup udev rules for Care-O-bot. Copy the
 \begin{lstlisting}
 sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
 \end{lstlisting}
+To activate these changes you have to restart the system.
+
+\paragraph{Build the bringup level packages}
+Before setup the components you can build all the bringup level packages and you have not to do it for each library ir driver:
+\begin{lstlisting}
+rosmake --rosdep-install cob_bringup
+\end{lstlisting}
+
+\paragraph{Setup Can bus drivers}
+This step is neccesary for all drivers with can bus interface (schunk powercubes, schunk sdh, head axis, base). In general both can drivers from \url{Peak Systems} (libpcan) and \url{ESD} (libntcan) can be used. Installation instructions can be found in the package documentation of libpcan \url{http://www.ros.org/wiki/libpcan} and libntcan \url{http://www.ros.org/wiki/libntcan}
 
 \paragraph{Sick S300 laser scanners}
-The Sick S300 scanners on the frontside and backside of the robot are connected via USB to pc1. To recevice data from the Sick S300 scanners check if the user is in the \textit{dialout} group
+The Sick S300 scanners on the frontside and backside of the robot are connected via USB to pc1. Configuration is done in \url{http://ros.org/wiki/cob_hardware_config} \textit{/config/laser\_front.yaml} and \textit{/config/laser\_rear.yaml}, documentation about parameters in \url{http://www.ros.org/wiki/cob_sick_s300}
+
+To recevice data from the Sick S300 scanners check if the user is in the \textit{dialout} group
 \begin{lstlisting}
 groups
 \end{lstlisting}
@@ -258,20 +270,20 @@ tbd
 tbd
 
 \paragraph{Base}
-tbd, configure elmo controllers
+You have to configurate the elmo controllers, all the information about the driver is in  \url{http://www.ros.org/wiki/cob_base_drive_chain},  you find the parameters of this configuration in  cob\_hardware\_config package in \textit{/config/base}
 
 \paragraph{Tray sensors}
-tbd, phidget
+The tray sensors are defined in udev\_rules and the library libphidgets ( \url{http://www.ros.org/wiki/libphidgets} ) for this component is already built in the bringup level.
 
 \paragraph{Schunk SDH with tactile sensors}
 tbd, firmware version
 Add the robot user to the group dialout in the /etc/group file.
 
-\paragraph{Schunk powercubes}
-tbd, pcan
+\paragraph{Schunk powercubes (lwa, torso, tray)}
+Configuration in \url{http://www.ros.org/wiki/cob_hardware_config} \textit{/config/lwa.yaml} or \textit{/config/torso.yaml}, documentation about parameters in \url{http://www.ros.org/wiki/schunk_powercube_chain} and \url{http://www.ros.org/wiki/cob_trajectory_controller}.
 
 \paragraph{Head axis}
-tbd
+Configuration in \url{http://www.ros.org/wiki/cob_hardware_config} \textit{/config/head.yaml} , documentation about parameters in \url{http://www.ros.org/wiki/cob_head_axis}.
 
 \paragraph{Prosilica cameras}
 You have to define the ip address for the cameras, on pc2 in the file /etc/network/interfaces you can copy these lines:
@@ -303,10 +315,9 @@ sudo ./cobadduser new_user_name
 All you need to do now is to login as the new user, create an ssh-key and add the key to the authorized keys to be able to login to all pcs without password. This is necessary for launching nodes remotely on all pcs. The following lines are an example for cob3-3:
 \begin{lstlisting}
 ssh-keygen
-ssh-copy-id cob3-3-pc1
-ssh cob3-3-pc1
-ssh cob3-3-pc2
-ssh cob3-3-pc3
+ssh-copy-id cob3-X-pc1
+ssh cob3-X-pc1
+ssh cob3-X-pc2
 \end{lstlisting}
 
 \section{Network}
@@ -348,7 +359,12 @@ For name resolution you will probably have to edit the file \textit{/etc/hosts} 
 Add your ip adress and hostname to the \textit{/etc/hosts} of all robot pcs.
 
 \section{Calibration}
-tbd
+divided into two steps (manual and automatic). parameters need to be filled in cob\_hardware\_config calibration/calibration.urdf.xacro
+\subsection{Manual calibration}\label{sec:manual_calibration}
+calibration for torso, tray with water balance
+\subsection{Automatic calibration}
+needs calibration from section \ref{sec:manual_calibration} used for intrinsic and extrinsic camera calibration, as well as for hand eye calibtarion. see \url{cob_calibration}
+
 \section{Backup and restoring users}   
 tdb
 

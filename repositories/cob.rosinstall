@@ -66,3 +66,7 @@
     uri: 'git://github.com/ipa320/schunk_robots.git'
     local-name: schunk_robots
     version: master
+- git:
+    uri: 'git://github.com/ipa320/srs_common.git'
+    local-name: srs_common
+    version: master

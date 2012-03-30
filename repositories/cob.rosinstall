@@ -43,6 +43,10 @@
     local-name: cob_people_perception
     version: master
 - git:
+    uri: 'git://github.com/ipa320/cob_perception_common.git'
+    local-name: cob_perception_common
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_robots.git'
     local-name: cob_robots
     version: master
@@ -77,4 +81,8 @@
 - git:
     uri: 'git://github.com/ipa320/srs_common.git'
     local-name: srs_common
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/srs_public.git'
+    local-name: srs_public
     version: master

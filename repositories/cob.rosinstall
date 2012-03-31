@@ -55,6 +55,10 @@
     local-name: cob_simulation
     version: master
 - git:
+    uri: 'git://github.com/ipa320/cob_tutorials.git'
+    local-name: cob_tutorials
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_web.git'
     local-name: cob_web
     version: master
@@ -67,6 +71,13 @@
     local-name: schunk_robots
     version: master
 - git:
+<<<<<<< HEAD
+=======
+    uri: 'git://github.com/ipa320/schunk_simulation.git'
+    local-name: schunk_simulation
+    version: master
+- git:
+>>>>>>> fe4988bd6273807d8d4cae86e01d03b4d9bfa4be
     uri: 'git://github.com/ipa320/srs_common.git'
     local-name: srs_common
     version: master

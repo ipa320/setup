@@ -12,7 +12,7 @@ To pc1 all actuators are connected, sensors are connected both, to pc1 and pc2. 
 \subsection{Install operating system}
 The first step is to install the operating system for each pc, which means pc1 and pc2 (optionally pc3). We are using Ubuntu as the main operating system for the robot. We recommend to install the \textbf{Ubuntu 10.4 LTS (long term stable) 64-bit} version because this version is well tested to work with the hardware. 
 
-For the first installating please install Ubuntu (english version) creating a normal swap partition. Please choose \textit{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \textit{cob3-X-pc1} and \textit{cob3-X-pc2}.
+First please install Ubuntu (english version) creating a normal swap partition. Please choose \texttt{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \texttt{cob3-X-pc1} and \texttt{cob3-X-pc2}.
 
 \subsection{Install basic tools}
 Next we have to install some basic tools for the further setup of the pcs. In order to install the packages a internet connection is needed.
@@ -22,7 +22,7 @@ sudo apt-get update
 sudo apt-get install vim tree openssh-server gitg meld curl
 \end{lstlisting}
 
-To facilitate the further setup we created a setup repository with some helpfull scripts. To checkout the setup repository use:
+To facilitate the further setup we created a setup repository with some helpful scripts. To checkout the setup repository use:
 
 \begin{lstlisting}
 mkdir ~/git
@@ -30,10 +30,10 @@ cd ~/git
 git clone git://github.com/ipa320/setup.git
 \end{lstlisting}
 
-\subsection{Setup internal robot network}
+\subsection{Setup internal robot network}\label{sec:network}
 Inside the robot there's a router which connects the pcs and acts as gateway to the building network. Setup the router with the following configuration. 
 
-The ip adress of the router should be \textbf{192.168.0.1} and for the internal network dhcp should be activated. Use \textbf{cob3-X} as hostname for the router. Register the MAC adresses of pc1 and pc2 so that they get a fixed ip adress over dhcp. Use \textbf{192.168.0.101 for pc1} and \textbf{192.168.0.102 for pc2}. Enable \textbf{portforwarding} for port 2201 to 192.168.0.101 and for port 2202 to 192.168.0.102.
+The ip address of the router should be \texttt{192.168.0.1} and for the internal network dhcp should be activated. Use \texttt{cob3-X} as hostname for the router. Register the MAC addresses of pc1 and pc2 so that they get a fixed ip address over dhcp. Use \texttt{192.168.0.101} for pc1 and \texttt{192.168.0.102} for pc2. Enable portforwarding for port \texttt{2201} to \texttt{192.168.0.101} and for port \texttt{2202} to \texttt{192.168.0.102}.
 
 After ensuring that the network configuration of the router is setup correctly, we can configure the pcs. All pcs should have two ethernet ports. The upper one should be connected to the internal router. Sometimes the graphical network manager causes troubles, so it is best to remove it
 
@@ -41,7 +41,7 @@ After ensuring that the network configuration of the router is setup correctly, 
 sudo apt-get remove network-manager
 \end{lstlisting}
 
-After removing the network manager we will have to edit \textit{/etc/network/interfaces} manually,  you can do it copying the following lines on the pc's.
+After removing the network manager we will have to edit \texttt{/etc/network/interfaces} manually,  you can do it copying the following lines on the pc's.
 
 \subsubsection{Network configuration on pc1}
 
@@ -88,7 +88,7 @@ sudo apt-get install nfs-kernel-server
 sudo mkdir /u 
 \end{lstlisting}
 
-Add the following following line to \textit{/etc/fstab}:
+Add the following following line to \texttt{/etc/fstab}:
 
 \begin{lstlisting}
 /home	/u	none	bind	0	0
@@ -100,19 +100,19 @@ Now we can mount the drive
 sudo mount /u
 \end{lstlisting}
 
-Activate IDMAPD in \textit{/etc/default/nfs-common} by changing the NEED\_IDMAPD to yes
+Activate \texttt{IDMAPD} in \texttt{/etc/default/nfs-common} by changing the \texttt{NEED\_IDMAPD} to yes
 
 \begin{lstlisting}
 NEED_IDMAPD=yes
 \end{lstlisting}
 
-Copy the file \textit{$\sim$/git/setup/nfs\_setup/server/exports} to \textit{/etc/exports}
+Copy the file \texttt{$\sim$/git/setup/nfs\_setup/server/exports} to \texttt{/etc/exports}
 
 \begin{lstlisting}
 cp ~/git/setup/nfs_setup/server/exports /etc/exports
 \end{lstlisting}
 
-Change the home directory of the \textit{robot} user from \textit{/home/username} to \textit{/u/username} in the \textit{/etc/passwd} file.
+Change the home directory of the \texttt{robot} user from \texttt{/home/username} to \texttt{/u/username} in the \texttt{/etc/passwd} file.
 
 After finishing you need to reboot the pc
 
@@ -128,19 +128,19 @@ sudo apt-get install nfs-kernel-server autofs
 sudo mkdir /u
 \end{lstlisting}
 
-Activate IDMAPD in \textit{/etc/default/nfs-common} by changing the NEED\_IDMAPD to yes
+Activate \texttt{IDMAPD} in \texttt{/etc/default/nfs-common} by changing the \texttt{NEED\_IDMAPD} to yes
 
 \begin{lstlisting} 
 NEED_IDMAPD=yes
 \end{lstlisting}
 
-Edit \textit{/etc/auto.master} and add
+Edit \texttt{/etc/auto.master} and add
 
 \begin{lstlisting}
 /-	/etc/auto.direct
 \end{lstlisting}
 
-Copy the file \textit{$\sim$/git/setup/nfs\_setup/client/auto.direct} to \textit{/etc/auto.direct}
+Copy the file \texttt{$\sim$/git/setup/nfs\_setup/client/auto.direct} to \textit{/etc/auto.direct}
 
 \begin{lstlisting}
 cp ~/git/setup/nfs_setup/client/auto.direct /etc/auto.direct
@@ -154,7 +154,7 @@ sudo service autofs restart
 sudo modprobe nfs
 \end{lstlisting}
 
-Change the home directory of the \textit{robot} user from \textit{/home/username} to \textit{/u/username} in the \textit{/etc/passwd} file.
+Change the home directory of the \texttt{robot} user from \texttt{/home/username} to \texttt{/u/username} in the \texttt{/etc/passwd} file.
 
 After finishing you need to reboot the pc
 
@@ -170,7 +170,7 @@ sudo apt-get install ntp
 \end{lstlisting}
 
 \subsubsection{NTP configuration on pc1 (NTP server)}
-Edit \textit{/etc/ntp.conf}, change the server to \textit{0.pool.ntp.org} and add the restrict line
+Edit \texttt{/etc/ntp.conf}, change the server to \texttt{0.pool.ntp.org} and add the restrict line
 
 \begin{lstlisting} 
 server 0.pool.ntp.org
@@ -178,14 +178,13 @@ restrict 192.168.0.0 mask 255.255.255.0 nomodify notrap
 \end{lstlisting}
 
 \subsubsection{NTP configuration on pc2 (NTP client)}
-Edit \textit{/etc/ntp.conf}, change the server to \textit{cob3-X-pc1}:
+Edit \texttt{/etc/ntp.conf}, change the server to \texttt{cob3-X-pc1}:
 \begin{lstlisting}
 server cob3-X-pc1
 \end{lstlisting}
 
-\subsection{Install ROS and 
- driver software}
-For general instructions see \url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}.
+\subsection{Install ROS and driver software}
+For general instructions see \footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}}.
 
 \subsubsection{Install ROS and additional tools}
 \begin{lstlisting}
@@ -196,55 +195,59 @@ sudo apt-get install ros-electric-care-o-bot-robot
 \end{lstlisting}
 
 \subsubsection{Creating an overlay for stacks}
-If the release version of the stacks are not working for you, you can install overlays for individual stacks on the \textit{robot} user account. To facilitate this process we have created a \textit{create\_overlay.sh} script which automatically generates ssh-keys, uploads them to github, forkes the stack (if necessary) and clones it to your machine. You can either install a read-only version from our main fork (\textit{ipa320}) or insert your own username and password to fork and clone your own version of the stack. The script can be used by simply typing
+If the release version of the stacks are not working for you, you can install overlays for individual stacks on the \texttt{robot} user account. To facilitate this process we have created a \texttt{create\_overlay.sh} script which automatically generates ssh-keys, uploads them to github, forkes the stack (if necessary) and clones it to your machine. You can either install a read-only version from our main fork (\texttt{ipa320}) or insert your own username and password to fork and clone your own version of the stack. The script can be used by simply typing
 \begin{lstlisting}
 cd ~/git/setup
 ./create_overlay.sh [stack]
 \end{lstlisting}
 
-All stacks needed for the bringup layer are listed at section \ref{sec:software_overview}.
+All stacks needed for the bringup layer are listed at section \ref{sec:software_overview}. 
+
+\textbf{Note}: It should typically only be necessary to create an overlay for two stacks, the \texttt{cob\_robots} and the \texttt{cob\_environments} stack. All other stacks should be used from their release version. If you need to modify a stack to work for you, please send us a pull request to \texttt{ipa320} on \url{www.github.com}.
 
 \subsubsection{Setup bash environment}
-We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ from pc1, pc2 and pc3. Copy the \textit{cob.bash.bashrc.pcX} to \textit{/etc/cob.bash.bashrc} on each pc.
+We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ from pc1, pc2 and pc3. Copy the \texttt{cob.bash.bashrc.pcX} to \texttt{/etc/cob.bash.bashrc} on each pc.
 
 \begin{lstlisting}
 sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcX /etc/cob.bash.bashrc
 \end{lstlisting}
 
-All users have a pre-configured bash environment too, therefore copy \textit{user.bashrc} to \textit{$\sim$/.bashrc}
+All users have a pre-configured bash environment too, therefore copy \texttt{user.bashrc} to \texttt{$\sim$/.bashrc}
 \begin{lstlisting}
 cp ~/git/setup/cob-pcs/user.bashrc ~/.bashrc
 \end{lstlisting}
-In the bashrc of the users you have to define on the bottom the \textit{ROS\_MASTER\_URI}(http://cob3-X-pc1:11311), the \textit{ROBOT} (cob3-X) and the \textit{ROBOT\_ENV}.\\
-If you logout and login again or source your \textit{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \textit{ROS\_PACKAGE\_PATH} should be configured. If you check 
+At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://cob3-X-pc1:11311}, \texttt{ROBOT} to be \texttt{cob3-X} and \texttt{ROBOT\_ENV} to point to your environment.
+
+If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. If you check 
 \begin{lstlisting}
 roscd cob_bringup
+pwd
 \end{lstlisting}
-you should end up in \textit{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}
+you should end up in \texttt{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}.
 
 \subsubsection{Setup hardware components}
-In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \textit{cob\_hardware\_config} package.
+In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \texttt{cob\_hardware\_config} package.
 
 \paragraph{Setup udev rules}
-In order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \textit{/etc/udev/rules.d} on pc1:
+In order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \texttt{/etc/udev/rules.d} on pc1:
 \begin{lstlisting}
 sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
 \end{lstlisting}
 To activate these changes you have to restart the system.
 
 \paragraph{Build the bringup level packages}
-Before setup the components you can build all the bringup level packages and you have not to do it for each library ir driver:
+Before setup the components you can build all the bringup level packages:
 \begin{lstlisting}
 rosmake --rosdep-install cob_bringup
 \end{lstlisting}
 
-\paragraph{Setup Can bus drivers}
-This step is neccesary for all drivers with can bus interface (schunk powercubes, schunk sdh, head axis, base). In general both can drivers from \url{Peak Systems} (libpcan) and \url{ESD} (libntcan) can be used. Installation instructions can be found in the package documentation of libpcan \url{http://www.ros.org/wiki/libpcan} and libntcan \url{http://www.ros.org/wiki/libntcan}
+\paragraph{Setup can bus drivers}
+This step is necessary for all drivers with can bus interface (Schunk powercubes, Schunk sdh, head axis, base). In general both can drivers from Peak Systems\footnote{\url{http://www.peak-system.com/}} \texttt{libpcan} and ESD\footnote{\url{http://www.esd-electronics.com}} \texttt{libntcan} can be used. Installation instructions can be found in the package documentation of libpcan \url{http://www.ros.org/wiki/libpcan} and libntcan \url{http://www.ros.org/wiki/libntcan}.
 
 \paragraph{Sick S300 laser scanners}
-The Sick S300 scanners on the frontside and backside of the robot are connected via USB to pc1. Configuration is done in \url{http://ros.org/wiki/cob_hardware_config} \textit{/config/laser\_front.yaml} and \textit{/config/laser\_rear.yaml}, documentation about parameters in \url{http://www.ros.org/wiki/cob_sick_s300}
+The Sick S300 scanners on the front side and backside of the robot are connected via USB to pc1. Configuration is done in the \texttt{cob\_hardware\_config} package in \texttt{config/laser\_front.yaml} and \texttt{config/laser\_rear.yaml}, documentation about parameters in \footnote{\url{http://www.ros.org/wiki/cob_sick_s300}}.
 
-To recevice data from the Sick S300 scanners check if the user is in the \textit{dialout} group
+To receive data from the Sick S300 scanners check if the user is in the \texttt{dialout} group
 \begin{lstlisting}
 groups
 \end{lstlisting}
@@ -261,7 +264,7 @@ rostopic hz /scan_front
 
 Check the rear scanner in the same way.
 
-tbd, setup safety region
+tbd, setup safety region: use windows based sick toolbox
 
 \paragraph{Hokuyo URG laser scanner}
 tbd
@@ -270,37 +273,36 @@ tbd
 tbd
 
 \paragraph{Base}
-You have to configurate the elmo controllers, all the information about the driver is in  \url{http://www.ros.org/wiki/cob_base_drive_chain},  you find the parameters of this configuration in  cob\_hardware\_config package in \textit{/config/base}
+You have to configure the elmo controllers, all the information about the driver is in \footnote{\url{http://www.ros.org/wiki/cob_base_drive_chain}}, you find the parameters of this configuration in \texttt{cob\_hardware\_config} package in \texttt{config/base}.
 
 \paragraph{Tray sensors}
-The tray sensors are defined in udev\_rules and the library libphidgets ( \url{http://www.ros.org/wiki/libphidgets} ) for this component is already built in the bringup level.
+The tray sensors are defined in udev\_rules and the library libphidgets\footnote{\url{http://www.ros.org/wiki/libphidgets}} for this component is already built in the bringup level.
 
 \paragraph{Schunk SDH with tactile sensors}
-tbd, firmware version
-Add the robot user to the group dialout in the /etc/group file.
+There is only one specific Firmware and library version supported. The version number is listed on \footnote{\url{http://ros.org/wiki/schunk_sdh}}. Add the robot user to the group \texttt{dialout} in the \texttt{/etc/group} file.
 
 \paragraph{Schunk powercubes (lwa, torso, tray)}
-Configuration in \url{http://www.ros.org/wiki/cob_hardware_config} \textit{/config/lwa.yaml} or \textit{/config/torso.yaml}, documentation about parameters in \url{http://www.ros.org/wiki/schunk_powercube_chain} and \url{http://www.ros.org/wiki/cob_trajectory_controller}.
+There are two parts where configuration needs to be set. One part of the configuration is done inside the firmware of the powercubes and the other one is done through ROS parameters.
+
+First make sure that the powercube settings in the firmware are correct. You can see and modify the parameters using the windows based PowerCubeCtrl software from the schunk homepage\footnote{\url{http://www.schunk-modular-robotics.com/left-navigation/service-robotics/service-download/software/prl/powercube.html}}. A sample configuration can be fount at \footnote{\url{tbd}}.
+
+The ROS configuration is done in \texttt{cob\_hardware\_config}, e.g. in \texttt{/config/lwa.yaml} or \texttt{/config/torso.yaml}. Documentation about the ROS parameters can be found at \footnote{\url{http://www.ros.org/wiki/schunk_powercube_chain}} and \footnote{\url{http://www.ros.org/wiki/cob_trajectory_controller}}.
 
 \paragraph{Head axis}
-Configuration in \url{http://www.ros.org/wiki/cob_hardware_config} \textit{/config/head.yaml} , documentation about parameters in \url{http://www.ros.org/wiki/cob_head_axis}.
+Configuration in \texttt{cob\_hardware\_config} in \texttt{/config/head.yaml}. Documentation about parameters can be found at \footnote{\url{http://www.ros.org/wiki/cob_head_axis}}.
 
 \paragraph{Prosilica cameras}
-You have to define the ip address for the cameras, on pc2 in the file /etc/network/interfaces you can copy these lines:
-\begin{lstlisting}
-auto eth1 
-iface eth1 inet static
-address 192.168.21.99   # IP of network adapter to cameras 
-netmask 255.255.255.0   # netmask
-\end{lstlisting}
+The IP address for the cameras should be \texttt{192.168.21.101} for the right camera and \texttt{192.168.21.102} for the left camera. You can set the camera IP address using the instructions on \footnote{\url{http://ros.org/wiki/cob_camera_sensors/AVT_Prosilica}}.
+
+You have to setup the network interface on the robot pc2 to access the cameras, please refer to section \ref{sec:network}.
 
 \paragraph{Kinect}
-pc2
+The kinect is connected to pc2.
 
 
 \subsection{Create a new user account}
 \label{sec:account}
-Due to the fact that all users need to be in the correct user groups, that the bash environment needs to be setup correctly and that user ids need to be synchronised between all pcs for the NFS to work, we facilitate the creation of a new user with a \textit{cobadduser} script. Before you add the first user using the \textit{cobadduser} script, please uncomment the following two lines in \textit{/etc/adduser.conf} on pc2
+Due to the fact that all users need to be in the correct user groups, that the bash environment needs to be setup correctly and that user ids need to be synchronised between all pcs for the NFS to work, we facilitate the creation of a new user with a \texttt{cobadduser} script. Before you add the first user using the \texttt{cobadduser} script, please uncomment the following two lines in \texttt{/etc/adduser.conf} on pc2
 \begin{lstlisting}
 EXTRA_GROUPS="dialout cdrom floppy audio video plugdev users"
 ADD_EXTRA_GROUPS=1
@@ -320,8 +322,10 @@ ssh cob3-X-pc1
 ssh cob3-X-pc2
 \end{lstlisting}
 
-\section{Network}
-Make sure you have name resolution and access to the robot pcs from your external pc. To satisfy the ROS communication you need a full DNS name lockup for all machines. Check it from your remote pc with
+\section{Network infrastructure for external access to the robot}
+For the robot internal network setup please refer to section \ref{sec:network}.
+
+Make sure you have name resolution and access to the robot pcs from your external pc. To satisfy the ROS communication you need a full DNS and reverse DNS name lockup for all machines. Check it from your remote pc with
 \begin{lstlisting}
 ping 192.168.0.101
 ping cob3-X-pc1
@@ -334,36 +338,47 @@ ping your_hostname
 
 If ping and DNS is not setup correctly, there are multiple ways to enable access and name resolution.
 
-\subsection{Setting up your building network}
-Setting up you building network to enable dns and portforwarding to the internal network.
+\subsection{Setting up your building network (recommended)}
+Setting up you building network to enable dns and port forwarding to the internal network.
 
 \subsection{Manual setup for each remote pc}
-You can setup a route to the internal network addresses. Please change the robot name and your network device to fit your settings. E.g. for connecting to cob3-X on eth0
+You can setup a route to the internal network addresses. Please change the robot name and your network device to fit your settings. E.g. for connecting to \texttt{cob3-X} on \texttt{eth0}
 \begin{lstlisting}
 sudo route add -net 192.168.0.0 netmask 255.255.0.0 gw cob3-X dev eth0
 \end{lstlisting}
 
-for connecting to cob3-X on wlan0
+for connecting to \texttt{cob3-X} on \texttt{wlan0}
 \begin{lstlisting}
 sudo route add -net 192.168.0.0 netmask 255.255.0.0 gw cob3-X dev wlan0
 \end{lstlisting}
 
 
-For name resolution you will probably have to edit the file \textit{/etc/hosts} on the robot pcs as well as on the remote pc. Therefore add the following addresses to the \textit{/etc/hosts} of your remote pc.
+For name resolution you will probably have to edit the file \texttt{/etc/hosts} on the robot pcs as well as on the remote pc. Therefore add the following addresses to the \texttt{/etc/hosts} of your remote pc.
 \begin{lstlisting}
 192.168.0.101 cob3-X-pc1
 192.168.0.102 cob3-X-pc2
 192.168.0.103 cob3-X-pc3
 \end{lstlisting}
 
-Add your ip adress and hostname to the \textit{/etc/hosts} of all robot pcs.
+Add your ip adress and hostname to the \texttt{/etc/hosts} of all robot pcs.
 
 \section{Calibration}
-divided into two steps (manual and automatic). parameters need to be filled in cob\_hardware\_config calibration/calibration.urdf.xacro
+The calibration is divided into two steps, the manual preparation and automatic calibration. All calibration parameters are defined in \texttt{cob\_hardware\_config/../calibration/calibration.urdf.xacro}
+
 \subsection{Manual calibration}\label{sec:manual_calibration}
-calibration for torso, tray with water balance
+
+\paragraph{Components with hardware reference positions}
+Move the components to their home position using the build in hardware reference positions, e.g. nonius of Kuka LBR.
+
+\paragraph{Components without hardware reference positions}
+You will have to manually calibrate the reference positions for each joint, e.g. for all Schunk powercubes in lwa, torso and tray as well as the head\_axis with a water balance. Therefore move the component into its home position, which means that the joint values for that configuration should all be zero. Record e.g. the joint states for the torso with
+\begin{lstlisting}
+rostopic echo /torso_controller/state
+\end{lstlisting}
+and add or subtract these values to the ones already defined as \texttt{torso\_*\_ref} in the \texttt{calibration.urdf.xacro}.
+
 \subsection{Automatic calibration}
-needs calibration from section \ref{sec:manual_calibration} used for intrinsic and extrinsic camera calibration, as well as for hand eye calibtarion. see \url{cob_calibration}
+The automatic calibration step calibrates can be used for intrinsic and extrinsic camera calibration, as well as for hand eye calibration. The manual calibration steps from section \ref{sec:manual_calibration} are a prerequisit for the automatic calibration. For more information and tutorials about the automatic calibration, see \footnote{\url{http://ros.org/wiki/cob_calibration}}.
 
 \section{Backup and restoring users}   
 tdb

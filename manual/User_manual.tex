@@ -4,7 +4,7 @@
 {\colorbox{red}{\textbf{NOTE:}}}\textbf{ Before you start working with the robot you have to attend a safety introduction. If you haven't got one yet, please contact your local robot administrator.}
 
 \section{Hardware overview}
-You can take a look of the technical data of Care-O-Bot on the official web site: \url{http://www.care-o-bot-research.org/care-o-bot-3/technical-data} and \url{http://www.care-o-bot-research.org/care-o-bot-3/components}. Also you can see the distribution of the different Care-O-Bots in \url{http://www.ros.org/wiki/Robots/Care-O-bot/distribution}.
+You can take a look of the technical data of Care-O-Bot on the official web site\footnote{\url{http://www.care-o-bot-research.org/care-o-bot-3/technical-data}} and \footnote{\url{http://www.care-o-bot-research.org/care-o-bot-3/components}}. Also you can see the distribution of the different Care-O-bots at \footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/distribution}}.
 
 An overview of the robot hardware is shown in the following picture.
 \begin{center}
@@ -14,13 +14,13 @@ An overview of the robot hardware is shown in the following picture.
 \section{Software overview}\label{sec:software_overview}
 We defined a layer called \textit{bringup layer}, which covers all hardware drivers and basic robot components. This is the layer where low level robot movements are enabled through the joystick or dashboard and the robot status including actuator and sensor information is acquired. In the following overview you can see the repositories which belong to the bringup layer.
 \begin{itemize}
-\item {cob\_extern}: The cob\_extern stack contains third party libraries needed for operating Care-O-bot. The packages are downloaded from the manufacturers website and not changed in any way.
-\item {cob\_common}: The cob\_common stack hosts common packages that are used within the Care-O-bot repository. Also the URDF description of the robot, which is the kinematic and dynamic model of the robot, 3D models of robot components, information required for gazebo to simulate the COB and utility packages or common message and service definitions.
-\item schunk\_modular\_robotics: This repository includes drivers and models for Schunk products, like powercubes or sdh.
-\item cob\_driver: The cob\_driver stack includes packages that provide access to the Care-O-bot hardware through ROS messages, services and actions. E.g. for mobile base, arm, camera sensors, laser scanners, etc...
-\item cob\_command\_tools: This stack provides the source code of the tools that you need to command the robot: cob\_command\_gui, cob\_dashboard, cob\_script\_server and cob\_teleop.
-\item cob\_robots:  The cob\_robots stack collects Care-O-bot components that are used in bringing up a robot. The user's interface to the cob\_robots stack is cob\_bringup. In this package you find all the hardware configuration and launch files to bringup the hardware.
-\item cob\_environments: This stack provides the parameters for default environment configurations.
+\item \texttt{cob\_extern}: The \texttt{cob\_extern} stack contains third party libraries needed for operating Care-O-bot. The packages are downloaded from the manufacturers website and not changed in any way.
+\item \texttt{cob\_common}: The \texttt{cob\_common} stack hosts common packages that are used within the Care-O-bot repository. Also the urdf description of the robot, which is the kinematic and dynamic model of the robot, 3D models of robot components, information required for gazebo to simulate the COB and utility packages or common message and service definitions.
+\item \texttt{schunk\_modular\_robotics}: This repository includes drivers and models for Schunk products, like powercubes or sdh.
+\item \texttt{cob\_driver}: The cob\_driver stack includes packages that provide access to the Care-O-bot hardware through ROS messages, services and actions. E.g. for mobile base, arm, camera sensors, laser scanners, etc...
+\item \texttt{cob\_command\_tools}: This stack provides the source code of the tools that you need to command the robot: \texttt{cob\_command\_gui}, \texttt{cob\_dashboard}, \texttt{cob\_script\_server} and \texttt{cob\_teleop}.
+\item \texttt{cob\_robots}:  The \texttt{cob\_robots} stack collects Care-O-bot components that are used in bringing up a robot. The user's interface to the \texttt{cob\_robots} stack is \texttt{cob\_bringup}. In this package you find all the hardware configuration and launch files to bringup the hardware.
+\item \texttt{cob\_environments}: This stack provides the parameters for default environment configurations.
 \end{itemize}
 
 \section{Batteries and power supply}
@@ -112,14 +112,14 @@ The command gui can be used for sending low level movement commands to the robot
  \includegraphics[width=1\textwidth]{images/cob_command_gui.png}
 \end{center}
 
-In this screen-shot you can see different columns: general, base, torso, tray, arm settings, arm pos, arm traj, sdh and eyes. The first column is very important, when you run the robot. If you want to move it, first initialize all components with a click on \textit{init all} and make sure that the \textbf{emergency stop is not active}. It will take some time and the actuators will do their homing sequence if necessary. After an emergency stop was activated, each component has to be recovered. Therefore press the button \textit{recover all}. 
+In this screen-shot you can see different columns: general, base, torso, tray, arm settings, arm pos, arm traj, sdh and eyes. The first column is very important, when you run the robot. If you want to move it, first initialize all components with a click on \texttt{init all} and make sure that the \textbf{emergency stop is not active}. It will take some time and the actuators will do their homing sequence if necessary. After an emergency stop was activated, each component has to be recovered. Therefore press the button \texttt{recover all}. 
 
-The other columns of the components have different predefined positions where you can move to. Additionally Each component has a \textit{stop}, \textit{init} and \textit{recover} button, to stop, initialize or recover a single component.
+The other columns of the components have different predefined positions where you can move to. Additionally Each component has a \texttt{stop}, \texttt{init} and \texttt{recover} button, to stop, initialize or recover a single component.
 
 \subsection{Rviz}
-RVIZ is a tool that visualizes data from the robot, e.g. the sensor data from the laser scanners, but also information about the coordinate systems and transformations or the images from the cameras. You can add your own items to RVIZ to visualize topics, see more information at \url{http://www.ros.org/wiki/rviz}.
+RVIZ is a tool that visualizes data from the robot, e.g. the sensor data from the laser scanners, but also information about the coordinate systems and transformations or the images from the cameras. You can add your own items to RVIZ to visualize topics, see more information at \footnote{\url{http://www.ros.org/wiki/rviz}}.
 
-RVIZ needs to be started on your \textbf{local machine}. To be able to visualize topics from the robot export your \textit{ROS\_MASTER\_URI} to the robot
+RVIZ needs to be started on your local machine. To be able to visualize topics from the robot export your \texttt{ROS\_MASTER\_URI} to the robot
 \begin{lstlisting}
 export ROS_MASTER_URI=http://cob3-X-pc1:11311
 rosrun rviz rviz

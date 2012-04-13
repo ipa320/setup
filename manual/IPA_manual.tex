@@ -127,7 +127,14 @@ backgroundcolor=\color{light-gray}
 
 % Kapitel einfgen
 \pagenumbering{arabic}
+\chapter*{About this manual}
+You can always get the latest version of this manual at \footnote{\url{https://github.com/ipa320/setup/blob/master/manual/IPA_manual.pdf}}.
+
+If you have comments, suggestions or would like to add something to the manual, please contact \href{mailto:fmw@ipa.fhg.de}{fmw@ipa.fhg.de}.
+
+\addtocontents{toc}{\protect\newpage}
 \include{ipa-apartment-rules}
+\addtocontents{toc}{\protect\newpage}
 \include{ipa-robot-rules}
 
 \end{document}

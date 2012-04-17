@@ -151,7 +151,7 @@ def main():
 		full_dir = os.path.expanduser(options.install_dir + "/" + stack)
 		if not os.path.exists(full_dir):
 			parser.error("selected stack " + stack + " not found in " + options.install_dir + ", aborting...")
-			exit(1)
+			return
 		
 		# set working directory to stack directory
 		os.chdir(full_dir)
@@ -297,7 +297,7 @@ def check_for_changes():
 	if status != "":
 		print "ERROR: found local changes in " + os.getcwd() + ": please commit or reset them first before continuing, aborting..."
 		print "Status: \n" + status
-		exit(1)
+		return
 
 
 ## check if a merge is conflicting

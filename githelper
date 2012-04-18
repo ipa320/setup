@@ -150,9 +150,11 @@ def main():
 		# change environment to stack path
 		full_dir = os.path.expanduser(options.install_dir + "/" + stack)
 		if not os.path.exists(full_dir):
-			parser.error("selected stack " + stack + " not found in " + options.install_dir + ", aborting...")
-			return
-		
+			print "Selected stack " + stack + " not found in " + options.install_dir + ", aborting..."
+			write_to_log("Selected stack " + stack + " not found in " + options.install_dir + ", aborting...")
+			write_to_log("")
+			continue
+
 		# set working directory to stack directory
 		os.chdir(full_dir)
 		print "-------------------------------------------"

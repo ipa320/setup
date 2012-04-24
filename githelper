@@ -194,25 +194,6 @@ def main():
 		else:
 			print 'Login on github successful.\n'
 
-		# github token:    ---- github seems to have removed tokens completely??? (token-based login has been deprecated)
-		#buf = StringIO()
-		#c = pycurl.Curl()
-		#c.setopt(pycurl.URL, 'https://github.com/settings/admin')
-		#c.setopt(pycurl.USERPWD, github_user + ':' + github_pw )
-		#c.setopt(c.WRITEFUNCTION, buf.write)
-		#c.perform()
-		#c.close()
-
-		#m = re.search('API token is <code>(.*)</code>', buf.getvalue()) 
-		#buf.close()
-		#if m:
-		#	token = m.group(1)
-		#	print 'Token is :' + token
-		#	os.system('git config --global github.token ' + token)
-		#else:
-		#	print 'Could not fetch token from github.com; wrong password? - aborting.'
-		#	sys.exit(1)
-		
 		# upload public ssh key to github (and if necessary, create it before that):
 		if not(os.path.exists(os.path.expanduser('~/.ssh/id_rsa'))):
 			answer = raw_input('No id_rsa key found; generate one? [<any key> (recommended) / n] : ')
@@ -238,30 +219,6 @@ def main():
 				sys.exit(1)
 			else:
 				print 'Successfully uploaded the key ' + rsaTitle
-
-		# curl https://github.com/settings/admin --user ipa-tys:xxx > test.txt
-
-		# fork repositories:
-		# curl https://api.github.com/repos/ipa320/setup/forks  (get forked repositories)
-		# curl -u "ipa-tys:xxx" -X POST https://api.github.com/repos/ipa320/cob_navigation/forks  (fork a repository)
-		# fork_answer = raw_input('Do you want to fork some repositories on github? [<any key> / n] : ')
-		# if fork_answer == 'y':
-		# 	stacksText = raw_input('Please enter the comma-separated list of stacks to fork: ')
-		# 	stacksText = re.sub(r'\s+', '', stacksText)
-		# 	stacks = stacksText.split(',')
-		# 	for stack in stacks:
-		# 		print "Forking " + stack
-		# 		s = 'curl -u "' + github_user + ':' + github_pw + '" -X POST https://api.github.com/repos/ipa320/' + stack + '/forks'
-		# 		os.system(s)
-		
-		# clone stacks:
-		if fork_answer == 'y':
-			answer = raw_input('Do you want to clone the forked repositories to the local machine (into ~/git/care-o-bot)? [<any key>/n] : ')
-			if answer=='y':
-				for stack in stacks:
-					s = 'git clone git@github.com:' + github_user + '/' + stack
-					os.system(s)
-
 
 		# display info for user to be added to his ~/.bashrc file
 		print "\n"

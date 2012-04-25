@@ -98,11 +98,8 @@ Commands:
 %prog setup
   Once user has created an account on github.com, this sets up everything to get started working 
 
-%prog fork -s STACK(s)
-  Forks the given list (comma-separated) of github repositories from ipa320 to the user account on github
-
-%prog clone [-s STACK(s), default=all stacks]
-  Clones the given list (comma-separated) of repositories from github
+%prog clone -s STACK(s)
+  Clones the given list (comma-separated) of repositories from github (if necessary, forks from ipa320 before cloning)
 
 %prog status [-s STACK(s), default=all stacks]
   Executes 'git status -uno' 
@@ -228,68 +225,15 @@ def main():
 		print '    export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH'
 		print ""
 
-	elif args[0] == "fork":
-		print 'githelper fork: forks the given list of repositories\n'
-		github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
-		if len(github_user) > 0:
-			answer = raw_input('Is "' + github_user + '" your github user name? [<Return>=Yes; or enter another user name]: ')
-			if len(answer) > 0:
-				github_user = answer
-		else:
-			github_user = raw_input('Please enter your github user name: ')
-	
-		# github password
-		print 'Please enter your github password: '
-		github_pw = getpass.getpass()
-
-		# try authentication on github
-		s = 'curl -u "' + github_user + ':' + github_pw + '" https://api.github.com'
-		answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
-		m = re.search('Bad credentials', answer)
-		if m:
-			print 'Login on github failed; wrong password? - aborting.\n'
-			sys.exit(1)
-		else:
-			print 'Login on github successful.\n'
-
-		stacks = options.stacks.split(',')
-
-		answer = subprocess.Popen('curl https://api.github.com/users/' + github_user + '/repos', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
-		repos = json.loads(answer)
-		user_repositories = []
-		for rep in repos:
-			user_repositories.append(rep['name'])
-
-		answer = subprocess.Popen('curl https://api.github.com/users/ipa320/repos', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
-		repos = json.loads(answer)
-		ipa_repositories = []
-		for rep in repos:
-			ipa_repositories.append(rep['name'])
-		
-		not_in_ipa = set(stacks) - set(ipa_repositories)
-		if len(not_in_ipa) > 0:
-			print 'The following requested repositories are not available in ipa320 and will be ignored: ' + ', '.join(list(not_in_ipa))
-			stacks = list( set(stacks) - not_in_ipa )
-		
-		already_forked = set(stacks) & set(user_repositories)
-		if len(already_forked) > 0:
-			print 'The following repositories are already forked from ipa320 to ' + github_user +  ' and will be ignored: ' + ', '.join(list(already_forked))
-			stacks = list( set(stacks) - already_forked )
-
-		print 'The following stacks will be forked now: ' + ','.join(stacks)
-		if len(stacks)>0:
-			clone = raw_input('Do you also want to clone these repositories to your local git account? [<any key> / n] : ')
-		for stack in stacks:
-			print stack
-			s = 'curl -u "' + github_user + ':' + github_pw + '" -X POST https://api.github.com/repos/ipa320/' + stack + '/forks'
-			subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-			if clone != 'n':
-				s = 'git clone git@github.com:' + github_user + '/' + stack + ' ~/git/care-o-bot/' + stack
-				subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-		print 'Done.'
-
 	elif args[0] == "clone":
 		print 'githelper clone: clones the given list of repositories\n'
+
+		if len(options.stacks)==0:
+			print 'Please provide a comma-separated list of stacks to clone; example:'
+			print 'githelper clone -s cob_command_tools,cob_robots'
+			print 'Aborting...\n'
+			sys.exit(1)
+	
 		github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
 		if len(github_user) > 0:
 			answer = raw_input('Is "' + github_user + '" your github user name? [<Return>=Yes; or enter another user name]: ')
@@ -313,29 +257,49 @@ def main():
 			print 'Login on github successful.\n'
 
 		stacks = options.stacks.split(',')
+		install_dir = os.path.expanduser(options.install_dir)
+		if not(os.path.exists( install_dir )):
+			os.makedirs( install_dir )
+		print 'Cloning into ' + install_dir
 
+		# get list of user repositories
 		answer = subprocess.Popen('curl https://api.github.com/users/' + github_user + '/repos', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
 		repos = json.loads(answer)
-		github_stacks = []
+		github_user_stacks = []
 		for rep in repos:
-			github_stacks.append(rep['name'])
+			github_user_stacks.append(rep['name'])
 
-		not_on_github = set(stacks) - set(github_stacks)
-		print 'The following repositories are not on on github and will be ignored: ' + ','.join(not_on_github)
-
-		stacks = list( set(stacks) & set(github_stacks) )
-		if len(stacks)==0:
-			stacks = github_stacks
-		print 'The following stacks will be cloned: ' + ','.join(stacks) + '\n'
-
+		# get list of ipa320 repositories
+		answer = subprocess.Popen('curl https://api.github.com/users/ipa320/repos', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+		repos = json.loads(answer)
+		github_ipa_stacks = []
+		for rep in repos:
+			github_ipa_stacks.append(rep['name'])
+		
 		for stack in stacks:
-			print stack
-			s = 'git clone git@github.com:' + github_user + '/' + stack + ' ~/git/care-o-bot/' + stack
-			answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-			if re.search('fatal', answer[1]):
-				print 'Repository ' + stack + ' could not be cloned. git error message:'
-				print answer[1] + '\n'
-		print 'Done.\n'
+			print 'Stack: ' + stack
+			if os.path.exists( os.path.join(install_dir, stack) ):
+				print "Already cloned into the specified directory; ignoring. Consider 'githelper pull' to get the latest changes."
+			elif stack in github_user_stacks:
+				s = 'git clone git@github.com:' + github_user + '/' + stack + ' ' + os.path.join(install_dir, stack)
+				answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+				if re.search('fatal', answer[1]):
+					print 'Repository ' + stack + ' could not be cloned. git error message:'
+					print answer[1] + '\n'
+			elif stack in github_ipa_stacks: # first fork, then clone
+				print 'Repository not forked yet. Now forking from ipa320...'
+				s = 'curl -u "' + github_user + ':' + github_pw + '" -X POST https://api.github.com/repos/ipa320/' + stack + '/forks'
+				subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+				print 'Now cloning...'
+				s = 'git clone git@github.com:' + github_user + '/' + stack + ' ~/git/care-o-bot/' + stack
+				answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+				if re.search('fatal', answer[1]):
+					print 'Repository ' + stack + ' could not be cloned. git error message:'
+					print answer[1] + '\n'
+			else: # neither in user nor in ipa repository
+				print 'This stack does not exist in ipa320 or in your personal github repository; ignoring.'
+			print 'Done.\n'
+
 
 
 # ./githelper fork -s blub,cob_command_tools,bla,cob_navigation,cob_manipulation,cob_common

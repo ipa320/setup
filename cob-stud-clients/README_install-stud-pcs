@@ -56,7 +56,7 @@ sudo apt-get install portmap nfs-common
 
 edit /etc/fstab
 
-	cob-kitchen-server:/home /home nfs rw,hard,intr 0 0
+	cob-kitchen-nas:/volume1/home-nas /home nfs rw,hard,intr 0 0
 
 
 -------------

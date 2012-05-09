@@ -60,6 +60,12 @@ edit /etc/fstab
 
 
 -------------
+setup shared directory on local pc
+-------------
+sudo mkdir /share
+sudo chmod -R a+rw /share
+
+-------------
 install zentyal
 -------------
 see http://trac.zentyal.org/wiki/Documentation/Community/ZentyalDesktop/Ubuntu

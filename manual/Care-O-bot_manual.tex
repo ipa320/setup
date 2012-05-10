@@ -75,7 +75,7 @@ backgroundcolor=\color{light-gray}
 %##########################################################################
 % Abkuerzungen 
 \let\abbrev\nomenclature
-\renewcommand{\nomname}{Abk"urzungsverzeichnis} 
+%\renewcommand{\nomname}{Abk"urzungsverzeichnis} 
 \setlength{\nomlabelwidth}{.24\hsize} % Punkte zw. Abkrzung und Erklrung
 \renewcommand{\nomlabel}[1]{#1 \dotfill}
 %\setlength{\nomitemsep}{-\parsep} % Zeilenabstnde verkleinern
@@ -122,8 +122,8 @@ backgroundcolor=\color{light-gray}
 \thispagestyle{empty}\cleardoublepage
 
 % Abkrzungsverzeichnis einfgen
-%\include{berichtnom}
-%\thispagestyle{empty}\cleardoublepage
+\include{nomenclature}
+\thispagestyle{empty}\cleardoublepage
 
 % Kapitel einfgen
 \pagenumbering{arabic}

@@ -63,6 +63,11 @@ import shlex
 import time
 import platform
 from optparse import OptionParser
+import subprocess
+import re
+import socket
+import getpass
+import json
 
 # Check for filesystem
 if platform.system() == 'Linux':
@@ -90,16 +95,22 @@ _usage = """usage: %prog [options] <command>
 
 Commands:
 
-%prog status [-s STACK, default=all stacks]
+%prog setup
+  Once user has created an account on github.com, this sets up everything to get started working 
+
+%prog clone -s STACK(s)
+  Clones the given list (comma-separated) of repositories from github (if necessary, forks from ipa320 before cloning)
+
+%prog status [-s STACK(s), default=all stacks]
   Executes 'git status -uno' 
 
-%prog pull [-s STACK, default=all stacks]
+%prog pull [-s STACK(s), default=all stacks]
   Pulls latest changes from your origin master 
 
-%prog push [-s STACK, default=all stacks]
+%prog push [-s STACK(s), default=all stacks]
   Pushes local commits to origin master 
 
-%prog merge [-u GITHUBUSER, default="ipa320"] | [-s STACK, default=all stacks]
+%prog merge [-u GITHUBUSER, default="ipa320"] | [-s STACK(s), default=all stacks]
   Merges from a remote branch 
 """
 
@@ -145,52 +156,204 @@ def main():
 		splitter.whitespace_split = True
 		stacks = list(splitter)
 
-	# operate git command on selected stacks
-	for stack in stacks:
-		# change environment to stack path
-		full_dir = os.path.expanduser(options.install_dir + "/" + stack)
-		if not os.path.exists(full_dir):
-			print "Selected stack " + stack + " not found in " + options.install_dir + ", aborting..."
-			write_to_log("Selected stack " + stack + " not found in " + options.install_dir + ", aborting...")
-			write_to_log("")
-			continue
+	if args[0] == "setup":
+		print 'githelper setup: helps you to set up everything to get started working with the Care-O-bot stacks on github\n'
 
-		# set working directory to stack directory
-		os.chdir(full_dir)
-		print "-------------------------------------------"
-		print "==> operating on " + os.getcwd()
-		print "-------------------------------------------"
+		# github account exists?
+		answer = raw_input("Do you have an account on github already? [<any key> / n] : ")
+		if answer == 'n':
+			print 'Please first create an account on github.com'
+			print '(Suggestion: choose ipa-xyz as github user name, xyz being your IPA account name)'
+			print 'Aborting...'
+			sys.exit(1)
 
-		if args[0] == "status":
-			write_to_log("status of stack " + stack + "...")
-			git_status()
-		elif args[0] == "pull":
-			print "pulling..."
-			write_to_log("pulling stack " + stack + "...")
-			check_for_update()
-			git_pull()
-		elif args[0] == "push":
-			print "pushing..."
-			write_to_log("pushing stack " + stack + "...")
-			check_for_update()
-			git_push()
-		elif args[0] == "merge":
-			print "merging..."
-			write_to_log("merging stack " + stack + "...")
-			check_for_update()
-			git_merge(stack, options)
-		elif args[0] == "mergeto":
-			print "merging to..."
-			write_to_log("merging to for stack " + stack + "...")
-			check_for_update()
-			git_mergeto(stack, options)
+		# github user name
+		github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+		if len(github_user) > 0:
+			answer = raw_input('Is "' + github_user + '" your github user name? [<Return>=Yes; or enter another user name]: ')
+			if len(answer) > 0:
+				github_user = answer
 		else:
-			write_to_log("command \"" + args[0] + "\" not supported.")
-			parser.error("command \"" + args[0] + "\" not supported.")
-		print "...done."
-		write_to_log("...done")
+			github_user = raw_input('Please enter your github user name: ')
+		os.system('git config --global github.user ' + github_user + ' >> ' + _output + ' 2>&1') # store github user name in ~/.gitconfig
+
+		# github password
+		print 'Please enter your github password: '
+		github_pw = getpass.getpass()
+		
+		# try authentication on github
+		s = 'curl -u "' + github_user + ':' + github_pw + '" https://api.github.com'
+		answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+		m = re.search('Bad credentials', answer)
+		if m:
+			print 'Login on github failed; wrong password? - aborting.\n'
+			sys.exit(1)
+		else:
+			print 'Login on github successful.\n'
+
+		# upload public ssh key to github (and if necessary, create it before that):
+		if not(os.path.exists(os.path.expanduser('~/.ssh/id_rsa'))):
+			answer = raw_input('No id_rsa key found; generate one? [<any key> (recommended) / n] : ')
+			if answer == 'n':
+				print 'Need ssh-key, aborting...'
+				sys.exit(1)
+			else:
+				os.system('ssh-keygen -t rsa -f ~/.ssh/id_rsa')
+
+		
+		answer = raw_input('id_rsa key found in ~/.ssh/id_rsa; upload public key to github? [<any key> (recommended) / n] : ')
+		if answer != 'n':
+			rsaTitle = os.getlogin() + '@' + socket.gethostname()
+			f = open(os.path.expanduser('~/.ssh/id_rsa.pub'), 'r')
+			rsaKey = f.read().strip()
+			f.close()
+			tt = 'curl -i -H "Accept: application/json" -H "Content-Type: application/json" --user ' + github_user + ':' + github_pw + ' -X POST -d \'{"title":"' + rsaTitle + '","key":"' + rsaKey + '"}\' https://api.github.com/user/keys'
+			output = subprocess.Popen(tt, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+			if re.search('Validation Failed', output):
+				print 'Key upload was unsuccessful.'
+				if re.search('key is already in use', output):
+					print 'Key is already uploaded to github; aborting...'
+				sys.exit(1)
+			else:
+				print 'Successfully uploaded the key ' + rsaTitle
+
+		# display info for user to be added to his ~/.bashrc file
+		print "\n"
+		print "Please update your ROS_PACKAGE_PATH to include ~/git/care-o-bot: Either run the following line"
+		print "on each terminal or add the line at the end of your ~/.bashrc file and source it again."
 		print ""
-		write_to_log("")
+		print '    export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH'
+		print ""
+
+	elif args[0] == "clone":
+		print 'githelper clone: clones the given list of repositories\n'
+
+		if len(options.stacks)==0:
+			print 'Please provide a comma-separated list of stacks to clone; example:'
+			print 'githelper clone -s cob_command_tools,cob_robots'
+			print 'Aborting...\n'
+			sys.exit(1)
+	
+		github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+		if len(github_user) > 0:
+			answer = raw_input('Is "' + github_user + '" your github user name? [<Return>=Yes; or enter another user name]: ')
+			if len(answer) > 0:
+				github_user = answer
+		else:
+			github_user = raw_input('Please enter your github user name: ')
+	
+		# github password
+		print 'Please enter your github password: '
+		github_pw = getpass.getpass()
+
+		# try authentication on github
+		s = 'curl -u "' + github_user + ':' + github_pw + '" https://api.github.com'
+		answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+		m = re.search('Bad credentials', answer)
+		if m:
+			print 'Login on github failed; wrong password? - aborting.\n'
+			sys.exit(1)
+		else:
+			print 'Login on github successful.\n'
+
+		stacks = options.stacks.split(',')
+		install_dir = os.path.expanduser(options.install_dir)
+		if not(os.path.exists( install_dir )):
+			os.makedirs( install_dir )
+		print 'Cloning into ' + install_dir
+
+		# get list of user repositories
+		answer = subprocess.Popen('curl https://api.github.com/users/' + github_user + '/repos', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+		repos = json.loads(answer)
+		github_user_stacks = []
+		for rep in repos:
+			github_user_stacks.append(rep['name'])
+
+		# get list of ipa320 repositories
+		answer = subprocess.Popen('curl https://api.github.com/users/ipa320/repos', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+		repos = json.loads(answer)
+		github_ipa_stacks = []
+		for rep in repos:
+			github_ipa_stacks.append(rep['name'])
+		
+		for stack in stacks:
+			print 'Stack: ' + stack
+			if os.path.exists( os.path.join(install_dir, stack) ):
+				print "Already cloned into the specified directory; ignoring. Consider 'githelper pull' to get the latest changes."
+			elif stack in github_user_stacks:
+				s = 'git clone git@github.com:' + github_user + '/' + stack + ' ' + os.path.join(install_dir, stack)
+				answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+				if re.search('fatal', answer[1]):
+					print 'Repository ' + stack + ' could not be cloned. git error message:'
+					print answer[1] + '\n'
+			elif stack in github_ipa_stacks: # first fork, then clone
+				print 'Repository not forked yet. Now forking from ipa320...'
+				s = 'curl -u "' + github_user + ':' + github_pw + '" -X POST https://api.github.com/repos/ipa320/' + stack + '/forks'
+				subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+				print 'Now cloning...'
+				s = 'git clone git@github.com:' + github_user + '/' + stack + ' ~/git/care-o-bot/' + stack
+				answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+				if re.search('fatal', answer[1]):
+					print 'Repository ' + stack + ' could not be cloned. git error message:'
+					print answer[1] + '\n'
+			else: # neither in user nor in ipa repository
+				print 'This stack does not exist in ipa320 or in your personal github repository; ignoring.'
+			print 'Done.\n'
+
+
+
+# ./githelper fork -s blub,cob_command_tools,bla,cob_navigation,cob_manipulation,cob_common
+# ./githelper clone -s, default
+
+	else:
+		# operate git command on selected stacks
+		for stack in stacks:
+			# change environment to stack path
+			full_dir = os.path.expanduser(options.install_dir + "/" + stack)
+			if not os.path.exists(full_dir):
+				print "Selected stack " + stack + " not found in " + options.install_dir + ", aborting..."
+				write_to_log("Selected stack " + stack + " not found in " + options.install_dir + ", aborting...")
+				write_to_log("")
+				continue
+
+			# set working directory to stack directory
+			os.chdir(full_dir)
+			print "-------------------------------------------"
+			print "==> operating on " + os.getcwd()
+			print "-------------------------------------------"
+
+			if args[0] == "status":
+				write_to_log("status of stack " + stack + "...")
+				git_status()
+			elif args[0] == "pull":
+				print "pulling..."
+				write_to_log("pulling stack " + stack + "...")
+				check_for_update()
+				git_pull()
+			elif args[0] == "push":
+				print "pushing..."
+				write_to_log("pushing stack " + stack + "...")
+				check_for_update()
+				git_push()
+			elif args[0] == "merge":
+				print "merging..."
+				write_to_log("merging stack " + stack + "...")
+				check_for_update()
+				git_merge(stack, options)
+			elif args[0] == "mergeto":
+				print "merging to..."
+				write_to_log("merging to for stack " + stack + "...")
+				check_for_update()
+				git_mergeto(stack, options)
+			else:
+				write_to_log("command \"" + args[0] + "\" not supported.")
+				parser.error("command \"" + args[0] + "\" not supported.")
+			print "...done."
+			write_to_log("...done")
+			print ""
+			write_to_log("")
+
+
 
 
 def write_to_log(message):

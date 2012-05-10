@@ -12,7 +12,8 @@ To pc1 all actuators are connected, sensors are connected both, to pc1 and pc2. 
 \subsection{Install operating system}
 The first step is to install the operating system for each pc, which means pc1 and pc2 (optionally pc3). We are using Ubuntu as the main operating system for the robot. We recommend to install the \textbf{Ubuntu 10.4 LTS (long term stable) 64-bit} version because this version is well tested to work with the hardware. 
 
-First please install Ubuntu (english version) creating a normal swap partition. Please choose \texttt{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \texttt{cob3-X-pc1} and \texttt{cob3-X-pc2}.
+First please install Ubuntu (english version) creating a normal swap partition. Please choose \texttt{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \texttt{cob3-$X$-pc1} and \texttt{cob3-X-pc2}.
+\abbrev{X}{Robot configuration number}
 
 \subsection{Install basic tools}
 Next we have to install some basic tools for the further setup of the pcs. In order to install the packages a internet connection is needed.
@@ -33,7 +34,7 @@ git clone git://github.com/ipa320/setup.git
 \subsection{Setup internal robot network}\label{sec:network}
 Inside the robot there's a router which connects the pcs and acts as gateway to the building network. Setup the router with the following configuration. 
 
-The ip address of the router should be \texttt{192.168.0.1} and for the internal network dhcp should be activated. Use \texttt{cob3-X} as hostname for the router. Register the MAC addresses of pc1 and pc2 so that they get a fixed ip address over dhcp. Use \texttt{192.168.0.101} for pc1 and \texttt{192.168.0.102} for pc2. Enable portforwarding for port \texttt{2201} to \texttt{192.168.0.101} and for port \texttt{2202} to \texttt{192.168.0.102}.
+The ip address of the router should be \texttt{192.168.0.1} and for the internal network dhcp should be activated. Use \texttt{cob3-X} as hostname for the router. Register the MAC addresses of pc1 and pc2 so that they get a fixed ip address over dhcp. Use \texttt{192.168.X.101} for pc1 and \texttt{192.168.X.102} for pc2. Enable portforwarding for port \texttt{2201} to \texttt{192.168.X.101} and for port \texttt{2202} to \texttt{192.168.X.102}.
 
 After ensuring that the network configuration of the router is setup correctly, we can configure the pcs. All pcs should have two ethernet ports. The upper one should be connected to the internal router. Sometimes the graphical network manager causes troubles, so it is best to remove it
 
@@ -51,7 +52,7 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet static
-address 192.168.0.101 # internal ip adress of pc1
+address 192.168.X.101 # internal ip adress of pc1
 netmask 255.255.255.0 # netmask
 
 auto eth1
@@ -68,7 +69,7 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet static
-address 192.168.0.102 # internal ip adress of pc2
+address 192.168.X.102 # internal ip adress of pc2
 netmask 255.255.255.0 # netmask
 
 auto eth1
@@ -80,6 +81,8 @@ netmask 255.255.255.0 # netmask
 \subsection{Install NFS}
 After the network is configured properly we can setup a NFS netween the robot pcs. pc2 will act as the NFS server and pc1 as NFS client.
 
+In order to protect the pc's access, it is recomended create a local administrator user in each pc, in this case if there is a problem in the sever (pc2) or in the network this local user can access.
+
 \subsubsection{NFS configuration on pc2 (server)}
 Install the NFS server package and create the NFS directory
 
@@ -88,7 +91,7 @@ sudo apt-get install nfs-kernel-server
 sudo mkdir /u 
 \end{lstlisting}
 
-Add the following following line to \texttt{/etc/fstab}:
+Add the following line to \texttt{/etc/fstab}:
 
 \begin{lstlisting}
 /home	/u	none	bind	0	0
@@ -106,11 +109,13 @@ Activate \texttt{IDMAPD} in \texttt{/etc/default/nfs-common} by changing the \te
 NEED_IDMAPD=yes
 \end{lstlisting}
 
-Copy the file \texttt{$\sim$/git/setup/nfs\_setup/server/exports} to \texttt{/etc/exports}
+
+Add the following line to \texttt{/etc/exports}:
 
 \begin{lstlisting}
-cp ~/git/setup/nfs_setup/server/exports /etc/exports
+/u      *(rw,fsid=0,sync,no_subtree_check)
 \end{lstlisting}
+
 
 Change the home directory of the \texttt{robot} user from \texttt{/home/username} to \texttt{/u/username} in the \texttt{/etc/passwd} file.
 
@@ -140,10 +145,10 @@ Edit \texttt{/etc/auto.master} and add
 /-	/etc/auto.direct
 \end{lstlisting}
 
-Copy the file \texttt{$\sim$/git/setup/nfs\_setup/client/auto.direct} to \textit{/etc/auto.direct}
+Create a new file \texttt{/etc/auto.direct} with the following line:
 
 \begin{lstlisting}
-cp ~/git/setup/nfs_setup/client/auto.direct /etc/auto.direct
+/u       -fstype=nfs4 192.168.X.102:/
 \end{lstlisting}
 
 Activate the NFS
@@ -174,7 +179,7 @@ Edit \texttt{/etc/ntp.conf}, change the server to \texttt{0.pool.ntp.org} and ad
 
 \begin{lstlisting} 
 server 0.pool.ntp.org
-restrict 192.168.0.0 mask 255.255.255.0 nomodify notrap
+restrict 192.168.X.0 mask 255.255.255.0 nomodify notrap
 \end{lstlisting}
 
 \subsubsection{NTP configuration on pc2 (NTP client)}

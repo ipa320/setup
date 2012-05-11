@@ -61,7 +61,6 @@ pdfkeywords={Care-O-bot, ROS, setup, install, manual}]{hyperref}
 \setcounter{totalnumber}{20}
 \renewcommand{\topfraction}{.9999}
 \renewcommand{\bottomfraction}{.9999}
-\renewcommand{\textfraction}{0}
 
 % source code
 \lstset{
@@ -75,7 +74,7 @@ backgroundcolor=\color{light-gray}
 %##########################################################################
 % Abkuerzungen 
 \let\abbrev\nomenclature
-\renewcommand{\nomname}{Abk"urzungsverzeichnis} 
+%\renewcommand{\nomname}{Abk"urzungsverzeichnis} 
 \setlength{\nomlabelwidth}{.24\hsize} % Punkte zw. Abkrzung und Erklrung
 \renewcommand{\nomlabel}[1]{#1 \dotfill}
 %\setlength{\nomitemsep}{-\parsep} % Zeilenabstnde verkleinern
@@ -122,8 +121,8 @@ backgroundcolor=\color{light-gray}
 \thispagestyle{empty}\cleardoublepage
 
 % Abkrzungsverzeichnis einfgen
-%\include{berichtnom}
-%\thispagestyle{empty}\cleardoublepage
+\include{nomenclature}
+\thispagestyle{empty}\cleardoublepage
 
 % Kapitel einfgen
 \pagenumbering{arabic}

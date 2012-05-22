@@ -1,13 +1,11 @@
 #!/bin/bash
 
-if [ "$USER" != "robot" ] ; 
-then
+if [ "$USER" != "robot" ]; then 
 	echo 'FATAL: CAN ONLY BE EXECUTED AS "robot" USER'
 	exit
 fi
 
-if [ "$HOSTNAME" != "$ROBOT-pc2" ] ; 
-then
+if [ "$HOSTNAME" != "$ROBOT-pc2" ]; then 
 	echo "FATAL: CAN ONLY BE EXECUTED ON PC2"
 	exit
 fi
@@ -19,6 +17,21 @@ echo "Syncing passwd file to other cob-pcs"
 sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$ROBOT-pc1:/etc/
 sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$ROBOT-pc3:/etc/
 
-echo "copy .bashrc"
-sudo cp /u/robot/git/setup/cob-pcs/user.bashrc /u/$1/.bashrc
+
+if [ "$1" != "" ]; then
+	echo "setup bash environment"
+	sudo cp /u/robot/git/setup/cob-pcs/user.bashrc /u/$1/.bashrc
+
+	if [ ! -d /u/$1/.ssh ]; then
+        	echo "create new ssh key"
+	        sudo -u $1 ssh-keygen -f /u/$1/.ssh/id_rsa
+	fi
+
+	echo "copying ssh-keys to other pcs, please enter password of new user"
+	sudo -u $1 ssh-copy-id -i /u/$1/.ssh/id_rsa $1@$ROBOT-pc1
+	sudo -u $1 ssh $1@$ROBOT-pc1 -e "logout"
+	sudo -u $1 ssh $1@$ROBOT-pc2 -e "logout"
+	sudo -u $1 ssh $1@$ROBOT-pc3 -e "logout"
+fi
+
 echo "done adding user"

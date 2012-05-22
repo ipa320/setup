@@ -23,12 +23,42 @@ sudo apt-get update
 sudo apt-get install vim tree openssh-server gitg meld curl
 \end{lstlisting}
 
+\subsection{Setup robot account for administration tasks}
 To facilitate the further setup we created a setup repository with some helpful scripts. To checkout the setup repository use:
 
 \begin{lstlisting}
 mkdir ~/git
 cd ~/git
 git clone git://github.com/ipa320/setup.git
+\end{lstlisting}
+
+Enable passwordless login to all robot pcs for robot user
+\begin{lstlisting}
+ssh-keygen
+ssh-copy-id cob3-X-pc1
+ssh cob3-X-pc1
+ssh cob3-X-pc2
+ssh cob3-X-pc3
+\end{lstlisting}
+
+Allow robot user to execute sudo command without password. Add \texttt{robot ALL=(ALL) NOPASSWD: ALL} to \texttt{/etc/sudoers} on all robot pcs
+\begin{lstlisting}
+sudo visudo -f /etc/sudoers
+\end{lstlisting}
+
+\subsection{Setup root account for administration tasks}
+Enable root account on all robot pcs
+\begin{lstlisting}
+ssh cob3-X-pcY
+sudo passwd root
+\end{lstlisting}
+
+Enable passwordless login to all robot pcs for root user
+\begin{lstlisting}
+su root
+ssh-keygen
+ssh-copy-id cob3-X-pcY
+ssh cob3-X-pcY
 \end{lstlisting}
 
 \subsection{Setup internal robot network}\label{sec:network}
@@ -221,7 +251,7 @@ sudo apt-get update
 sudo apt-get install ros-electric-care-o-bot-robot
 \end{lstlisting}
 
-\subsubsection{Creating an overlay for stacks}
+\subsubsection{Create overlays for stacks}
 If the release version of the stacks are not working for you, you can install overlays for individual stacks on the \texttt{robot} user account. To facilitate this process we have created a script which automatically generates ssh-keys, uploads them to github, forkes the stack (if necessary) and clones it to your machine. You can either install a read-only version from our main fork (\texttt{ipa320}) or insert your own username and password to fork and clone your own version of the stack. The script can be used by simply typing
 \begin{lstlisting}
 sudo apt-get install git-core curl
@@ -236,17 +266,22 @@ All stacks needed for the bringup layer are listed at section \ref{sec:software_
 \textbf{Note}: It should typically only be necessary to create an overlay for two stacks, the \texttt{cob\_robots} and the \texttt{cob\_environments} stack. All other stacks should be used from their release version. If you need to modify a stack to work for you, please send us a pull request to \texttt{ipa320} on \url{www.github.com}.
 
 \subsubsection{Setup bash environment}
-We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ from each pc. Copy the \texttt{cob.bash.bashrc.pcX} to \texttt{/etc/cob.bash.bashrc} on each pc.
+We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ on each pc. Copy the \texttt{cob.bash.bashrc.pcY} to \texttt{/etc/cob.bash.bashrc} on each pc.
 
 \begin{lstlisting}
-sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcX /etc/cob.bash.bashrc
+sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
 \end{lstlisting}
 
 All users have a pre-configured bash environment too, therefore copy \texttt{user.bashrc} to \texttt{$\sim$/.bashrc}
 \begin{lstlisting}
 cp ~/git/setup/cob-pcs/user.bashrc ~/.bashrc
 \end{lstlisting}
-At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://cob3-X-pc1:11311}, \texttt{ROBOT} to be \texttt{cob3-X} and \texttt{ROBOT\_ENV} to point to your environment.
+The \texttt{.bashrc} file is preconfigured for cob3-3 and ipa-apartment, please change the following lines to fit your robot configuration. At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://cob3-X-pc1:11311}, \texttt{ROBOT} to be \texttt{cob3-X} and \texttt{ROBOT\_ENV} to point to your environment.
+\begin{lstlisting}
+ROS_MASTER_URI=http://cob3-X-pc1:11311
+ROBOT=cob3-X
+ROBOT_ENV=YOUR_ENVIRONMENT
+\end{lstlisting}
 
 If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. If you check 
 \begin{lstlisting}
@@ -330,7 +365,8 @@ You have to setup the network interface on the robot pc2 to access the cameras, 
 The kinect is connected to pc2.
 
 
-\subsection{Create a new user account}
+\subsection{Create new user accounts}
+\subsubsection{Preparation}
 \label{sec:account}
 Due to the fact that all users need to be in the correct user groups, that the bash environment needs to be setup correctly and that user ids need to be synchronised between all pcs for the NFS to work, we facilitate the creation of a new user with a \texttt{cobadduser} script. Before you add the first user using the \texttt{cobadduser} script, please uncomment the following two lines in \texttt{/etc/adduser.conf} on pc2
 \begin{lstlisting}
@@ -338,19 +374,19 @@ EXTRA_GROUPS="dialout cdrom floppy audio video plugdev users"
 ADD_EXTRA_GROUPS=1
 \end{lstlisting}
 
-After that you can add a new user. On pc2 and with administration rights you can use the following instruction
+\subsubsection{Account creation}
+After finishing the preparation step you can add new users. On pc2 and with administration rights you can use the following instruction
 \begin{lstlisting}
-cd ~/git/setup
-sudo ./cobadduser new_user_name
+cobadduser new_user_name
 \end{lstlisting}
 
-All you need to do now is to login as the new user, create an ssh-key and add the key to the authorized keys to be able to login to all pcs without password. This is necessary for launching nodes remotely on all pcs. The following lines are an example for cob3-3:
+An ssh-key and passwordless login to all robot pcs should work now. You can test it with
 \begin{lstlisting}
-ssh-keygen
-ssh-copy-id cob3-3-pc1
-ssh cob3-3-pc1
-ssh cob3-3-pc2
+ssh cob3-X-pc1
+ssh cob3-X-pc2
+ssh cob3-X-pc3
 \end{lstlisting}
+Logging in from one to another robot pc should work without password.
 
 \section{Network infrastructure for external access to the robot}
 For the robot internal network setup please refer to section \ref{sec:network}.

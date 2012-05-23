@@ -46,7 +46,7 @@ Allow robot user to execute sudo command without password. Add \texttt{robot ALL
 sudo visudo -f /etc/sudoers
 \end{lstlisting}
 
-\subsection{Setup root account for administration tasks}
+\subsection{Setup root account for administration tasks} \label{sec:root_user}
 Enable root account on all robot pcs
 \begin{lstlisting}
 ssh cob3-X-pcY
@@ -80,7 +80,7 @@ auto lo
 iface lo inet loopback
 
 auto eth0
-iface eth0 inet static
+iface eth0 inet dhcp
 address 192.168.X.101 # internal ip adress of pc1
 netmask 255.255.255.0 # netmask
 
@@ -97,7 +97,7 @@ auto lo
 iface lo inet loopback
 
 auto eth0
-iface eth0 inet static
+iface eth0 inet dhcp
 address 192.168.X.102 # internal ip adress of pc2
 netmask 255.255.255.0 # netmask
 
@@ -110,7 +110,7 @@ netmask 255.255.255.0 # netmask
 \subsection{Install NFS}
 After the network is configured properly we can setup a NFS netween the robot pcs. pc2 will act as the NFS server and pc1 as NFS client.
 
-In order to protect the pc's access, it is recomended create a local administrator user in each pc, in this case if there is a problem in the sever (pc2) or in the network this local user can access.
+In order to protect the pc's access, it is recomended create a local administrator user (root user \ref{sec:root_user})in each pc, in this case if there is a problem in the sever (pc2) or in the network this local user can access.
 
 \subsubsection{NFS configuration on pc2 (server)}
 Install the NFS server package and create the NFS directory
@@ -224,7 +224,7 @@ For general instructions see \footnote{\url{http://www.ros.org/wiki/Robots/Care-
 \textbf{Install additional tools}
 \begin{lstlisting}
 sudo apt-get install openjdk-6-jdk zsh terminator
-sudo apt-get install python-pip
+sudo apt-get install python-pip python-yaml libpopt-dev
 sudo pip install -U rosrelease
 \end{lstlisting}
 \textbf{Setup your sources.list}
@@ -327,15 +327,35 @@ To check if there is some data published use
 rostopic hz /scan_front
 \end{lstlisting}
 
-Check the rear scanner in the same way.
+Check the rear scanner in the same way, the launch file is \texttt{laser\_rear.launch} and the topic \texttt{/scan\_rear}.
 
 tbd, setup safety region: use windows based sick toolbox
 
 \paragraph{Hokuyo URG laser scanner}
-tbd
+The Hokuyo laser scanner is connected to PC1 via USB. The configuration of this device is defined in the launch file as parameters \texttt{cob\_bringup/components/laser\_top.launch}.
+
+For testing the scanner you have to call the run the node:
+\begin{lstlisting}
+rostlaunch cob_bringup laser_top.launch
+\end{lstlisting}
+
+You can check the output of the topic:
+\begin{lstlisting}
+rostopic hz /scan_top
+\end{lstlisting}
 
 \paragraph{Relayboard}
-tbd
+The Relayboard is connected to PC1 via USB. The configuration file (\texttt{relayboard.yaml}) is in the package \texttt{cob\_hardware\_config} inside the folder \texttt{cob3-X/config}.
+
+For testing the Relayboard you have to run it using the launch file:
+\begin{lstlisting}
+rostlaunch cob_bringup relayboard.launch
+\end{lstlisting}
+
+And checking the output of the topic \texttt{/emergency\_stop\_state} prove its correct operation:
+\begin{lstlisting}
+rostopic echo /emergency_stop_state
+\end{lstlisting}
 
 \paragraph{Base}
 You have to configure the elmo controllers, all the information about the driver is in \footnote{\url{http://www.ros.org/wiki/cob_base_drive_chain}}, you find the parameters of this configuration in \texttt{cob\_hardware\_config} package in \texttt{config/base}.

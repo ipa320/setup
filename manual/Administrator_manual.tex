@@ -28,7 +28,18 @@ Next we have to install some basic tools for the further setup of the pcs. In or
 
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install vim tree openssh-server gitg meld curl
+sudo apt-get install vim tree gitg meld curl
+\end{lstlisting}
+
+\subsection{Setup ssh server}
+Install openssh server on all robot pcs
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install openssh-server
+\end{lstlisting}
+Let the server send a alive interval to clients to not get a broken pipe. Execute the following line on all robot pcs
+\begin{lstlisting}
+echo "ClientAliveInterval 60" | sudo tee -a /etc/ssh/sshd_config
 \end{lstlisting}
 
 \subsection{Setup robot account for administration tasks}

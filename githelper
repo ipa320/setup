@@ -437,12 +437,16 @@ def check_for_update():#TODO check for new version, use timeout if no internet c
 
 ## returns a list of all stacks in options.install_dir
 def get_all_stacks(options):
-	#print "get_all_stacks ..."
+	stacks = []
+
+	# check if install_dir exists, otherwise return empty list of stacks
+	if not os.path.exists(os.path.expanduser(options.install_dir)):
+		return stacks
+
 	# get all directories
 	dirs = os.walk(os.path.expanduser(options.install_dir)).next()[1]
 	
 	# check if directory is a stack
-	stacks = []
 	for directory in dirs:
 		if os.path.exists(os.path.expanduser(options.install_dir) + "/" + directory + "/stack.xml"):
 			#print "directory, "is a stack"

@@ -1,18 +1,26 @@
-
 \chapter{Administrator manual}
 \label{chap:admin}
+
+The following administrator manual requires some enhanced knowledge about
+\begin{itemize}
+\item Linux/Ubuntu
+\item Network configuration
+\item Source code management with git
+\item ROS installation and usage
+\end{itemize}
+If you are missing some of this requirements or feel uncomfortable with what you are doing, please interrupt and ask somebody to help you before continuing.
 
 %#################################################################################################
 \section{Setup robot pcs}
 %#################################################################################################
-On all Care-O-bots there are at least two pcs. Some Care-O-bots have an optional third pc, which is not coveres by this manual. Within this section we will guide you through setting up new pcs. When nothing otherwise is mentioned the following instructions are for both pc1 and pc2, please do the same steps on both pcs.
+On all Care-O-bots there are at least two pcs. Some Care-O-bots have an optional third pc, which is not covered by this manual. Within this section we will guide you through setting up new pcs. When nothing otherwise is mentioned the following instructions are for both pc1 and pc2, please do the same steps on both pcs.
 
 To pc1 all actuators are connected, sensors are connected both, to pc1 and pc2. All camera sensors are connected to pc2, whereas all other sensors like e.g. laser scanners are connected to pc1. By default pc3 is not connected to any hardware and therefore can be used as additional computing power.
 
 \subsection{Install operating system}
 The first step is to install the operating system for each pc, which means pc1 and pc2 (optionally pc3). We are using Ubuntu as the main operating system for the robot. We recommend to install the \textbf{Ubuntu 10.4 LTS (long term stable) 64-bit} version because this version is well tested to work with the hardware. 
 
-First please install Ubuntu (english version) creating a normal swap partition. Please choose \texttt{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \texttt{cob3-X-pc1} and \texttt{cob3-X-pc2}.
+First please install Ubuntu (English version) creating a normal swap partition. Please choose \texttt{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \texttt{cob3-X-pc1} and \texttt{cob3-X-pc2}.
 \abbrev{X}{Robot configuration number}
 
 \subsection{Install basic tools}
@@ -20,7 +28,18 @@ Next we have to install some basic tools for the further setup of the pcs. In or
 
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install vim tree openssh-server gitg meld curl
+sudo apt-get install vim tree gitg meld curl
+\end{lstlisting}
+
+\subsection{Setup ssh server}
+Install openssh server on all robot pcs
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install openssh-server
+\end{lstlisting}
+Let the server send a alive interval to clients to not get a broken pipe. Execute the following line on all robot pcs
+\begin{lstlisting}
+echo "ClientAliveInterval 60" | sudo tee -a /etc/ssh/sshd_config
 \end{lstlisting}
 
 \subsection{Setup robot account for administration tasks}

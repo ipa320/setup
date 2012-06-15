@@ -110,8 +110,8 @@ export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 
 
-export ROS_MASTER_URI=http://cob3-3-pc1:11311
-export ROBOT=cob3-3
+export ROS_MASTER_URI=http://myrobot-pc1:11311
+export ROBOT=myrobot
 export ROBOT_ENV=ipa-apartment
 
 COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)

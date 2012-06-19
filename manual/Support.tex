@@ -1,0 +1,42 @@
+\chapter{Support}\label{chap:support}
+\section{General support}
+Please consult ros answers\footnote{\url{http://answers.ros.org/questions/?tags=care-o-bot,cob_driver&start_over=true}} to see if your problem is already known. 
+
+Please please contact your local administrator or use the mailing list\footnote{\url{http://www.care-o-bot-research.org/contributing/mailing-lists}} for additional support or feature discussion.
+
+\section{Report a bug}
+If you discover a bug in one of the Care-O-bot stacks, please fill a ticket on our trac system\footnote{\url{http://www.care-o-bot-research.org/trac}}. A view of active tickets can be found at \footnote{\url{http://www.care-o-bot-research.org/trac/report/1}}.
+
+
+\section{Useful tools for debugging and working with the robot}
+In this section we introduce some useful tools which can be used while working with the robot to facilitate the source code management.
+
+\subsection{Modifying and developing code}
+If you want to modify code from existing stacks, we recommend to create an overlay of the stack in you home directory. To facilitate this process we have created a \textit{create\_overlay.sh} script which automatically generates ssh-keys, uploads them to github, forkes the stack (if necessary) and clones it to your machine. You can either install a read-only version from our main fork (\textit{ipa320}) or insert your own username and password to fork and clone your own version of the stack. The script can be used by simply typing
+\begin{lstlisting}
+cd ~/git/setup
+./create_overlay.sh [stack]
+\end{lstlisting}
+
+\subsection{Working with git}
+If you are not used to it, working with git is difficult in the beginning. Nevertheless it is a great tool which helps a lot managing decentralised development of our source code. \url{www.github.com} offers a reliable hosting service and offers tools for graphical visualisation or merging pull requests. We recommend everybody to do some basic git tutorials which can be found on various places in the web.
+
+To make your live with git a little easier we have created a tool called \texttt{githelper}, which allows you to do git operations like getting the status, pushing, pulling and even merging in an easy way over multiple repositories at the same time. To know what githelper can do type
+\begin{lstlisting}
+githelper -h
+\end{lstlisting}
+
+\section{FAQ}
+In this section we try to answer some frequently asked questions. If your question is not covered, but you think it is relevant for others too, please contact \href{mailto:fmw@ipa.fhg.de}{fmw@ipa.fhg.de}.
+
+\subsection{Working with the robot}
+\paragraph{The robot doen't move when I press a button on the command\_gui.}
+Make sure that the emergency stop is released properly, see section \ref{sec:emergency_stop}. To inspect which component is failing have a look at your dashboard, see section \ref{subsec:dashboard}.
+
+\subsection{Developing on the robot}
+\paragraph{I have modified code or developed new code, how can others use it?}
+Use the pull request feature at \url{www.github.com}, for help see \footnote{\url{http://help.github.com/send-pull-requests/}}.
+
+\paragraph{I have new code, where should I put it?}
+We already have a big variety of stacks containing different functionalities. An overview of all stacks which belong to the bringup layer are listed in section \ref{sec:software_overview}. Except for new drivers there shouldn't be a need for you to add new packages to this stacks.\\
+Above the bringup layer there are several stacks for navigation, manipulation and perception functionalities. It is hard to say in which stack you can put your code, therefore please contact \href{mailto:fmw@ipa.fhg.de}{fmw@ipa.fhg.de} to discuss where your code fits best.

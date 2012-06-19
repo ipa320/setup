@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+import telnetlib
+import string
+import sys
+import socket
+
+class sunrise:
+	def __init__(self):
+		notconnected = True
+		while(notconnected):
+			try:
+				self.tn = telnetlib.Telnet(host="192.168.42.146", timeout=2)
+				notconnected = False
+			except socket.timeout:
+				print "timeout, trying again ..."
+			except socket.error:
+				print "socket error, trying again ..."
+
+	def recover_sunrise(self):
+		print "Recovering Sunrise"
+		print self.tn.read_until("->")
+		print self.tn.read_eager()
+		self.tn.write("<scho\n")
+		print self.tn.read_until("->")
+		print self.tn.read_eager()
+		print "done recovering sunrise"
+
+	def check_init(self):
+                #tn.set_debuglevel(10)
+                self.tn.read_until("->")
+                self.tn.read_eager()
+                self.tn.write("<scho\n")
+                teststr = self.tn.read_until("->")
+                teststr += self.tn.read_eager()
+                #print teststr
+                if(string.find(teststr, "unknown symbol name") != -1):
+			print "not initialized"
+			return False
+		else:
+			print "already intialized"
+			return True	
+
+	def init(self):
+		if(self.check_init() == False):
+			print "Initializing Sunrise"
+			self.tn.write("<l\n")
+			print "Initializing sunrise, this may take 1-2 minutes"
+			print self.tn.read_until("State RUNNING reached !")
+			print self.tn.read_eager()
+			print "done initializing"
+		else:
+			print "already initialized"
+
+	def reboot(self):
+		print "Rebooting Sunrise"
+		print self.tn.read_until("->")
+		print self.tn.read_eager()
+		self.tn.write("reboot\n")
+		teststr = self.tn.read_until("->")
+		teststr += self.tn.read_eager()
+		print teststr
+		print self.tn.read_eager()
+
+if __name__ == "__main__":
+	s = sunrise()
+	if(len(sys.argv) == 2):
+		if(sys.argv[1] == "checkInit"):
+			s.check_init()
+		elif(sys.argv[1] == "Init"):
+			s.init()
+		else:
+			print sys.argv	
+	else:
+		print "usage: sunrise [checkInit , Init , Reboot]"

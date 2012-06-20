@@ -173,56 +173,29 @@ def main():
 
 	if args[0] == "setup":
 		print 'githelper setup: helps you to set up everything to get started working with the Care-O-bot stacks on github\n'
-
-		# github account exists?
-		answer = raw_input("Do you have an account on github already? [<any key> / n] : ")
-		if answer == 'n':
-			print 'Please follow one these two options:'
-			print '(1) Clone repositories from github read-only (no github account necessary):'
-			print '    githelper clone -r -s STACK(s)'
-			print '(2) Create an account on github.com (allows forking, read/write cloning and pushing changes to your forked remote repository)'
-			print '    (Suggestion: choose ipa-xyz as github user name, xyz being your IPA account name)'
-			print 'Aborting...'
-			sys.exit(1)
-
-		# setup global git user.name and user.email and set github.name and github.email to the same
-		git_username = subprocess.Popen('git config --global user.name', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
-		if len(git_username) > 0:
-			print 'Found the following global git user.name: ' + git_username
-			answer = raw_input('Should this setting be kept? [<Return>=Yes; or enter another name]: ')
-			if len(answer) > 0:
-				git_username = answer
-		else:
-			git_username = raw_input('Please enter your full name: ')
-		os.system('git config --global user.name "' + git_username + '"') #+ ' >> ' + _output + ' 2>&1') # store github user name in ~/.gitconfig
-		os.system('git config --global github.name "' + git_username + '"') # + ' >> ' + _output + ' 2>&1') # store github user name in ~/.gitconfig
-
-		git_useremail = subprocess.Popen('git config --global user.email', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
-		if len(git_useremail) > 0:
-			print 'Found the following global git user.email: ' + git_useremail
-			answer = raw_input('Should this setting be kept? [<Return>=Yes; or enter another user email]: ')
-			if len(answer) > 0:
-				git_useremail = answer
-		else:
-			git_useremail = raw_input('Please enter your email address: ')
-		os.system('git config --global user.email "' + git_useremail + '" >> ' + _output + ' 2>&1') # store github user email in ~/.gitconfig
-		os.system('git config --global github.email "' + git_useremail + '" >> ' + _output + ' 2>&1') # store github user email in ~/.gitconfig
-
-		# setup global github user name
+		print 'Your github and .gitconfig user names will be overwritten to match your github account name. Your email addresses stored in github and .gitconfig will also be overwritten to match each other.'
+		print '\nIf you do not have an account on github yet, please interrupt and do one the following:'
+		print '(1) Clone repositories from github read-only (no github account necessary):'
+		print '    githelper clone -r -s STACK(s)'
+		print '(2) Create an account on github.com (allows forking, read/write cloning and pushing changes to your forked remote repository)'
+		print '    (Suggestion: choose ipa-xyz as github user name, xyz being your IPA account name)\n'
+		
 		github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
-		if len(github_user) > 0:
-			answer = raw_input('Is "' + github_user + '" your github user name? [<Return>=Yes; or enter another user name]: ')
-			if len(answer) > 0:
-				github_user = answer
+		if len(github_user)==0:
+			github_user = raw_input('Please enter your github account name: ')
+			os.system('git config --global github.user ' + github_user)
 		else:
-			github_user = raw_input('Please enter your github user name: ')
-		os.system('git config --global github.user "' + github_user + '" >> ' + _output + ' 2>&1') # store github user name in ~/.gitconfig
+			print 'Found the following github account in .gitconfig: ' + github_user
+			ans = raw_input('Press enter to use this account, or type in another github account to use: ')
+			if len(ans)>0:
+				github_user = ans
+			os.system('git config --global github.user ' + github_user)
+		os.system('git config --global github.name ' + github_user)
+		os.system('git config --global user.name ' + github_user)
 
-		# github password
 		print 'Please enter your github password: '
 		github_pw = getpass.getpass()
-		
-		# try authentication on github
+		# try authentication on github:
 		s = 'curl -u "' + github_user + ':' + github_pw + '" https://api.github.com'
 		answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
 		m = re.search('Bad credentials', answer)
@@ -232,36 +205,54 @@ def main():
 		else:
 			print 'Login on github successful.\n'
 
+		# fetch email from github:
+		ans = subprocess.Popen('curl https://api.github.com/users/ipa-tys', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+		userdata = json.loads(ans) 
+		if "email" not in userdata or len(userdata['email'])==0:
+			user_email = subprocess.Popen('git config --global user.email', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+			if len(user_email) > 0:
+				print "No email address found on github. Uploading email address found in .gitconfig: " + user_email
+				os.system('git config --global github.email "' + user_email + '"')
+				os.system('curl -s -u ipa-tys:anne2606 -i -X PATCH -d \'{"email":"' + user_email + '"}\' https://api.github.com/user > /dev/null')
+			else:
+				print "No email address found on github and in .gitconfig."
+				user_email = raw_input("Please enter your email address: ")
+				os.system('git config --global user.email "' + user_email + '"')
+				os.system('git config --global github.email "' + user_email + '"')
+				os.system('curl -s -u ipa-tys:anne2606 -i -X PATCH -d \'{"email":"' + user_email + '"}\' https://api.github.com/user > /dev/null')
+		else:
+			print "Adding email address found on github to .gitconfig: " + userdata['email']
+			os.system('git config --global user.email "' + userdata['email'] + '"')
+			os.system('git config --global github.email "' + userdata['email'] + '"')
+
 		# upload public ssh key to github (and if necessary, create it before that):
 		if not(os.path.exists(os.path.expanduser('~/.ssh/id_rsa'))):
-			answer = raw_input('No id_rsa key found; generate one? [<any key> (recommended) / n] : ')
+			answer = raw_input('\nNo id_rsa key found; generate one? [<any key> (recommended) / n] : ')
 			if answer == 'n':
 				print 'Need ssh-key, aborting...'
 				sys.exit(1)
 			else:
 				os.system('ssh-keygen -t rsa -f ~/.ssh/id_rsa')
 
-		
-		answer = raw_input('id_rsa key found in ~/.ssh/id_rsa; upload public key to github? [<any key> (recommended) / n] : ')
-		if answer != 'n':
-			rsaTitle = pwd.getpwuid(os.getuid())[0] + '@' + socket.gethostname()
-			f = open(os.path.expanduser('~/.ssh/id_rsa.pub'), 'r')
-			rsaKey = f.read().strip()
-			f.close()
-			tt = 'curl -i -H "Accept: application/json" -H "Content-Type: application/json" --user ' + github_user + ':' + github_pw + ' -X POST -d \'{"title":"' + rsaTitle + '","key":"' + rsaKey + '"}\' https://api.github.com/user/keys'
-			output = subprocess.Popen(tt, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
-			if re.search('key is already in use', output):
-				print 'Key is already uploaded to github; done.'
-			elif re.search('Validation Failed', output):
-				print 'Key upload was unsuccessful: Validation failed. Aborting...'
-				sys.exit(1)
-			else:
-				print 'Successfully uploaded the key ' + rsaTitle
+		print '\nFound public RSA key; trying to upload to github...'
+		rsaTitle = pwd.getpwuid(os.getuid())[0] + '@' + socket.gethostname()
+		f = open(os.path.expanduser('~/.ssh/id_rsa.pub'), 'r')
+		rsaKey = f.read().strip()
+		f.close()
+		tt = 'curl -i -H "Accept: application/json" -H "Content-Type: application/json" --user ' + github_user + ':' + github_pw + ' -X POST -d \'{"title":"' + rsaTitle + '","key":"' + rsaKey + '"}\' https://api.github.com/user/keys'
+		output = subprocess.Popen(tt, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+		if re.search('key is already in use', output):
+			print 'Key is already uploaded to github; done.'
+		elif re.search('Validation Failed', output):
+			print 'Key upload was unsuccessful: Validation failed. Aborting...'
+			sys.exit(1)
+		else:
+			print 'Successfully uploaded the key ' + rsaTitle
 
 		# display info for user to be added to his ~/.bashrc file
-		print "\n"
+		print ""
 		print "Setup completed."
-		print "\n"
+		print ""
 		print "Please update your ROS_PACKAGE_PATH to include ~/git/care-o-bot: Either run the following line"
 		print "on each terminal or add the line at the end of your ~/.bashrc file and source it again."
 		print ""

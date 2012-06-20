@@ -65,17 +65,13 @@ cob_bringup,\
 cob_bringup_sim,\
 cob_hardware_config,\
 schunk_powercube_chain,\
-schunk_hardware_config,\
 cob_command_gui,\
 cob_default_robot_config,\
-cob_default_env_config,\
-cob_forcetorque,\
-cob_joint_state_aggregator
+cob_default_env_config
 
 PACKAGES_NAVIGATION=\
-cob_2dnav,\
-cob_platform_ctrl,\
-cob_2dslam
+cob_navigation_global,\
+cob_navigation_config
 
 PACKAGES_MANIPULATION=\
 cob_manipulator,\

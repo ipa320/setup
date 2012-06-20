@@ -177,8 +177,11 @@ def main():
 		# github account exists?
 		answer = raw_input("Do you have an account on github already? [<any key> / n] : ")
 		if answer == 'n':
-			print 'Please first create an account on github.com'
-			print '(Suggestion: choose ipa-xyz as github user name, xyz being your IPA account name)'
+			print 'Please follow one these two options:'
+			print '(1) Clone repositories from github read-only (no github account necessary):'
+			print '    githelper clone -r -s STACK(s)'
+			print '(2) Create an account on github.com (allows forking, read/write cloning and pushing changes to your forked remote repository)'
+			print '    (Suggestion: choose ipa-xyz as github user name, xyz being your IPA account name)'
 			print 'Aborting...'
 			sys.exit(1)
 
@@ -303,7 +306,7 @@ def main():
 			git_useremail = subprocess.Popen('git config --global user.email', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
 			github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
 			if len(git_username)==0 or len(git_useremail)==0 or len(github_user)==0:
-				print "Missing git/github user information. Please run 'githelper setup' first."
+				print "Missing git/github user information. Please run 'githelper setup' first, or clone read-only: 'githelper clone -r -s STACK(s)'."
 				print 'Aborting.\n'
 				sys.exit(1)
 

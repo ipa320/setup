@@ -7,6 +7,10 @@
     local-name: cob_calibration
     version: master
 - git:
+    uri: 'git://github.com/ipa320/cob_calibration_data.git'
+    local-name: cob_calibration_data
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_command_tools.git'
     local-name: cob_command_tools
     version: master

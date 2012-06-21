@@ -183,15 +183,11 @@ def main():
 		github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
 		if len(github_user)==0:
 			github_user = raw_input('Please enter your github account name: ')
-			os.system('git config --global github.user ' + github_user)
 		else:
 			print 'Found the following github account in .gitconfig: ' + github_user
 			ans = raw_input('Press enter to use this account, or type in another github account to use: ')
 			if len(ans)>0:
 				github_user = ans
-			os.system('git config --global github.user ' + github_user)
-		os.system('git config --global github.name ' + github_user)
-		os.system('git config --global user.name ' + github_user)
 
 		print 'Please enter your github password: '
 		github_pw = getpass.getpass()
@@ -204,6 +200,10 @@ def main():
 			sys.exit(1)
 		else:
 			print 'Login on github successful.\n'
+			# if login correct, make sure all corresponding entries in .gitconfig are identical to the github account name:
+			os.system('git config --global github.user ' + github_user)
+			os.system('git config --global github.name ' + github_user)
+			os.system('git config --global user.name ' + github_user)
 
 		# fetch email from github:
 		ans = subprocess.Popen('curl https://api.github.com/users/' + github_user, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()

@@ -1,4 +1,8 @@
 - git:
+    uri: 'git://github.com/ipa320/accompany.git'
+    local-name: accompany
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_android.git'
     local-name: cob_android
     version: master

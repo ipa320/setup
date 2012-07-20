@@ -67,6 +67,10 @@
     local-name: cob_scenarios
     version: master
 - git:
+    uri: 'git://github.com/ipa320/cob_scenario_states.git'
+    local-name: cob_scenario_states
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_simulation.git'
     local-name: cob_simulation
     version: master

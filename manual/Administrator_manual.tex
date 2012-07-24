@@ -329,7 +329,45 @@ rostopic hz /scan_front
 
 Check the rear scanner in the same way, the launch file is \texttt{laser\_rear.launch} and the topic \texttt{/scan\_rear}.
 
-tbd, setup safety region: use windows based sick toolbox
+You have to configurate the scanners and setup the safety region for each scanner. It can be done using the Sick CDS software \footnote{\url{http://www.sick.com/group/EN/home/service/software/Pages/configurationsoftwarecds.aspx}}.
+
+We recommend the following configuration:
+\begin{itemize}
+\item System parameters:
+\begin{itemize}
+\item Aplication name: COB3
+\item Device name S300[H]: S300-V
+\item Device name S300[G]: S300-H
+\item Name of the user: IPA
+\end{itemize}
+\item Resolution/scanning range:
+\begin{itemize}
+\item Aplication: Mobile
+\item Resolution: 30 mm
+\end{itemize}
+\item Restart:
+\begin{itemize}
+\item Time delayed by: 2 Seconds
+\end{itemize}
+\item Field sets:
+\\
+\includegraphics[width=0.65\textwidth]{images/area.png}
+\\ The safety region should have 4 points:
+\begin{itemize}
+\item x=15 cm y=12 cm
+\item x=-15 cm y=12 cm
+\item x$\approx$15 cm y$\approx$2.5 cm (depend on the cover)
+\item x$\approx$-15 cm y$\approx$2.5 cm (depend on the cover)
+\end{itemize}
+\item Measure data output:
+\begin{itemize}
+\item Baud rate: 500 kBaud
+\item Send mode: Continuous data output
+\item Measured data aoutput: Distance
+\item Beginning: -45
+\item End: 225
+\end{itemize}
+\end{itemize}
 
 \paragraph{Hokuyo URG laser scanner}
 The Hokuyo laser scanner is connected to PC1 via USB. The configuration of this device is defined in the launch file as parameters \texttt{cob\_bringup/components/laser\_top.launch}.

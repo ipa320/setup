@@ -525,7 +525,21 @@ and add or subtract these values to the ones already defined as \texttt{torso\_*
 \subsection{Automatic calibration}
 The automatic calibration step calibrates can be used for intrinsic and extrinsic camera calibration, as well as for hand eye calibration. The manual calibration steps from section \ref{sec:manual_calibration} are a prerequisit for the automatic calibration. For more information and tutorials about the automatic calibration, see \footnote{\url{http://ros.org/wiki/cob_calibration}}.
 
-\section{Backup and restoring users}   
-tdb
+\section{Backup and Restore} 
+\subsection{Backup}  
+It is recommended backup your system when you have a stable software version. You can backup in an external hard disk the whole disks of your robot using the tool dd.
+\\Be sure hat the external device hat enough free space as a ext4 partition, you can format it using gparted \footnote{\url{http://gparted.sourceforge.net/}} . With the new partition mounted in your system execute the following command:
+\begin{lstlisting}
+sudo dd if=/dev/sdaX of=/dev/sdbY
+\end{lstlisting}
+/dev/sdaX is the local partition where ubuntu is installed and /dev/sdbY is the partition where your external device is mounted. With this command you copy the whole partition, it brings several hours.
+
+\subsection{Restore}
+It is not recommended restore the system commondly.
+If you have a backup in a external hard disk you can using a CD or usb stick with live linux restore the system with this command in terminal:
+\begin{lstlisting}
+sudo dd if=/dev/sdbY of=/dev/sdaX
+\end{lstlisting}
+/dev/sdbY is the partition where your external device is mounted and /dev/sdaX is the local partition where you want to restore ubuntu.
 
 

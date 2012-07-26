@@ -526,20 +526,22 @@ and add or subtract these values to the ones already defined as \texttt{torso\_*
 The automatic calibration step calibrates can be used for intrinsic and extrinsic camera calibration, as well as for hand eye calibration. The manual calibration steps from section \ref{sec:manual_calibration} are a prerequisit for the automatic calibration. For more information and tutorials about the automatic calibration, see \footnote{\url{http://ros.org/wiki/cob_calibration}}.
 
 \section{Backup and Restore} 
-\subsection{Backup}  
-It is recommended backup your system when you have a stable software version. You can backup in an external hard disk the whole disks of your robot using the tool dd.
-\\Be sure hat the external device hat enough free space as a ext4 partition, you can format it using gparted \footnote{\url{http://gparted.sourceforge.net/}} . With the new partition mounted in your system execute the following command:
+\subsection{Backup the entire system}  
+We recommended to backup your system when you have a stable software version, e.g. all hardware drivers setup and running. You can backup the whole disks of your robot to an external hard disk using the tool dd.
+
+Be sure hat the external device hat enough free space as an ext4 partition, you can format it using gparted \footnote{\url{http://gparted.sourceforge.net/}} . With the new partition mounted in your system execute the following command:
 \begin{lstlisting}
 sudo dd if=/dev/sdaX of=/dev/sdbY
 \end{lstlisting}
-/dev/sdaX is the local partition where ubuntu is installed and /dev/sdbY is the partition where your external device is mounted. With this command you copy the whole partition, it brings several hours.
+where /dev/sdaX is the local partition where ubuntu is installed and /dev/sdbY is the partition where your external device is mounted. With this command you copy the whole partition, this step will take several hours depending on the disk size.
 
-\subsection{Restore}
-It is not recommended restore the system commondly.
-If you have a backup in a external hard disk you can using a CD or usb stick with live linux restore the system with this command in terminal:
+\subsection{Restore the entire system}
+with the following instructions you can restore your system to a previous backed up version. However you should be aware of that if backing up and restoring fails you will need to setup your system from scratch. So we only reccomend to restore your system if nothing else helps to get the system up and running again. 
+
+If you have a backup on an external hard disk you can use a CD or USB stick with live linux to restore the system with the following command:
 \begin{lstlisting}
 sudo dd if=/dev/sdbY of=/dev/sdaX
 \end{lstlisting}
-/dev/sdbY is the partition where your external device is mounted and /dev/sdaX is the local partition where you want to restore ubuntu.
+where /dev/sdbY is the partition where your external device is mounted and /dev/sdaX is the local partition where you want to restore ubuntu to.
 
 

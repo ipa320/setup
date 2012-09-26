@@ -3,6 +3,10 @@
     local-name: accompany
     version: master
 - git:
+    uri: 'git://github.com/ipa320/autopnp.git'
+    local-name: autopnp
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_android.git'
     local-name: cob_android
     version: master

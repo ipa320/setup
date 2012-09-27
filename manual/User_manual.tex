@@ -54,6 +54,11 @@ If you step into the safety fields of the laser scanners the emergency stop is a
 \subsection{Remote emergency stop control}
 You can press the red button to stop the robot. To release the emergency stop you have to lift the red button and afterwards press the green button.
 
+The remote emergency stop control can be disabled using the switch next to the key switch.
+
+\textbf{WARNING}: This should usually not be used. It is only intended to be used if no remote control is available.
+
+If the remote emergency stop control is disabled and the remote is within the wireless range, it should be placed in its base station. If you remove the remote from the base station, it might trigger an emergency stop.
 
 \textbf{NOTE}: If you hear a "click" while releasing the emergency stop, but the dashboard and command\_gui still show that the emergency stop is activated, turn the key to position II again and hold it for some seconds until the dashboard or command\_gui show no more emergency stop.
 
@@ -104,12 +109,12 @@ After launching this file you will see two GUIs on your screen: the smaller one 
 The dashboard is an important tool where you can check the state of the robot, it is recommended that you have it always opened. The dashboard looks like this:
 
 \begin{center}
-\includegraphics[width=0.55\textwidth]{images/dashboard.png}
+\includegraphics[width=0.35\textwidth]{images/dashboard.png}
 \end{center}
 If you click the first button, you will see a new window popping up with three levels: Errors, Warnings and All. There you can see the state of each component at any time. The status monitoring is divided into Actuators, Sensors and other. The other buttons are for showing diagnostics, motors, emergency status and battery state. In the case of the Care-O-bot we have disable the buttons for the Motors, you see them always in red.
 
 \begin{center}
-\includegraphics[width=0.45\textwidth]{images/diagnostics.png}
+\includegraphics[width=0.4\textwidth]{images/diagnostics.png}
 \end{center}
 
 All diagnostics information for the actors and sensors should be green after successfully initializing the components, see section \ref{subsec:command_gui}.

@@ -54,6 +54,11 @@ If you step into the safety fields of the laser scanners the emergency stop is a
 \subsection{Remote emergency stop control}
 You can press the red button to stop the robot. To release the emergency stop you have to lift the red button and afterwards press the green button.
 
+The remote emergency stop control can be disabled using the switch next to the key switch.
+
+\textbf{WARNING}: This should usually not be used. It is only intended to be used if no remote control is available.
+
+If the remote emergency stop control is disabled and the remote is within the wireless range, it should be placed in its base station. If you remove the remote from the base station, it might trigger an emergency stop.
 
 \textbf{NOTE}: If you hear a "click" while releasing the emergency stop, but the dashboard and command\_gui still show that the emergency stop is activated, turn the key to position II again and hold it for some seconds until the dashboard or command\_gui show no more emergency stop.
 
@@ -104,12 +109,12 @@ After launching this file you will see two GUIs on your screen: the smaller one 
 The dashboard is an important tool where you can check the state of the robot, it is recommended that you have it always opened. The dashboard looks like this:
 
 \begin{center}
-\includegraphics[width=0.55\textwidth]{images/dashboard.png}
+\includegraphics[width=0.35\textwidth]{images/dashboard.png}
 \end{center}
 If you click the first button, you will see a new window popping up with three levels: Errors, Warnings and All. There you can see the state of each component at any time. The status monitoring is divided into Actuators, Sensors and other. The other buttons are for showing diagnostics, motors, emergency status and battery state. In the case of the Care-O-bot we have disable the buttons for the Motors, you see them always in red.
 
 \begin{center}
-\includegraphics[width=0.45\textwidth]{images/diagnostics.png}
+\includegraphics[width=0.4\textwidth]{images/diagnostics.png}
 \end{center}
 
 All diagnostics information for the actors and sensors should be green after successfully initializing the components, see section \ref{subsec:command_gui}.
@@ -124,7 +129,7 @@ In this screen-shot you can see different columns: general, base, torso, tray, a
 
 The other columns of the components have different predefined positions where you can move to. Additionally Each component has a \texttt{stop}, \texttt{init} and \texttt{recover} button, to stop, initialize or recover a single component.
 
-\subsection{Rviz}
+\subsection{Rviz}\label{subsec:rviz}
 RVIZ is a tool that visualizes data from the robot, e.g. the sensor data from the laser scanners, but also information about the coordinate systems and transformations or the images from the cameras. You can add your own items to RVIZ to visualize topics, see more information at \footnote{\url{http://www.ros.org/wiki/rviz}}.
 
 RVIZ needs to be started on your local machine. To be able to visualize topics from the robot export your \texttt{ROS\_MASTER\_URI} to the robot
@@ -144,7 +149,7 @@ You will see a screen like this:
 \includegraphics[width=1\textwidth]{images/rviz.png}
 \end{center}
 
-\subsection{Joystick}
+\subsection{Joystick}\label{subsec:joystick}
 To be able to use the joystick, initialize the components using the command\_gui. For moving the robot components, the dead-man\_button has to be pressed all the time, as soon as the button is released all hardware components will be stopped immediately. 
 
 \begin{itemize}

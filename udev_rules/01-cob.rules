@@ -22,12 +22,13 @@ SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="01",ATTRS{../idProduct}=="6010",MODE=
 SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001",ATTRS{bcdDevice}=="0400",MODE="0666",SYMLINK+="ttyRelais"
 
 #LED
-SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001",ATTRS{bcdDevice}=="0600",MODE="0666",SYMLINK+="ttyLed"
+SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001", ATTRS{serial}=="A800K9NH" , ATTRS{bcdDevice}=="0600",MODE="0666",SYMLINK+="ttyLed"
 
-#Hokyuo
+#Hokuyo
 SUBSYSTEMS=="usb", KERNEL=="ttyACM[0-9]*",MODE="0666"
 
 #Tactile Sensors
+SUBSYSTEM=="tty",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",ATTRS{bcdDevice}=="0100",SYMLINK+="ttyTact"
 SUBSYSTEM=="tty",ATTRS{idVendor}=="067b",ATTRS{idProduct}=="2303",SYMLINK+="ttyTact"
 
 #Phidget rules for tray sensor
@@ -37,4 +38,8 @@ SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="0925", ATTRS{idProduct}=="82
 
 # All current and future Phidgets - Vendor = 0x06c2, Product = 0x0030 - 0x00af
 SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="06c2", ATTRS{idProduct}=="00[3-a][0-f]", MODE="666"
+
+
+# hardware control board
+SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001", ATTRS{serial}=="A9005jbH" , ATTRS{bcdDevice}=="0600",SYMLINK+="ttyHwBoard", MODE="666"
 

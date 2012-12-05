@@ -91,6 +91,10 @@
     local-name: cob_web
     version: master
 - git:
+    uri: 'git://github.com/ipa320/ipa_canopen.git'
+    local-name: ipa_canopen
+    version: master
+- git:
     uri: 'git://github.com/ipa320/schunk_modular_robotics.git'
     local-name: schunk_modular_robotics
     version: master

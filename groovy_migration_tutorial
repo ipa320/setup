@@ -1,0 +1,47 @@
+$ sudo apt-get install python-setuptools
+
+
+***************************************************************
+***************************************************************
+********************WET PACKAGES*******************************
+***************************************************************
+***************************************************************
+
+
+http://www.ros.org/wiki/catkin/migrating_from_rosbuild
+
+$ git clone https://github.com/ros-infrastructure/catkinize
+$ cd catkinize
+$ sudo python setup.py install
+
+
+$ mkdir ~/git/care-o-bot
+$ mkdir ~/git/care-o-bot/src
+$ mkdir ~/git/care-o-bot/build
+$ cd ~/git/care-o-bot/src
+$ catkin_init_workspace
+$ cd ../build
+$ cmake ../src
+$ make
+$ source buildspace/devel/setup.bash
+$ cd ../src
+$ git clone https://github.com/ipa320/cob_robots.git
+
+$ cd ~/git/setup
+$ ./catkin_migration
+
+$ cd ~/git/care-o-bot/build
+$ cmake ../src
+$ make
+
+
+***************************************************************
+***************************************************************
+******************* DRY PACKAGES ******************************
+***************************************************************
+***************************************************************
+
+$ mkdir 
+$ cd ~/git/care-o-bot_rosbuild
+$ rosws init . ~/git/care-o-bot/devel
+$ git clone https://github.com/ipa320/cob_robots.git   (.....)

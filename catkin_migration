@@ -1,0 +1,275 @@
+#!/usr/bin/python
+#################################################################
+##\file
+#
+# \note
+#   Copyright (c) 2010 \n
+#   Fraunhofer Institute for Manufacturing Engineering
+#   and Automation (IPA) \n\n
+#
+#################################################################
+#
+# \note
+#   Project name: care-o-bot
+# \note
+#   ROS stack name: setup
+# \note
+#   ROS package name: setup
+#
+# \author
+#   Author: Nadia Hammoudeh Garcia, email:nadia.hammoudeh.garcia@ipa.fhg.de
+# \author
+#   Supervised by: Nadia Hammoudeh Garcia, email:nadia.hammoudeh.garcia@ipa.fhg.de
+#
+# \date Date of creation: Dec 2012
+#
+# \brief
+#   Implements helper script for working with git and the care-o-bot stacks.
+#
+#################################################################
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#     - Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer. \n
+#     - Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution. \n
+#     - Neither the name of the Fraunhofer Institute for Manufacturing
+#       Engineering and Automation (IPA) nor the names of its
+#       contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission. \n
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License LGPL as 
+# published by the Free Software Foundation, either version 3 of the 
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Lesser General Public License LGPL for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public 
+# License LGPL along with this program. 
+# If not, see <http://www.gnu.org/licenses/>.
+#
+#################################################################
+
+import os
+import pwd
+import sys
+import shlex
+import time
+import platform
+from optparse import OptionParser
+import subprocess
+import re
+import socket
+import getpass
+import json
+import glob
+import shutil
+
+# Check for filesystem
+if platform.system() == 'Linux':
+	# write to log file instead of /dev/null
+	_output = "/tmp/catkin_migration/log.txt"
+	# check if log file exists, if not create dir and file, if yes delete old file
+	if not os.path.exists(os.path.dirname(_output)):
+		os.makedirs(os.path.dirname(_output))
+		os.system("touch " + _output)
+	else:
+		os.system("rm -r " + _output)
+	
+	# start new log with time information
+	os.system("echo new log from " + time.strftime("%Y/%m/%d %H:%M:%S", time.localtime()) + " > " + _output + " 2>&1")
+
+	# make logfile editable by everyone
+	os.system("chmod a+rw -R " + _output)
+
+elif platform.system() == 'Windows':
+	_output = "nul"
+else:
+	_output = "/dev/null"
+
+def main():
+	
+	stack_name = raw_input("stack_name: ")
+	stack_dir = '/u/robot/git/care-o-bot/src/' + stack_name
+	package_list = [ name for name in os.listdir(stack_dir) if os.path.isdir(os.path.join(stack_dir, name)) ]
+	print "Packages list " 
+	print package_list
+	for i in package_list:
+		package_name=i
+		pack_dir = '/u/robot/git/care-o-bot/src/' + stack_name + "/" + package_name
+
+		if (os.path.isfile(pack_dir+'/manifest.xml')):
+		
+			print "********************************************************"
+			print "Migrating " 
+			print package_name
+
+
+			os.chdir( pack_dir)
+			os.system('mv CMakeLists.txt CMakeLists.old')
+			os.system('catkinize_cmakelists.py ' + package_name + ' CMakeLists.old  manifest.xml >  CMakeLists.txt')
+			os.system('catkinize_manifest_xml_to_package_xml.py manifest.xml '+ package_name +' 1.6.0 > package.xml')
+			include_path = pack_dir + '/include'
+			if (os.path.exists(include_path)):
+				print " "
+			else:
+				os.makedirs('include')
+
+
+			shutil.move( 'package.xml', 'package.xml'+"~" )
+			destination= open( 'package.xml', "w" )
+			source= open( 'package.xml'+"~", "r" )
+			for line in source:
+			    if '<!-- <url type="bugtracker"></url> -->' in line:
+				destination.write('  <url type="bugtracker">http://care-o-bot.org/trac</url>\n')
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+
+			shutil.move( 'package.xml', 'package.xml'+"~" )
+			destination= open( 'package.xml', "w" )
+			source= open( 'package.xml'+"~", "r" )
+			for line in source:
+			    if "<!-- <maintainer>" in line:
+				maintaner_name = raw_input ("There is not maintaner assigned for this package. \n The author is " +line+ " Please specify one: ")
+				email = raw_input("email: ")	
+				destination.write( '  <maintainer email="' + email + '">'+ maintaner_name + '</maintainer>\n' )
+				#destination.write('  <maintainer email="Florian.Weisshardt@ipa.fhg.de">Florian Weisshardt</maintainer>\n')
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+
+			shutil.move( 'package.xml', 'package.xml'+"~" )
+			destination= open( 'package.xml', "w" )
+			source= open( 'package.xml'+"~", "r" )
+			for line in source:
+			    if "<export>" in line:
+				destination.write( '\n' )
+				destination.write( '  <buildtool_depend>catkin</buildtool_depend>' )
+				destination.write( '\n' )
+				destination.write( '\n' )
+				destination.write( '<export>' )
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+			os.remove('package.xml~')
+
+
+			shutil.move( 'package.xml', 'package.xml'+"~" )
+			destination= open( 'package.xml', "w" )
+			source= open( 'package.xml'+"~", "r" )
+			for line in source:
+			    if "<!-- <build_depend>" in line:
+				lenght = len(line)
+				destination.write(' ')
+				for i in range(6,lenght-4):
+					destination.write(line[i])
+				destination.write( '\n' )
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+			os.remove('package.xml~')
+
+			shutil.move( 'package.xml', 'package.xml'+"~" )
+			destination= open( 'package.xml', "w" )
+			source= open( 'package.xml'+"~", "r" )
+			for line in source:
+			    if "<!-- <run_depend>" in line:
+				lenght = len(line)
+				destination.write(' ')
+				for i in range(6,lenght-4):
+					destination.write(line[i])
+				destination.write( '\n' )
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+			os.remove('package.xml~')
+
+			shutil.move( 'package.xml', 'package.xml'+"~" )
+			destination= open( 'package.xml', "w" )
+			source= open( 'package.xml'+"~", "r" )
+			for line in source:
+			    if "<!-- <test_depend>" in line:
+				lenght = len(line)
+				destination.write(' ')
+				for i in range(6,lenght-4):
+					destination.write(line[i])
+				destination.write( '\n' )
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+			os.remove('package.xml~')
+
+			#cob_svrs ?? --> Manual!!
+			shutil.move( 'CMakeLists.txt', 'CMakeLists.txt'+"~" )
+			destination= open( 'CMakeLists.txt', "w" )
+			source= open( 'CMakeLists.txt'+"~", "r" )
+			for line in source:
+			    if "generate_messages()" in line:
+				destination.write( '#generate_messages()' )
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+			os.remove('CMakeLists.txt~')
+
+
+			shutil.move( 'CMakeLists.txt', 'CMakeLists.txt'+"~" )
+			destination= open( 'CMakeLists.txt', "w" )
+			source= open( 'CMakeLists.txt'+"~", "r" )
+			for line in source:
+			    if "rosbuild_add_roslaunch_check" in line:
+				destination.write( '#'+ line )
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+			os.remove('CMakeLists.txt~')
+
+			shutil.move( 'CMakeLists.txt', 'CMakeLists.txt'+"~" )
+			destination= open( 'CMakeLists.txt', "w" )
+			source= open( 'CMakeLists.txt'+"~", "r" )
+			for line in source:
+			    if "include_directories(${Boost_INCLUDE_DIRS})" in line:
+				destination.write( '#'+ line )
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+			os.remove('CMakeLists.txt~')
+
+			shutil.move( 'CMakeLists.txt', 'CMakeLists.txt'+"~" )
+			destination= open( 'CMakeLists.txt', "w" )
+			source= open( 'CMakeLists.txt'+"~", "r" )
+			for line in source:
+			    if "target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})" in line:
+				destination.write( '#'+ line )
+			    else:
+				destination.write( line )
+			source.close()
+			destination.close()
+			os.remove('CMakeLists.txt~')
+
+
+			print "********************************************************"
+
+		else:
+			print package_name
+			print "is not a ros package"
+
+
+if __name__ == '__main__':
+	main()

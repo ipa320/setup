@@ -1,5 +1,6 @@
 $ sudo apt-get install python-setuptools
 $ sudo apt-get install ogre-tools
+$ sudo apt-get install ros-groovy-diagnostics-monitors ros-groovy-rxtools
 
 ***************************************************************
 ***************************************************************

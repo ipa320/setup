@@ -48,3 +48,5 @@ $ git clone https://github.com/ipa320/cob_robots.git   (.....)
 $ rosinstall ~/git/care-o-bot_rosbuild ~/git/setup/cob_groovy_rosbuild_sim.rosinstall
 
 $ rosdep update
+
+$ sudo cp -r /opt/ros/fuerte/stacks/visualization_common /opt/ros/groovy/stacks/. 

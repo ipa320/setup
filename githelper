@@ -58,6 +58,7 @@
 #################################################################
 
 import os
+import pwd
 import sys
 import shlex
 import time
@@ -98,20 +99,23 @@ Commands:
 %prog setup
   Once user has created an account on github.com, this sets up everything to get started working 
 
-%prog clone -s STACK(s)
+%prog clone -s STACK(s) [-r] [-d install_dir, default=~/git/care-o-bot]
   Clones the given list (comma-separated) of repositories from github (if necessary, forks from ipa320 before cloning)
 
-%prog status [-s STACK(s), default=all stacks]
+%prog status [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
   Executes 'git status -uno' 
 
-%prog pull [-s STACK(s), default=all stacks]
+%prog pull [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
   Pulls latest changes from your origin master 
 
-%prog push [-s STACK(s), default=all stacks]
+%prog push [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
   Pushes local commits to origin master 
 
-%prog merge [-u GITHUBUSER, default="ipa320"] | [-s STACK(s), default=all stacks]
+%prog merge [-u GITHUBUSER, default="ipa320"] [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
   Merges from a remote branch 
+
+githelper -h
+  Further help on options
 """
 
 
@@ -120,6 +124,13 @@ Commands:
 # Parses arguments and starts helping. Everything is done regarding the local master branch
 #TODO: check for latest version before executing command
 def main():
+	# check for existence of curl; abort if not installed
+	curl_check = subprocess.Popen('which curl', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+	if len(curl_check)==0:
+		print "Please install curl first: sudo apt-get install curl"
+		print "Aborting."
+		sys.exit(1)
+
 	#print "main ..."
 	parser = OptionParser(usage=_usage, prog=os.path.basename(sys.argv[0]))
 	
@@ -134,6 +145,10 @@ def main():
 	parser.add_option("-d", "--directory",
 		dest="install_dir", default="~/git/care-o-bot",
 		help="Installation directory of care-o-bot stacks. Default: ~/git/care-o-bot")
+
+	parser.add_option("-r", "--readonly",
+		action="store_true", dest="readonly",
+		help="Access github repositories read-only")
 	
 	(options, args) = parser.parse_args()
 
@@ -158,30 +173,25 @@ def main():
 
 	if args[0] == "setup":
 		print 'githelper setup: helps you to set up everything to get started working with the Care-O-bot stacks on github\n'
-
-		# github account exists?
-		answer = raw_input("Do you have an account on github already? [<any key> / n] : ")
-		if answer == 'n':
-			print 'Please first create an account on github.com'
-			print '(Suggestion: choose ipa-xyz as github user name, xyz being your IPA account name)'
-			print 'Aborting...'
-			sys.exit(1)
-
-		# github user name
+		print 'Your github and .gitconfig user names will be overwritten to match your github account name. Your email addresses stored in github and .gitconfig will also be overwritten to match each other.'
+		print '\nIf you do not have an account on github yet, please interrupt and do one the following:'
+		print '(1) Clone repositories from github read-only (no github account necessary):'
+		print '    githelper clone -r -s STACK(s)'
+		print '(2) Create an account on github.com (allows forking, read/write cloning and pushing changes to your forked remote repository)'
+		print '    (Suggestion: choose ipa-xyz as github user name, xyz being your IPA account name)\n'
+		
 		github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
-		if len(github_user) > 0:
-			answer = raw_input('Is "' + github_user + '" your github user name? [<Return>=Yes; or enter another user name]: ')
-			if len(answer) > 0:
-				github_user = answer
+		if len(github_user)==0:
+			github_user = raw_input('Please enter your github account name: ')
 		else:
-			github_user = raw_input('Please enter your github user name: ')
-		os.system('git config --global github.user ' + github_user + ' >> ' + _output + ' 2>&1') # store github user name in ~/.gitconfig
+			print 'Found the following github account in .gitconfig: ' + github_user
+			ans = raw_input('Press enter to use this account, or type in another github account to use: ')
+			if len(ans)>0:
+				github_user = ans
 
-		# github password
 		print 'Please enter your github password: '
 		github_pw = getpass.getpass()
-		
-		# try authentication on github
+		# try authentication on github:
 		s = 'curl -u "' + github_user + ':' + github_pw + '" https://api.github.com'
 		answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
 		m = re.search('Bad credentials', answer)
@@ -190,35 +200,59 @@ def main():
 			sys.exit(1)
 		else:
 			print 'Login on github successful.\n'
+			# if login correct, make sure all corresponding entries in .gitconfig are identical to the github account name:
+			os.system('git config --global github.user ' + github_user)
+			os.system('git config --global github.name ' + github_user)
+			os.system('git config --global user.name ' + github_user)
+
+		# fetch email from github:
+		ans = subprocess.Popen('curl https://api.github.com/users/' + github_user, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+		userdata = json.loads(ans) 
+		if "email" not in userdata or len(userdata['email'])==0:
+			user_email = subprocess.Popen('git config --global user.email', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+			if len(user_email) > 0:
+				print "No email address found on github. Uploading email address found in .gitconfig: " + user_email
+				os.system('git config --global github.email "' + user_email + '"')
+				os.system('curl -s -u "' + github_user + ':' + github_pw + '" -i -X PATCH -d \'{"email":"' + user_email + '"}\' https://api.github.com/user > /dev/null')
+			else:
+				print "No email address found on github and in .gitconfig."
+				user_email = raw_input("Please enter your email address: ")
+				os.system('git config --global user.email "' + user_email + '"')
+				os.system('git config --global github.email "' + user_email + '"')
+				os.system('curl -s -u "' + github_user + ':' + github_pw + '" -i -X PATCH -d \'{"email":"' + user_email + '"}\' https://api.github.com/user > /dev/null')
+		else:
+			print "Adding email address found on github to .gitconfig: " + userdata['email']
+			os.system('git config --global user.email "' + userdata['email'] + '"')
+			os.system('git config --global github.email "' + userdata['email'] + '"')
 
 		# upload public ssh key to github (and if necessary, create it before that):
 		if not(os.path.exists(os.path.expanduser('~/.ssh/id_rsa'))):
-			answer = raw_input('No id_rsa key found; generate one? [<any key> (recommended) / n] : ')
+			answer = raw_input('\nNo id_rsa key found; generate one? [<any key> (recommended) / n] : ')
 			if answer == 'n':
 				print 'Need ssh-key, aborting...'
 				sys.exit(1)
 			else:
 				os.system('ssh-keygen -t rsa -f ~/.ssh/id_rsa')
 
-		
-		answer = raw_input('id_rsa key found in ~/.ssh/id_rsa; upload public key to github? [<any key> (recommended) / n] : ')
-		if answer != 'n':
-			rsaTitle = os.getlogin() + '@' + socket.gethostname()
-			f = open(os.path.expanduser('~/.ssh/id_rsa.pub'), 'r')
-			rsaKey = f.read().strip()
-			f.close()
-			tt = 'curl -i -H "Accept: application/json" -H "Content-Type: application/json" --user ' + github_user + ':' + github_pw + ' -X POST -d \'{"title":"' + rsaTitle + '","key":"' + rsaKey + '"}\' https://api.github.com/user/keys'
-			output = subprocess.Popen(tt, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
-			if re.search('Validation Failed', output):
-				print 'Key upload was unsuccessful.'
-				if re.search('key is already in use', output):
-					print 'Key is already uploaded to github; aborting...'
-				sys.exit(1)
-			else:
-				print 'Successfully uploaded the key ' + rsaTitle
+		print '\nFound public RSA key; trying to upload to github...'
+		rsaTitle = pwd.getpwuid(os.getuid())[0] + '@' + socket.gethostname()
+		f = open(os.path.expanduser('~/.ssh/id_rsa.pub'), 'r')
+		rsaKey = f.read().strip()
+		f.close()
+		tt = 'curl -i -H "Accept: application/json" -H "Content-Type: application/json" -u "' + github_user + ':' + github_pw + '" -X POST -d \'{"title":"' + rsaTitle + '","key":"' + rsaKey + '"}\' https://api.github.com/user/keys'
+		output = subprocess.Popen(tt, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+		if re.search('key is already in use', output):
+			print 'Key is already uploaded to github; done.'
+		elif re.search('Validation Failed', output):
+			print 'Key upload was unsuccessful: Validation failed. Aborting...'
+			sys.exit(1)
+		else:
+			print 'Successfully uploaded the key ' + rsaTitle
 
 		# display info for user to be added to his ~/.bashrc file
-		print "\n"
+		print ""
+		print "Setup completed."
+		print ""
 		print "Please update your ROS_PACKAGE_PATH to include ~/git/care-o-bot: Either run the following line"
 		print "on each terminal or add the line at the end of your ~/.bashrc file and source it again."
 		print ""
@@ -231,75 +265,89 @@ def main():
 		if len(options.stacks)==0:
 			print 'Please provide a comma-separated list of stacks to clone; example:'
 			print 'githelper clone -s cob_command_tools,cob_robots'
-			print 'Aborting...\n'
+			print 'Optional arguments: -r (read-only), -d target_directory'
+			print 'Aborting.\n'
 			sys.exit(1)
-	
-		github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
-		if len(github_user) > 0:
-			answer = raw_input('Is "' + github_user + '" your github user name? [<Return>=Yes; or enter another user name]: ')
-			if len(answer) > 0:
-				github_user = answer
-		else:
-			github_user = raw_input('Please enter your github user name: ')
-	
-		# github password
-		print 'Please enter your github password: '
-		github_pw = getpass.getpass()
-
-		# try authentication on github
-		s = 'curl -u "' + github_user + ':' + github_pw + '" https://api.github.com'
-		answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
-		m = re.search('Bad credentials', answer)
-		if m:
-			print 'Login on github failed; wrong password? - aborting.\n'
-			sys.exit(1)
-		else:
-			print 'Login on github successful.\n'
 
 		stacks = options.stacks.split(',')
-		install_dir = os.path.expanduser(options.install_dir)
-		if not(os.path.exists( install_dir )):
-			os.makedirs( install_dir )
-		print 'Cloning into ' + install_dir
+	
+		if options.readonly==True: # no github account needed for readonly access
+			github_user = raw_input("Please enter github user from which to clone read-only (Enter = ipa320): ")
+			if len(github_user)==0:
+				github_user = "ipa320"
+			install_dir = os.path.expanduser(options.install_dir)
+			if not(os.path.exists( install_dir )):
+				os.makedirs( install_dir )
+			print 'Cloning into ' + install_dir
 
-		# get list of user repositories
-		answer = subprocess.Popen('curl https://api.github.com/users/' + github_user + '/repos', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
-		repos = json.loads(answer)
-		github_user_stacks = []
-		for rep in repos:
-			github_user_stacks.append(rep['name'])
+			for stack in stacks:
+				print 'Stack: ' + stack
+				if os.path.exists( os.path.join(install_dir, stack) ):
+					print "Already cloned into the specified directory; ignoring. Consider 'githelper pull' to get the latest changes."
+				else:
+					s = 'git clone git@github.com:' + github_user + '/' + stack + ' ' + os.path.join(install_dir, stack)
+					print s
+					answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+					if re.search('fatal', answer[1]):
+						print 'Repository ' + stack + ' could not be cloned. git error message:'
+						print answer[1] + '\n'
+				print "Done."
+		else:
+			# if git user.name or user.email are not set, prompt user to run 'githelper setup first' and abort.
+			git_username = subprocess.Popen('git config --global user.name', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+			git_useremail = subprocess.Popen('git config --global user.email', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+			github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+			if len(git_username)==0 or len(git_useremail)==0 or len(github_user)==0:
+				print "Missing git/github user information. Please run 'githelper setup' first, or clone read-only: 'githelper clone -r -s STACK(s)'."
+				print 'Aborting.\n'
+				sys.exit(1)
 
-		# get list of ipa320 repositories
-		answer = subprocess.Popen('curl https://api.github.com/users/ipa320/repos', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
-		repos = json.loads(answer)
-		github_ipa_stacks = []
-		for rep in repos:
-			github_ipa_stacks.append(rep['name'])
-		
-		for stack in stacks:
-			print 'Stack: ' + stack
-			if os.path.exists( os.path.join(install_dir, stack) ):
-				print "Already cloned into the specified directory; ignoring. Consider 'githelper pull' to get the latest changes."
-			elif stack in github_user_stacks:
-				s = 'git clone git@github.com:' + github_user + '/' + stack + ' ' + os.path.join(install_dir, stack)
-				answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-				if re.search('fatal', answer[1]):
-					print 'Repository ' + stack + ' could not be cloned. git error message:'
-					print answer[1] + '\n'
-			elif stack in github_ipa_stacks: # first fork, then clone
-				print 'Repository not forked yet. Now forking from ipa320...'
-				s = 'curl -u "' + github_user + ':' + github_pw + '" -X POST https://api.github.com/repos/ipa320/' + stack + '/forks'
-				subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-				print 'Now cloning...'
-				s = 'git clone git@github.com:' + github_user + '/' + stack + ' ~/git/care-o-bot/' + stack
-				answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-				if re.search('fatal', answer[1]):
-					print 'Repository ' + stack + ' could not be cloned. git error message:'
-					print answer[1] + '\n'
-			else: # neither in user nor in ipa repository
-				print 'This stack does not exist in ipa320 or in your personal github repository; ignoring.'
-			print 'Done.\n'
+			github_user = subprocess.Popen('git config --global github.user', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0].strip()
+			if len(github_user) > 0:
+				answer = raw_input('Is "' + github_user + '" your github user name? [<Return>=Yes; or enter another user name]: ')
+				if len(answer) > 0:
+					github_user = answer
+			else:
+				github_user = raw_input('Please enter your github user name: ')
 
+			# github password
+			print 'Please enter your github password: '
+			github_pw = getpass.getpass()
+
+			# try authentication on github
+			s = 'curl -u "' + github_user + ':' + github_pw + '" https://api.github.com'
+			answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
+			m = re.search('Bad credentials', answer)
+			if m:
+				print 'Login on github failed; check password or consider accessing remote repository read-only (githelper clone -r).'
+				print 'Aborting.\n'
+				sys.exit(1)
+			else:
+				print 'Login on github successful.\n'
+
+			install_dir = os.path.expanduser(options.install_dir)
+			if not(os.path.exists( install_dir )):
+				os.makedirs( install_dir )
+			print 'Cloning into ' + install_dir + '\n'
+			for stack in stacks:
+				print 'Stack: ' + stack
+				if os.path.exists( os.path.join(install_dir, stack) ):
+					print "Already cloned into the specified directory; ignoring. Consider 'githelper pull' to get the latest changes."
+				else:
+					s = 'git clone git@github.com:' + github_user + '/' + stack + ' ' + os.path.join(install_dir, stack)
+					answer = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+					if re.search('fatal', answer[1]):
+						print 'Repository "' + stack + '" not found in repositories of github user "' + github_user + '".'
+						print 'Now trying to fork from ipa320...'
+						s = 'curl -u "' + github_user + ':' + github_pw + '" -X POST https://api.github.com/repos/ipa320/' + stack + '/forks'
+						subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+						print 'Now trying to clone...'
+						s = 'git clone git@github.com:' + github_user + '/' + stack + ' ' + os.path.join(install_dir, stack)
+						answer2 = subprocess.Popen(s, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+						if re.search('fatal', answer2[1]):
+							print 'Repository ' + stack + ' could not be cloned. git error message:'
+							print answer2[1] + '\n'
+				print 'Done.\n'
 
 
 # ./githelper fork -s blub,cob_command_tools,bla,cob_navigation,cob_manipulation,cob_common
@@ -402,7 +450,7 @@ def git_merge(stack, options):
 	status = p.read()
 	p.close()
 	if status.count("origin-" + options.githubuser) <= 0:
-		os.system("git remote add origin-" + options.githubuser + " git@github.com:" + options.githubuser + "/" + stack + ".git")
+		os.system("git remote add origin-" + options.githubuser + " git@github.com:" + options.githubuser + "/" + stack)
 
 	# change to automerge branch
 	os.system("git checkout -b automerge >> " + _output + " 2>&1")
@@ -437,12 +485,16 @@ def check_for_update():#TODO check for new version, use timeout if no internet c
 
 ## returns a list of all stacks in options.install_dir
 def get_all_stacks(options):
-	#print "get_all_stacks ..."
+	stacks = []
+
+	# check if install_dir exists, otherwise return empty list of stacks
+	if not os.path.exists(os.path.expanduser(options.install_dir)):
+		return stacks
+
 	# get all directories
 	dirs = os.walk(os.path.expanduser(options.install_dir)).next()[1]
 	
 	# check if directory is a stack
-	stacks = []
 	for directory in dirs:
 		if os.path.exists(os.path.expanduser(options.install_dir) + "/" + directory + "/stack.xml"):
 			#print "directory, "is a stack"

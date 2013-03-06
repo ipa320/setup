@@ -36,7 +36,7 @@ for client in $client_list; do
 	ssh $client "sudo apt-get install $* -y"
 	ret=${PIPESTATUS[0]}
 	if [ $ret != 0 ] ; then
-		echo "apt-get return an error (error code: $ret), aborting..."
+		echo -t "apt-get return an error (error code: $ret), aborting..."
 		exit 1
 	fi
 	echo ""

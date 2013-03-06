@@ -1,6 +1,22 @@
 - git:
+    uri: 'git://github.com/ipa320/accompany.git'
+    local-name: accompany
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/autopnp.git'
+    local-name: autopnp
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_android.git'
+    local-name: cob_android
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_calibration.git'
     local-name: cob_calibration
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/cob_calibration_data.git'
+    local-name: cob_calibration_data
     version: master
 - git:
     uri: 'git://github.com/ipa320/cob_command_tools.git'
@@ -55,6 +71,10 @@
     local-name: cob_scenarios
     version: master
 - git:
+    uri: 'git://github.com/ipa320/cob_scenario_states.git'
+    local-name: cob_scenario_states
+    version: master
+- git:
     uri: 'git://github.com/ipa320/cob_simulation.git'
     local-name: cob_simulation
     version: master
@@ -69,6 +89,10 @@
 - git:
     uri: 'git://github.com/ipa320/cob_web.git'
     local-name: cob_web
+    version: master
+- git:
+    uri: 'git://github.com/ipa320/ipa_canopen.git'
+    local-name: ipa_canopen
     version: master
 - git:
     uri: 'git://github.com/ipa320/schunk_modular_robotics.git'

@@ -2,17 +2,26 @@
 \chapter{Administrator manual}
 \label{chap:admin}
 
+The following administrator manual requires some enhanced knowledge about
+\begin{itemize}
+\item Linux/Ubuntu
+\item Network configuration
+\item Source code management with git
+\item ROS installation and usage
+\end{itemize}
+If you are missing some of this requirements or feel uncomfortable with what you are doing, please interrupt and ask somebody to help you before continuing.
+
 %#################################################################################################
 \section{Setup robot pcs}
 %#################################################################################################
-On all Care-O-bots there are at least two pcs. Some Care-O-bots have an optional third pc, which is not coveres by this manual. Within this section we will guide you through setting up new pcs. When nothing otherwise is mentioned the following instructions are for both pc1 and pc2, please do the same steps on both pcs.
+On all Care-O-bots there are at least two pcs. Some Care-O-bots have an optional third pc, which is not covered by this manual. Within this section we will guide you through setting up new pcs. When nothing otherwise is mentioned the following instructions are for both pc1 and pc2, please do the same steps on both pcs.
 
 To pc1 all actuators are connected, sensors are connected both, to pc1 and pc2. All camera sensors are connected to pc2, whereas all other sensors like e.g. laser scanners are connected to pc1. By default pc3 is not connected to any hardware and therefore can be used as additional computing power.
 
 \subsection{Install operating system}
 The first step is to install the operating system for each pc, which means pc1 and pc2 (optionally pc3). We are using Ubuntu as the main operating system for the robot. We recommend to install the \textbf{Ubuntu 10.4 LTS (long term stable) 64-bit} version because this version is well tested to work with the hardware. 
 
-First please install Ubuntu (english version) creating a normal swap partition. Please choose \texttt{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \texttt{cob3-X-pc1} and \texttt{cob3-X-pc2}.
+First please install Ubuntu (English version) creating a normal swap partition. Please choose \texttt{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \texttt{cob3-X-pc1} and \texttt{cob3-X-pc2}.
 \abbrev{X}{Robot configuration number}
 
 \subsection{Install basic tools}
@@ -20,7 +29,18 @@ Next we have to install some basic tools for the further setup of the pcs. In or
 
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install vim tree openssh-server gitg meld curl
+sudo apt-get install vim tree gitg meld curl openjdk-6-jdk zsh terminator
+\end{lstlisting}
+
+\subsection{Setup ssh server}
+Install openssh server on all robot pcs
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install openssh-server
+\end{lstlisting}
+Let the server send a alive interval to clients to not get a broken pipe. Execute the following line on all robot pcs
+\begin{lstlisting}
+echo "ClientAliveInterval 60" | sudo tee -a /etc/ssh/sshd_config
 \end{lstlisting}
 
 \subsection{Setup robot account for administration tasks}
@@ -38,7 +58,6 @@ ssh-keygen
 ssh-copy-id cob3-X-pc1
 ssh cob3-X-pc1
 ssh cob3-X-pc2
-ssh cob3-X-pc3
 \end{lstlisting}
 
 Allow robot user to execute sudo command without password. Add \texttt{robot ALL=(ALL) NOPASSWD: ALL} to \texttt{/etc/sudoers} on all robot pcs
@@ -64,7 +83,24 @@ ssh cob3-X-pcY
 \subsection{Setup internal robot network}\label{sec:network}
 Inside the robot there's a router which connects the pcs and acts as gateway to the building network. Setup the router with the following configuration. 
 
-The ip address of the router should be \texttt{192.168.X.1} and for the internal network dhcp should be activated. Use \texttt{cob3-X} as hostname for the router. Register the MAC addresses of pc1 and pc2 so that they get a fixed ip address over dhcp. Use \texttt{192.168.X.101} for pc1 and \texttt{192.168.X.102} for pc2. Enable portforwarding for port \texttt{2201} to \texttt{192.168.X.101} and for port \texttt{2202} to \texttt{192.168.X.102}.
+The ip address of the router should be \texttt{192.168.IP.1} and for the internal network dhcp should be activated. Use \texttt{cob3-X} as hostname for the router. Register the MAC addresses of pc1 and pc2 so that they get a fixed ip address over dhcp. Use \texttt{192.168.IP.101} for pc1 and \texttt{192.168.IP.102} for pc2. Enable portforwarding for port \texttt{2201} to \texttt{192.168.IP.101} and for port \texttt{2202} to \texttt{192.168.IP.102}, where IP parameter is defined depending on the robot \ref{IP_table}.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{ | l | c | }
+  \hline
+  cob3-X & IP=X \\
+  \hline
+  raw3-X & IP=40+X \\
+  \hline
+  desire & IP=100 \\
+  \hline
+\end{tabular}
+\end{center}
+\caption{IP address definition}
+\label{IP_table}
+\end{table}
+
 
 After ensuring that the network configuration of the router is setup correctly, we can configure the pcs. All pcs should have two ethernet ports. The upper one should be connected to the internal router. Sometimes the graphical network manager causes troubles, so it is best to remove it
 \begin{lstlisting}
@@ -81,14 +117,8 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet dhcp
-address 192.168.X.101 # internal ip adress of pc1
-netmask 255.255.255.0 # netmask
-
-auto eth1
-iface eth1 inet static
-address 192.168.42.1 # ip adress for controller network
-netmask 255.255.255.0 # netmask
 \end{lstlisting}
+
 
 \subsubsection{Network configuration on pc2}
 
@@ -98,17 +128,15 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet dhcp
-address 192.168.X.102 # internal ip adress of pc2
-netmask 255.255.255.0 # netmask
 
 auto eth1
 iface eth1 inet static
 address 192.168.21.99 # ip adress for camera network
-netmask 255.255.255.0 # netmask
+netmask 255.255.0.0 # netmask
 \end{lstlisting}
 
 \subsection{Install NFS}
-After the network is configured properly we can setup a NFS netween the robot pcs. pc2 will act as the NFS server and pc1 as NFS client.
+After the network is configured properly we can setup a NFS between the robot pcs. pc2 will act as the NFS server and pc1 as NFS client.
 
 In order to protect the pc's access, it is recomended create a local administrator user (root user \ref{sec:root_user})in each pc, in this case if there is a problem in the sever (pc2) or in the network this local user can access.
 
@@ -174,10 +202,10 @@ Edit \texttt{/etc/auto.master} and add
 /-	/etc/auto.direct
 \end{lstlisting}
 
-Create a new file \texttt{/etc/auto.direct} with the following line:
+Create a new file \texttt{/etc/auto.direct} with the following line, \texttt{IP} is the parameter that define your robot network \ref{IP_table}:
 
 \begin{lstlisting}
-/u       -fstype=nfs4 192.168.X.102:/
+/u       -fstype=nfs4 192.168.IP.102:/
 \end{lstlisting}
 
 Activate the NFS
@@ -204,11 +232,11 @@ sudo apt-get install ntp
 \end{lstlisting}
 
 \subsubsection{NTP configuration on pc1 (NTP server)}
-Edit \texttt{/etc/ntp.conf}, change the server to \texttt{0.pool.ntp.org} and add the restrict line
+Edit \texttt{/etc/ntp.conf}, change the server to \texttt{0.pool.ntp.org} and add the restrict line, \texttt{IP} is the parameter that define your robot network \ref{IP_table}.
 
 \begin{lstlisting} 
 server 0.pool.ntp.org
-restrict 192.168.X.0 mask 255.255.255.0 nomodify notrap
+restrict 192.168.IP.0 mask 255.255.255.0 nomodify notrap
 \end{lstlisting}
 
 \subsubsection{NTP configuration on pc2 (NTP client)}
@@ -220,12 +248,42 @@ server cob3-X-pc1
 \subsection{Install ROS and driver software}
 For general instructions see \footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}}.
 
-\subsubsection{Install ROS and additional tools}
-\textbf{Install additional tools}
+\subsubsection{Setup bash environment}
+We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ on each pc. Copy the \texttt{cob.bash.bashrc.pcY} to \texttt{/etc/cob.bash.bashrc} on each pc.
+
 \begin{lstlisting}
-sudo apt-get install openjdk-6-jdk zsh terminator
-sudo apt-get install python-pip python-yaml libpopt-dev
-sudo pip install -U rosrelease
+sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
+\end{lstlisting}
+
+All users have a pre-configured bash environment too, therefore copy \texttt{user.bashrc} to \texttt{$\sim$/.bashrc}
+\begin{lstlisting}
+cp ~/git/setup/cob-pcs/user.bashrc ~/.bashrc
+\end{lstlisting}
+The \texttt{.bashrc} file is preconfigured for cob3-3 and ipa-apartment, please change the following lines to fit your robot configuration. At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://cob3-X-pc1:11311}, \texttt{ROBOT} to be \texttt{cob3-X} and \texttt{ROBOT\_ENV} to point to your environment.
+\begin{lstlisting}
+ROS_MASTER_URI=http://cob3-X-pc1:11311
+ROBOT=cob3-X
+ROBOT_ENV=YOUR_ENVIRONMENT
+\end{lstlisting}
+
+If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. 
+
+\subsubsection{Create overlays for stacks}
+If the release version of the stacks are not working for you, you can install overlays for individual stacks on the \texttt{robot} user account. To facilitate this process we have created a script which automatically generates ssh-keys, uploads them to github, forkes the stack (if necessary) and clones it to your machine. You can either install a read-only version from our main fork (\texttt{ipa320}) or insert your own username and password to fork and clone your own version of the stack. The script can be used by simply typing
+\begin{lstlisting}
+githelper setup
+githelper clone -s COMMA_SEPARATED_LIST_OF_PACKAGES
+\end{lstlisting}
+
+All stacks needed for the bringup layer are listed at section \ref{sec:software_overview}. 
+
+\textbf{Note}: It should typically only be necessary to create an overlay for three stacks, \texttt{cob\_robots}, \texttt{cob\_calibration\_data} and \texttt{cob\_environments}. All other stacks should be used from their release version. If you need to modify a stack to work for you, please send us a pull request to \texttt{ipa320} on \url{www.github.com}.
+
+
+\subsubsection{Install ROS and additional tools}
+\textbf{Install python tools}
+\begin{lstlisting}
+sudo apt-get install python-ros*
 \end{lstlisting}
 \textbf{Setup your sources.list}
 \\
@@ -251,54 +309,12 @@ sudo apt-get update
 sudo apt-get install ros-electric-care-o-bot-robot
 \end{lstlisting}
 
-\subsubsection{Create overlays for stacks}
-If the release version of the stacks are not working for you, you can install overlays for individual stacks on the \texttt{robot} user account. To facilitate this process we have created a script which automatically generates ssh-keys, uploads them to github, forkes the stack (if necessary) and clones it to your machine. You can either install a read-only version from our main fork (\texttt{ipa320}) or insert your own username and password to fork and clone your own version of the stack. The script can be used by simply typing
-\begin{lstlisting}
-sudo apt-get install git-core curl
-wget https://github.com/ipa320/setup/raw/master/githelper -N --no-check-certificate
-chmod 755 githelper
-./githelper setup
-./githelper clone -s COMMA_SEPARATED_LIST_OF_PACKAGES
-\end{lstlisting}
-
-All stacks needed for the bringup layer are listed at section \ref{sec:software_overview}. 
-
-\textbf{Note}: It should typically only be necessary to create an overlay for two stacks, the \texttt{cob\_robots} and the \texttt{cob\_environments} stack. All other stacks should be used from their release version. If you need to modify a stack to work for you, please send us a pull request to \texttt{ipa320} on \url{www.github.com}.
-
-\subsubsection{Setup bash environment}
-We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ on each pc. Copy the \texttt{cob.bash.bashrc.pcY} to \texttt{/etc/cob.bash.bashrc} on each pc.
-
-\begin{lstlisting}
-sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
-\end{lstlisting}
-
-All users have a pre-configured bash environment too, therefore copy \texttt{user.bashrc} to \texttt{$\sim$/.bashrc}
-\begin{lstlisting}
-cp ~/git/setup/cob-pcs/user.bashrc ~/.bashrc
-\end{lstlisting}
-The \texttt{.bashrc} file is preconfigured for cob3-3 and ipa-apartment, please change the following lines to fit your robot configuration. At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://cob3-X-pc1:11311}, \texttt{ROBOT} to be \texttt{cob3-X} and \texttt{ROBOT\_ENV} to point to your environment.
-\begin{lstlisting}
-ROS_MASTER_URI=http://cob3-X-pc1:11311
-ROBOT=cob3-X
-ROBOT_ENV=YOUR_ENVIRONMENT
-\end{lstlisting}
-
-If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. If you check 
+If you check 
 \begin{lstlisting}
 roscd cob_bringup
 pwd
 \end{lstlisting}
 you should end up in \texttt{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}.
-
-\subsubsection{Setup hardware components}
-In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \texttt{cob\_hardware\_config} package.
-
-\paragraph{Setup udev rules}
-In order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \texttt{/etc/udev/rules.d} on pc1:
-\begin{lstlisting}
-sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
-\end{lstlisting}
-To activate these changes you have to restart the system.
 
 \paragraph{Build the bringup level packages}
 Before setup the components you can build all the bringup level packages:
@@ -306,7 +322,18 @@ Before setup the components you can build all the bringup level packages:
 rosmake --rosdep-install cob_bringup
 \end{lstlisting}
 
-\paragraph{Setup can bus drivers}
+
+\subsubsection{Setup hardware components}
+In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \texttt{cob\_hardware\_config} package.
+
+\paragraph{Setup udev rules}
+In order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \texttt{/etc/udev/rules.d} on pc1 and pc2:
+\begin{lstlisting}
+sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
+\end{lstlisting}
+To activate these changes you have to restart the system.
+
+\paragraph{Setup can bus drivers on pc1}
 This step is necessary for all drivers with can bus interface (Schunk powercubes, Schunk sdh, head axis, base). In general both can drivers from Peak Systems\footnote{\url{http://www.peak-system.com/}} \texttt{libpcan} and ESD\footnote{\url{http://www.esd-electronics.com}} \texttt{libntcan} can be used. Installation instructions can be found in the package documentation of libpcan \url{http://www.ros.org/wiki/libpcan} and libntcan \url{http://www.ros.org/wiki/libntcan}.
 
 \paragraph{Sick S300 laser scanners}
@@ -385,9 +412,9 @@ rostopic hz /scan_top
 \paragraph{Relayboard}
 The Relayboard is connected to PC1 via USB. The configuration file (\texttt{relayboard.yaml}) is in the package \texttt{cob\_hardware\_config} inside the folder \texttt{cob3-X/config}.
 
-For testing the Relayboard you have to run it using the launch file:
+For testing the Relayboard you have to launch the file:
 \begin{lstlisting}
-rostlaunch cob_bringup relayboard.launch
+roslaunch cob_bringup relayboard.launch
 \end{lstlisting}
 
 And checking the output of the topic \texttt{/emergency\_stop\_state} prove its correct operation:
@@ -396,32 +423,90 @@ rostopic echo /emergency_stop_state
 \end{lstlisting}
 
 \paragraph{Base}
-You have to configure the elmo controllers, all the information about the driver is in \footnote{\url{http://www.ros.org/wiki/cob_base_drive_chain}}, you find the parameters of this configuration in \texttt{cob\_hardware\_config} package in \texttt{config/base}.
+You have to configure the elmo controllers, all the information about the driver is in \footnote{\url{http://www.ros.org/wiki/cob_base_drive_chain}}, you find the parameters of this configuration in \texttt{cob\_hardware\_config} package in \texttt{cob3-X/config/base}.
+
+For testing you can launch the base with:
+\begin{lstlisting}
+roslaunch cob_bringup base_solo.launch
+\end{lstlisting}
+Init the component using the service:
+\begin{lstlisting}
+rosservice call /base_controller/init
+\end{lstlisting}
+And try to move the base using the joystick \ref{subsec:joystick}
 
 \paragraph{Tray sensors}
 The tray sensors are defined in udev\_rules and the library libphidgets\footnote{\url{http://www.ros.org/wiki/libphidgets}} for this component is already built in the bringup level.
 
 \paragraph{Schunk SDH with tactile sensors}
-There is only one specific Firmware and library version supported. The version number is listed on \footnote{\url{http://ros.org/wiki/schunk_sdh}}. Add the robot user to the group \texttt{dialout} in the \texttt{/etc/group} file.
+There is only one specific Firmware and library version supported. The version number is listed on \footnote{\url{http://www.ros.org/wiki/schunk_sdh}}. Add the robot user to the group \texttt{dialout} in the \texttt{/etc/group} file.
+
+You can launch the SDH with the following file:
+\begin{lstlisting}
+roslaunch cob_bringup sdh_solo.launch
+\end{lstlisting}
+
+You can init and move the SDH using the cob\_command\_gui (\ref{subsec:command_gui})
 
 \paragraph{Schunk powercubes (lwa, torso, tray)}
 There are two parts where configuration needs to be set. One part of the configuration is done inside the firmware of the powercubes and the other one is done through ROS parameters.
 
 First make sure that the powercube settings in the firmware are correct. You can see and modify the parameters using the windows based PowerCubeCtrl software from the schunk homepage\footnote{\url{http://www.schunk-modular-robotics.com/left-navigation/service-robotics/service-download/software/prl/powercube.html}}. A sample configuration can be fount at \footnote{\url{tbd}}.
 
-The ROS configuration is done in \texttt{cob\_hardware\_config}, e.g. in \texttt{/config/lwa.yaml} or \texttt{/config/torso.yaml}. Documentation about the ROS parameters can be found at \footnote{\url{http://www.ros.org/wiki/schunk_powercube_chain}} and \footnote{\url{http://www.ros.org/wiki/cob_trajectory_controller}}.
+The ROS configuration is done in \texttt{cob\_hardware\_config}, e.g. in \texttt{cob3-X/config/lwa.yaml} or \texttt{/config/torso.yaml}. Documentation about the ROS parameters can be found at \footnote{\url{http://www.ros.org/wiki/schunk_powercube_chain}} and \footnote{\url{http://www.ros.org/wiki/cob_trajectory_controller}}.
+
+There is a launch file in cob\_bringup per schunk component for testing:
+
+\begin{lstlisting}
+roslaunch cob_bringup lwa_solo.launch
+roslaunch cob_bringup torso_solo.launch
+roslaunch cob_bringup tray_solo.launch
+\end{lstlisting}
+
+For initialing and moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
+
+These components should be manual calibrated as it is explained on \ref{sec:manual_calibration}.
 
 \paragraph{Head axis}
-Configuration in \texttt{cob\_hardware\_config} in \texttt{/config/head.yaml}. Documentation about parameters can be found at \footnote{\url{http://www.ros.org/wiki/cob_head_axis}}.
+The configuration is in the package \texttt{cob\_hardware\_config} in \texttt{cob3-X/config/head.yaml}. Documentation about parameters can be found at \footnote{\url{http://www.ros.org/wiki/cob_head_axis}}.
+
+For testing the head axis you can launch head\_solo.launch:
+\begin{lstlisting}
+roslaunch cob_bringup head_solo.launch
+\end{lstlisting}
+
+This component needs a manual calibration, for more information please see the section \ref{sec:manual_calibration}.
 
 \paragraph{Prosilica cameras}
-The IP address for the cameras should be \texttt{192.168.21.101} for the right camera and \texttt{192.168.21.102} for the left camera. You can set the camera IP address using the instructions on \footnote{\url{http://ros.org/wiki/cob_camera_sensors/AVT_Prosilica}}.
+The IP address for the cameras should be \texttt{192.168.21.101} for the right camera and \texttt{192.168.21.102} for the left camera. You can set the camera IP address using the instructions on \footnote{\url{http://www.ros.org/wiki/cob_camera_sensors/AVT_Prosilica}}.
 
 You have to setup the network interface on the robot pc2 to access the cameras, please refer to section \ref{sec:network}.
 
 \paragraph{Kinect}
-The kinect is connected to pc2.
+The kinect is connected to pc2. 
+For testing you have to launch the kinect driver on pc2.
+\\On pc1:
+\begin{lstlisting}
+roscore
+\end{lstlisting}
+On pc2:
+\begin{lstlisting}
+roslaunch cob_bringup kinect.launch
+\end{lstlisting}
 
+You can check the image in a remote pc:
+\begin{lstlisting}
+export ROS_MASTER_URI=http://cob3-X-pc1:11311
+rosrun image_view image_view image:=/cam3d/rgb/image_color
+\end{lstlisting}
+
+And the point cloud checking the topic:
+\begin{lstlisting}
+export ROS_MASTER_URI=http://cob3-X-pc1:11311
+rostopic hz /cam3d/depth/points
+\end{lstlisting}
+
+Or use the tool rviz as it is explained on section \ref{subsec:rviz}.
 
 \subsection{Create new user accounts}
 \subsubsection{Preparation}
@@ -431,6 +516,8 @@ Due to the fact that all users need to be in the correct user groups, that the b
 EXTRA_GROUPS="dialout cdrom floppy audio video plugdev users"
 ADD_EXTRA_GROUPS=1
 \end{lstlisting}
+
+To synchronize the accounts and passwords we need remote root access to all pcs. Therefore make sure you did the steps from sec \ref{sec:root_user}.
 
 \subsubsection{Account creation}
 After finishing the preparation step you can add new users. On pc2 and with administration rights you can use the following instruction
@@ -442,7 +529,6 @@ An ssh-key and passwordless login to all robot pcs should work now. You can test
 \begin{lstlisting}
 ssh cob3-X-pc1
 ssh cob3-X-pc2
-ssh cob3-X-pc3
 \end{lstlisting}
 Logging in from one to another robot pc should work without password.
 
@@ -451,7 +537,7 @@ For the robot internal network setup please refer to section \ref{sec:network}.
 
 Make sure you have name resolution and access to the robot pcs from your external pc. To satisfy the ROS communication you need a full DNS and reverse DNS name lockup for all machines. Check it from your remote pc with
 \begin{lstlisting}
-ping 192.168.X.101
+ping 192.168.IP.101
 ping cob3-X-pc1
 \end{lstlisting}
 and the other way round try to ping your remote pc from one of the robot pcs
@@ -468,26 +554,25 @@ Setting up you building network to enable dns and port forwarding to the interna
 \subsection{Manual setup for each remote pc}
 You can setup a route to the internal network addresses. Please change the robot name and your network device to fit your settings. E.g. for connecting to \texttt{cob3-X} on \texttt{eth0}
 \begin{lstlisting}
-sudo route add -net 192.168.X.0 netmask 255.255.0.0 gw cob3-X dev eth0
+sudo route add -net 192.168.IP.0 netmask 255.255.0.0 gw cob3-X dev eth0
 \end{lstlisting}
 
-for connecting to \texttt{cob3-X} on \texttt{wlan0}
+For connecting to \texttt{cob3-X} on \texttt{wlan0}
 \begin{lstlisting}
-sudo route add -net 192.168.X.0 netmask 255.255.0.0 gw cob3-X dev wlan0
+sudo route add -net 192.168.IP.0 netmask 255.255.0.0 gw cob3-X dev wlan0
 \end{lstlisting}
 
 
 For name resolution you will probably have to edit the file \texttt{/etc/hosts} on the robot pcs as well as on the remote pc. Therefore add the following addresses to the \texttt{/etc/hosts} of your remote pc.
 \begin{lstlisting}
-192.168.X.101 cob3-X-pc1
-192.168.X.102 cob3-X-pc2
-192.168.X.103 cob3-X-pc3
+192.168.IP.101 cob3-X-pc1
+192.168.IP.102 cob3-X-pc2
 \end{lstlisting}
 
 Add your ip adress and hostname to the \texttt{/etc/hosts} of all robot pcs.
 
 \section{Calibration}
-The calibration is divided into two steps, the manual preparation and automatic calibration. All calibration parameters are defined in \texttt{cob\_hardware\_config/../calibration/calibration.urdf.xacro}
+The calibration is divided into two steps, the manual preparation and automatic calibration. All calibration parameters are defined in \texttt{cob\_calibration\_data/cob3-X/calibration/calibration.urdf.xacro}
 
 \subsection{Manual calibration}\label{sec:manual_calibration}
 
@@ -499,12 +584,28 @@ You will have to manually calibrate the reference positions for each joint, e.g.
 \begin{lstlisting}
 rostopic echo /torso_controller/state
 \end{lstlisting}
-and add or subtract these values to the ones already defined as \texttt{torso\_*\_ref} in the \texttt{calibration.urdf.xacro}.
+and add or subtract these values to the ones already defined as \texttt{torso\_*\_ref} in the \texttt{cob\_calibration\_data/cob3-X/calibration/calibration.urdf.xacro}.
 
 \subsection{Automatic calibration}
-The automatic calibration step calibrates can be used for intrinsic and extrinsic camera calibration, as well as for hand eye calibration. The manual calibration steps from section \ref{sec:manual_calibration} are a prerequisit for the automatic calibration. For more information and tutorials about the automatic calibration, see \footnote{\url{http://ros.org/wiki/cob_calibration}}.
+The automatic calibration step calibrates can be used for intrinsic and extrinsic camera calibration, as well as for hand eye calibration. The manual calibration steps from section \ref{sec:manual_calibration} are a prerequisit for the automatic calibration. For more information and tutorials about the automatic calibration, see \footnote{\url{http://www.ros.org/wiki/cob_calibration}}.
 
-\section{Backup and restoring users}   
-tdb
+\section{Backup and Restore} 
+\subsection{Backup the entire system}  
+We recommended to backup your system when you have a stable software version, e.g. all hardware drivers setup and running. You can backup the whole disks of your robot to an external hard disk using the tool dd.
+
+Be sure hat the external device hat enough free space as an ext4 partition, you can format it using gparted \footnote{\url{http://gparted.sourceforge.net/}} . With the new partition mounted in your system execute the following command:
+\begin{lstlisting}
+sudo dd if=/dev/sdaX of=/dev/sdbY
+\end{lstlisting}
+where /dev/sdaX is the local partition where ubuntu is installed and /dev/sdbY is the partition where your external device is mounted. With this command you copy the whole partition, this step will take several hours depending on the disk size.
+
+\subsection{Restore the entire system}
+with the following instructions you can restore your system to a previous backed up version. However you should be aware of that if backing up and restoring fails you will need to setup your system from scratch. So we only reccomend to restore your system if nothing else helps to get the system up and running again. 
+
+If you have a backup on an external hard disk you can use a CD or USB stick with live linux to restore the system with the following command:
+\begin{lstlisting}
+sudo dd if=/dev/sdbY of=/dev/sdaX
+\end{lstlisting}
+where /dev/sdbY is the partition where your external device is mounted and /dev/sdaX is the local partition where you want to restore ubuntu to.
 
 

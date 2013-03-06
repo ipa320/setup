@@ -3,6 +3,14 @@
 
 {\colorbox{red}{\textbf{NOTE:}}}\textbf{ Before you start working with the robot you have to attend a safety introduction. If you haven't got one yet, please contact your local robot administrator.}
 
+The following user manual requires some basic knowledge about
+\begin{itemize}
+\item Linux/Ubuntu
+\item Source code management with git
+\item ROS usage
+\end{itemize}
+If you are missing some of this requirements or feel uncomfortable with what you are doing, please interrupt and ask somebody to help you before continuing.
+
 \section{Hardware overview}
 You can take a look of the technical data of Care-O-Bot on the official web site\footnote{\url{http://www.care-o-bot-research.org/care-o-bot-3/technical-data}} and \footnote{\url{http://www.care-o-bot-research.org/care-o-bot-3/components}}. Also you can see the distribution of the different Care-O-bots at \footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/distribution}}.
 
@@ -46,6 +54,11 @@ If you step into the safety fields of the laser scanners the emergency stop is a
 \subsection{Remote emergency stop control}
 You can press the red button to stop the robot. To release the emergency stop you have to lift the red button and afterwards press the green button.
 
+The remote emergency stop control can be disabled using the switch next to the key switch.
+
+\textbf{WARNING}: This should usually not be used. It is only intended to be used if no remote control is available.
+
+If the remote emergency stop control is disabled and the remote is within the wireless range, it should be placed in its base station. If you remove the remote from the base station, it might trigger an emergency stop.
 
 \textbf{NOTE}: If you hear a "click" while releasing the emergency stop, but the dashboard and command\_gui still show that the emergency stop is activated, turn the key to position II again and hold it for some seconds until the dashboard or command\_gui show no more emergency stop.
 
@@ -96,12 +109,12 @@ After launching this file you will see two GUIs on your screen: the smaller one 
 The dashboard is an important tool where you can check the state of the robot, it is recommended that you have it always opened. The dashboard looks like this:
 
 \begin{center}
-\includegraphics[width=0.55\textwidth]{images/dashboard.png}
+\includegraphics[width=0.35\textwidth]{images/dashboard.png}
 \end{center}
 If you click the first button, you will see a new window popping up with three levels: Errors, Warnings and All. There you can see the state of each component at any time. The status monitoring is divided into Actuators, Sensors and other. The other buttons are for showing diagnostics, motors, emergency status and battery state. In the case of the Care-O-bot we have disable the buttons for the Motors, you see them always in red.
 
 \begin{center}
-\includegraphics[width=0.45\textwidth]{images/diagnostics.png}
+\includegraphics[width=0.4\textwidth]{images/diagnostics.png}
 \end{center}
 
 All diagnostics information for the actors and sensors should be green after successfully initializing the components, see section \ref{subsec:command_gui}.
@@ -116,7 +129,7 @@ In this screen-shot you can see different columns: general, base, torso, tray, a
 
 The other columns of the components have different predefined positions where you can move to. Additionally Each component has a \texttt{stop}, \texttt{init} and \texttt{recover} button, to stop, initialize or recover a single component.
 
-\subsection{Rviz}
+\subsection{Rviz}\label{subsec:rviz}
 RVIZ is a tool that visualizes data from the robot, e.g. the sensor data from the laser scanners, but also information about the coordinate systems and transformations or the images from the cameras. You can add your own items to RVIZ to visualize topics, see more information at \footnote{\url{http://www.ros.org/wiki/rviz}}.
 
 RVIZ needs to be started on your local machine. To be able to visualize topics from the robot export your \texttt{ROS\_MASTER\_URI} to the robot
@@ -136,7 +149,7 @@ You will see a screen like this:
 \includegraphics[width=1\textwidth]{images/rviz.png}
 \end{center}
 
-\subsection{Joystick}
+\subsection{Joystick}\label{subsec:joystick}
 To be able to use the joystick, initialize the components using the command\_gui. For moving the robot components, the dead-man\_button has to be pressed all the time, as soon as the button is released all hardware components will be stopped immediately. 
 
 \begin{itemize}
@@ -152,7 +165,89 @@ Have a look at the following image to see which buttons command which components
 \end{center}
 
 \section{Power down the robot}
-To power down the robot turn the key to position I, disconnect the power cable and turn off the power supply.
+To power down the robot press the emergency button and turn the key to position I, disconnect the power cable and turn off the power supply.
 
 \section{Packing the robot}
-tbd
+In this section, the necessary steps for preparing the robot for shipment are described. Please consult the photos in this section for details.
+A checklist of the material that you should take along in the robot shipping box in order to properly pack the robot is listed at \footnote{\url{https://raw.github.com/ipa320/setup/master/manual_ipa/ShippingBox.pdf}}.
+Moreover, you should also always travel with a ''first-aid'' box that allows you to address common problems that may arise with the robot. The checklist for this first-aid box is listed at \footnote{\url{https://raw.github.com/ipa320/setup/master/manual_ipa/FirstAidKit.pdf}}.
+
+The necessary packing steps are as follows:
+\begin{itemize}
+\item {\em Drive the robot into the box.} Take care that the robot is centered in the box as much as possible. In particular, take care that you don't activate the emergency stop of the front laser scanner
+by driving too far into the box. If you are traveling with a box that has a second opening at the front, keep it open while driving into the box.
+\item {\em Push emergency stop button, then power off.} {\bf Attention:} Always push the emergency button before turning power off. Otherwise, the torso may lose its reference position, requiring a lenghty recalibration process.
+\item {\em Fasten the robot with a tension belt.} {\bf Attention:} Make sure the fastener of the tension belt is not in contact with the torso or arm. 
+\item {\em Use foam material to protect the robot and to prevent slipping.} Make sure the foam material on the sides is in direct contact with the motor blocks, and not with the robot coating.
+\item For air travel, fix an additional tension belt around the box. Moreover, seal the hinges with a plastic seal.
+\end{itemize}
+
+\newpage
+
+\begin{figure}[h!]
+\centering
+\mbox{\subfigure{\includegraphics[width=7cm,angle=90]{images/packing_20.jpg}}\quad
+\subfigure{\includegraphics[width=7cm,angle=90]{images/packing_10.jpg} }}
+\caption{Step 0: Drive the robot in the box and park it as centrally as possible (left). {\bf Always push the emergency stop button before power off!}} % \label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_05.jpg}}\quad
+\subfigure{\includegraphics[width=7cm]{images/packing_11.jpg} }}
+\caption{Step 1: Only wrap the tension belt {\bf once} around the arm.} % \label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_15.jpg}}\quad
+\subfigure{\includegraphics[width=7cm]{images/packing_13.jpg} }}
+\caption{Step 2: Make sure the fastener is hanging freely in the air (i.e. not in direct contact with torso or arm).} %\label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_16.jpg}}\quad
+\subfigure{\includegraphics[width=7cm]{images/packing_01.jpg} }}
+\caption{Step 3: Both of these tension belt positions are ok, but make sure the belt is in contact with a solid part of the arm.} %\label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_14.jpg}}\quad
+\subfigure{\includegraphics[width=7cm]{images/packing_19.jpg} }}
+\caption{Take care that the fastener of the tension belt is {\bf not} in direct contact with the torso or arm.} %\label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{images/packing_21.jpg}
+\caption{Wrap the fastener of the tension belt in air bubble film.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\mbox{\subfigure{\includegraphics[width=7cm, angle=90]{images/packing_02.jpg}}\quad
+\subfigure{\includegraphics[width=7cm]{images/packing_08.jpg} }}
+\caption{Put bubble wrap around the tray and over the head.} %\label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=1\textwidth]{images/packing_09.jpg}
+\caption{Wrap the hand in air bubble film.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_04.jpg}}\quad
+\subfigure{\includegraphics[width=7cm]{images/packing_18.jpg} }}
+\caption{Put foam material between arm and box as well as two foam blocks between motor blocks and box (make sure contact is with the motor box and not with the robot coating). Put some more foam blocks on the fronside and backside of the robot to protect the laser scanners.} %\label{fig12}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\mbox{\subfigure{\includegraphics[width=7cm,angle=90]{images/packing_07.jpg}}\quad
+\subfigure{\includegraphics[width=7cm]{images/packing_12.jpg} }}
+\caption{For air travel, also fix an additional tension belt around the box (left), and seal the hinges with a plastic seal (right).} % \label{fig12}
+\end{figure}

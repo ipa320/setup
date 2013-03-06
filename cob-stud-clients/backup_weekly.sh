@@ -15,6 +15,7 @@ cp -r /home $dirname
 # tar backup directory
 tar -pczf $dirname.tar.gz $dirname
 
+chmod -R +w $dirname
 # delete files, only keep tar.gz
 rm -rf $dirname
 

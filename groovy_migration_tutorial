@@ -45,3 +45,4 @@ $ mkdir
 $ cd ~/git/care-o-bot_rosbuild
 $ rosws init . ~/git/care-o-bot/devel
 $ git clone https://github.com/ipa320/cob_robots.git   (.....)
+$ rosinstall ~/git/care-o-bot_rosbuild ~/git/setup/cob_groovy_rosbuild_sim.rosinstall

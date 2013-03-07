@@ -1,6 +1,6 @@
 $ sudo apt-get install python-setuptools
 $ sudo apt-get install ogre-tools
-$ sudo apt-get install ros-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-gui
+$ sudo apt-get install ros-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-*
 
 ***************************************************************
 ***************************************************************
@@ -16,22 +16,22 @@ $ cd catkinize
 $ sudo python setup.py install
 
 
-$ mkdir ~/git/care-o-bot
-$ mkdir ~/git/care-o-bot/src
-$ mkdir ~/git/care-o-bot/build
-$ cd ~/git/care-o-bot/src
+$ mkdir ~/git/care-o-bot_catkin
+$ mkdir ~/git/care-o-bot_catkin/src
+$ mkdir ~/git/care-o-bot_catkin/build
+$ cd ~/git/care-o-bot_catkin/src
 $ catkin_init_workspace
 $ cd ../build
 $ cmake ../src
 $ make
-$ source buildspace/devel/setup.bash
+$ source ~/git/care-o-bot_catkin/devel/setup.bash
 $ cd ../src
 $ git clone https://github.com/ipa320/cob_robots.git
 
 $ cd ~/git/setup
 $ ./catkin_migration
 
-$ cd ~/git/care-o-bot/build
+$ cd ~/git/care-o-bot_catkin/build
 $ cmake ../src
 $ make
 
@@ -41,12 +41,13 @@ $ make
 ******************* DRY PACKAGES ******************************
 ***************************************************************
 ***************************************************************
-
-$ mkdir 
-$ cd ~/git/care-o-bot_rosbuild
-$ rosws init . ~/git/care-o-bot/devel
+[robot](on pc2)
+$ mkdir ~/git/care-o-bot
+$ cd ~/git/care-o-bot
+$ rosws init . ~/git/care-o-bot_catkin/devel
 $ git clone https://github.com/ipa320/cob_robots.git   (.....)
-$ rosinstall ~/git/care-o-bot_rosbuild ~/git/setup/cob_groovy_rosbuild_sim.rosinstall
+$ rosinstall ~/git/care-o-bot_rosbuild https://raw.github.com/ipa-nhg/setup/cob_groovy_rosbuild_sim.rosinstall
+[robot] rosinstall ~/git/care-o-bot https://raw.github.com/ipa-nhg/setup/cob_groovy_rosbuild_robot.rosinstall
 
 $ rosdep update
 

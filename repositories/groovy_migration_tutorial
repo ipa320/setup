@@ -42,12 +42,21 @@ $ make
 ***************************************************************
 ***************************************************************
 [robot](on pc2)
+
+$ mkdir ~/git/care-o-bot_catkin
+$ mkdir ~/git/care-o-bot_catkin/src
+$ mkdir ~/git/care-o-bot_catkin/build
+$ cd ~/git/care-o-bot_catkin/src
+$ catkin_init_workspace
+$ cd ../build
+$ cmake ../src
+$ make
 $ mkdir ~/git/care-o-bot
 $ cd ~/git/care-o-bot
 $ rosws init . ~/git/care-o-bot_catkin/devel
 $ git clone https://github.com/ipa320/cob_robots.git   (.....)
-$ rosinstall ~/git/care-o-bot_rosbuild https://raw.github.com/ipa-nhg/setup/cob_groovy_rosbuild_sim.rosinstall
-[robot] rosinstall ~/git/care-o-bot https://raw.github.com/ipa-nhg/setup/cob_groovy_rosbuild_robot.rosinstall
+$ rosinstall ~/git/care-o-bot_rosbuild https://raw.github.com/ipa-nhg/setup/repositories/cob_groovy.rosinstall
+
 
 $ rosdep update
 

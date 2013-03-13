@@ -97,13 +97,13 @@ else:
 def main():
 	
 	stack_name = raw_input("stack_name: ")
-	stack_dir = '/u/robot/git/care-o-bot/src/' + stack_name
+	stack_dir = '/home/nhg/git/care-o-bot_catkin/src/' + stack_name
 	package_list = [ name for name in os.listdir(stack_dir) if os.path.isdir(os.path.join(stack_dir, name)) ]
 	print "Packages list " 
 	print package_list
 	for i in package_list:
 		package_name=i
-		pack_dir = '/u/robot/git/care-o-bot/src/' + stack_name + "/" + package_name
+		pack_dir = '/home/nhg/git/care-o-bot_catkin/src/' + stack_name + "/" + package_name
 
 		if (os.path.isfile(pack_dir+'/manifest.xml')):
 		

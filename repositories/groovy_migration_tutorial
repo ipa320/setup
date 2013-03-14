@@ -1,6 +1,6 @@
 $ sudo apt-get install python-setuptools
 $ sudo apt-get install ogre-tools
-$ sudo apt-get install ros-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-*
+$ sudo apt-get install ros-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni
 
 ***************************************************************
 ***************************************************************

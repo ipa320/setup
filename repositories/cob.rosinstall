@@ -1,116 +1,116 @@
 - git:
     uri: 'git://github.com/ipa320/accompany.git'
     local-name: accompany
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/autopnp.git'
     local-name: autopnp
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_android.git'
     local-name: cob_android
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_calibration.git'
     local-name: cob_calibration
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_calibration_data.git'
     local-name: cob_calibration_data
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_command_tools.git'
     local-name: cob_command_tools
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_common.git'
     local-name: cob_common
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_driver.git'
     local-name: cob_driver
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_environment_perception.git'
     local-name: cob_environment_perception
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_environments.git'
     local-name: cob_environments
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_extern.git'
     local-name: cob_extern
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_manipulation.git'
     local-name: cob_manipulation
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_navigation.git'
     local-name: cob_navigation
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_object_perception.git'
     local-name: cob_object_perception
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_people_perception.git'
     local-name: cob_people_perception
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_perception_common.git'
     local-name: cob_perception_common
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_robots.git'
     local-name: cob_robots
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_scenarios.git'
     local-name: cob_scenarios
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_scenario_states.git'
     local-name: cob_scenario_states
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_simulation.git'
     local-name: cob_simulation
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_substitute.git'
     local-name: cob_substitute
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_tutorials.git'
     local-name: cob_tutorials
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/cob_web.git'
     local-name: cob_web
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/ipa_canopen.git'
     local-name: ipa_canopen
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/schunk_modular_robotics.git'
     local-name: schunk_modular_robotics
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/schunk_robots.git'
     local-name: schunk_robots
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/schunk_simulation.git'
     local-name: schunk_simulation
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/srs_common.git'
     local-name: srs_common
-    version: master
+    version: electric_dev
 - git:
     uri: 'git://github.com/ipa320/srs_public.git'
     local-name: srs_public
-    version: master
+    version: electric_dev

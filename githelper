@@ -105,13 +105,13 @@ Commands:
 %prog status [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
   Executes 'git status -uno' 
 
-%prog pull [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
+%prog pull [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=electric_dev]
   Pulls latest changes from your origin electric_dev 
 
-%prog push [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
+%prog push [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=electric_dev] 
   Pushes local commits to origin electric_dev 
 
-%prog merge [-u GITHUBUSER, default="ipa320"] [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
+%prog merge [-u GITHUBUSER, default="ipa320"] [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=electric_dev]
   Merges from a remote branch 
 
 githelper -h
@@ -150,6 +150,10 @@ def main():
 		action="store_true", dest="readonly",
 		help="Access github repositories read-only")
 	
+	parser.add_option("-b", "--branch",
+		dest="branch", default="electric_dev",
+		help="Remote branch . Default = electric_dev")
+
 	(options, args) = parser.parse_args()
 
 	# check for input parameters
@@ -377,12 +381,12 @@ def main():
 				print "pulling..."
 				write_to_log("pulling stack " + stack + "...")
 				check_for_update()
-				git_pull()
+				git_pull(options)
 			elif args[0] == "push":
 				print "pushing..."
 				write_to_log("pushing stack " + stack + "...")
 				check_for_update()
-				git_push()
+				git_push(options)
 			elif args[0] == "merge":
 				print "merging..."
 				write_to_log("merging stack " + stack + "...")
@@ -413,38 +417,38 @@ def git_status():
 	os.system("git status -uno")
 
 
-def git_pull():
+def git_pull(options):
 	#print "git_pull ... "
 	# check for uncommited changes
 	check_for_changes()
-	
+	branch = os.path.expanduser(options.branch)
 	# operate on electric_dev branch
-	os.system("git checkout electric_dev >> " + _output + " 2>&1")
+	os.system("git checkout" + branch + " >> " + _output + " 2>&1")
 
 	# fetch from origin
 	os.system("git fetch origin >> " + _output + " 2>&1")
 	
 	# merge own origin/electric_dev
-	os.system("git merge origin/electric_dev >> " + _output)
+	os.system("git merge origin/" + branch + " >> " + _output)
 	if has_conflicts():
 		print "ERROR: Conflicts found. Please pull manually and resolve conflicts! Resetting changes and aborting..."
 		os.system("git reset --hard HEAD")
 		exit(1)
 
 
-def git_push():
+def git_push(options):
 	#print "git_push ... "
 	# first pull from origin electric_dev
 	git_pull()
-
+	branch = os.path.expanduser(options.branch)
 	# push to origin electric_dev
-	os.system("git push origin electric_dev >> " + _output + " 2>&1")
+	os.system("git push origin " + branch + " >> " + _output + " 2>&1")
 
 
 def git_merge(stack, options):
 	#print "git_merge ... "
 	git_push()
-
+	branch = os.path.expanduser(options.branch)
 	# create remote origin if not exists
 	p = os.popen("git remote")
 	status = p.read()
@@ -457,23 +461,24 @@ def git_merge(stack, options):
 	
 	# fetch from origin-githubuser and merge and push
 	os.system("git fetch origin-" + options.githubuser + " >> " + _output + " 2>&1")
-	os.system("git merge origin-" + options.githubuser + "/electric_dev >> " + _output + " 2>&1")
+	os.system("git merge origin-" + options.githubuser +  branch + " >> " + _output + " 2>&1")
 	if has_conflicts():
 		print "ERROR: conflicts found. Please merge manually and resolve conflicts! Resetting changes and aborting..."
 		os.system("git reset --hard HEAD >> " + _output + " 2>&1")
-		os.system("git checkout electric_dev >> " + _output + " 2>&1")
+		os.system("git checkout " + branch + " >> " + _output + " 2>&1")
 		os.system("git branch -D automerge >> " + _output + " 2>&1")
 		exit(1)
 	
-	os.system("git checkout electric_dev >> " + _output + " 2>&1")
+	os.system("git checkout " + branch + " >> " + _output + " 2>&1")
 	os.system("git merge automerge >> " + _output + " 2>&1")
 	os.system("git branch -D automerge >> " + _output + " 2>&1")
 	git_push()
 
 def git_mergeto(stack, options):
 	#print "git_mergeto ... "
+	branch = os.path.expanduser(options.branch)
 	git_merge(stack, options)
-	os.system("git push origin-" + options.githubuser + " electric_dev >> " + _output + " 2>&1")
+	os.system("git push origin-" + options.githubuser + branch + " >> " + _output + " 2>&1")
 
 def check_for_update():#TODO check for new version, use timeout if no internet connection available
 	#print "check_for_update ... "

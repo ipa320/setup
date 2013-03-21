@@ -6,7 +6,8 @@ sudo adduser stud-admin --home /home-local/stud-admin
 sudo adduser stud-admin adm sudo
 
 sudo adduser jenkins --home /home-local/jenkins
-sudo adduser jenkins adm sudo
+sudo adduser jenkins adm
+sudo adduser jenkins sudo
 
 sudo deluser ipa
 

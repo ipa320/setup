@@ -48,14 +48,14 @@ $ mkdir ~/git/care-o-bot_catkin/src
 $ mkdir ~/git/care-o-bot_catkin/build
 $ cd ~/git/care-o-bot_catkin/src
 $ catkin_init_workspace
-$ cd ../build
-$ cmake ../src
-$ make
+$ cd ..
+$ cmake src
+$ catkin_make
 $ mkdir ~/git/care-o-bot
 $ cd ~/git/care-o-bot
 $ rosws init . ~/git/care-o-bot_catkin/devel
 $ git clone https://github.com/ipa320/cob_robots.git   (.....)
-$ rosinstall ~/git/care-o-bot_rosbuild https://raw.github.com/ipa-nhg/setup/repositories/cob_groovy.rosinstall
+$ rosinstall ~/git/care-o-bot https://raw.github.com/ipa-nhg/setup/master/repositories/cob_groovy.rosinstall
 
 
 $ rosdep update

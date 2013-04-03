@@ -73,10 +73,10 @@ import json
 # Check for filesystem
 if platform.system() == 'Linux':
 	# write to log file instead of /dev/null
-	_output = "/tmp/githelper/log.txt"
+	_output = "~/.githelper/log.txt"
 	# check if log file exists, if not create dir and file, if yes delete old file
-	if not os.path.exists(os.path.dirname(_output)):
-		os.makedirs(os.path.dirname(_output))
+	if not os.path.exists(os.path.expanduser(os.path.dirname(_output))):
+		os.makedirs(os.path.expanduser(os.path.dirname(_output)))
 		os.system("touch " + _output)
 	else:
 		os.system("rm -r " + _output)

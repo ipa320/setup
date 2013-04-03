@@ -182,5 +182,11 @@ setup ntp time synchronisation
 edit /etc/ntp.conf and change server to cob-kitchen-server
 
 
+-------------
+setup ssh-keys and allow stud-admin-desktop to login
+-------------
+ssh-keygen
+ssh-copy-id stud-admin-desktop
 
-
+# login to stud-admin@stud-admin-desktop and test if the following script works without throwing an error
+./git/setup/cob-stud-clients/cob-stud-install.sh vim

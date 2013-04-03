@@ -10,6 +10,12 @@ sudo adduser jenkins admin
 
 sudo deluser ipa
 
+#allow stud-admin and jenkins user to permanently use sudo rights by adding this line at the end of /etc/sudoers with 
+sudo visudo -f /etc/sudoers
+
+stud-admin ALL=(ALL) NOPASSWD: ALL
+jenkins ALL=(ALL) NOPASSWD: ALL
+
 
 ----------------
 In the new PCs cob-stud-10X CoolerMaster 
@@ -114,4 +120,11 @@ sudo add-apt-repository ppa:ubuntu-x-swat/x-updates
 sudo apt-get update
 sudo apt-get install nvidia-current-dev
 
+-------------
+setup ssh-keys and allow stud-admin-desktop to login
+-------------
+ssh-keygen
+ssh-copy-id stud-admin-desktop
 
+# login to stud-admin@stud-admin-desktop and test if the following script works without throwing an error
+./git/setup/cob-stud-clients/cob-stud-install.sh vim

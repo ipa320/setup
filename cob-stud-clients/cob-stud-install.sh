@@ -27,13 +27,13 @@ cob-stud-601
 cob-stud-602
 cob-stud-603"
 
-
 for client in $client_list; do
 	echo "-------------------------------------------"
 	echo "Installing <<"$*">> on $client"
 	echo "-------------------------------------------"
 	echo ""
-	ssh $client "sudo apt-get install $* -y"
+	#ssh $client "sudo apt-get install $* -y"
+	ssh $client "sudo apt-get install $* "
 	ret=${PIPESTATUS[0]}
 	if [ $ret != 0 ] ; then
 		echo -t "apt-get return an error (error code: $ret), aborting..."

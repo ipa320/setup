@@ -1,0 +1,63 @@
+$ sudo apt-get install python-setuptools
+$ sudo apt-get install ogre-tools
+$ sudo apt-get install ros-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni
+
+***************************************************************
+***************************************************************
+********************WET PACKAGES*******************************
+***************************************************************
+***************************************************************
+
+
+http://www.ros.org/wiki/catkin/migrating_from_rosbuild
+
+$ git clone https://github.com/ros-infrastructure/catkinize
+$ cd catkinize
+$ sudo python setup.py install
+
+
+$ mkdir ~/git/care-o-bot_catkin
+$ mkdir ~/git/care-o-bot_catkin/src
+$ mkdir ~/git/care-o-bot_catkin/build
+$ cd ~/git/care-o-bot_catkin/src
+$ catkin_init_workspace
+$ cd ../build
+$ cmake ../src
+$ make
+$ source ~/git/care-o-bot_catkin/devel/setup.bash
+$ cd ../src
+$ git clone https://github.com/ipa320/cob_robots.git
+
+$ cd ~/git/setup
+$ ./catkin_migration
+
+$ cd ~/git/care-o-bot_catkin/build
+$ cmake ../src
+$ make
+
+
+***************************************************************
+***************************************************************
+******************* DRY PACKAGES ******************************
+***************************************************************
+***************************************************************
+[robot](on pc2)
+
+$ mkdir ~/git/care-o-bot_catkin
+$ mkdir ~/git/care-o-bot_catkin/src
+$ mkdir ~/git/care-o-bot_catkin/build
+$ cd ~/git/care-o-bot_catkin/src
+$ catkin_init_workspace
+$ cd ..
+$ cmake src
+$ catkin_make
+$ mkdir ~/git/care-o-bot
+$ cd ~/git/care-o-bot
+$ rosws init . ~/git/care-o-bot_catkin/devel
+$ git clone https://github.com/ipa320/cob_robots.git   (.....)
+$ rosinstall ~/git/care-o-bot https://raw.github.com/ipa-nhg/setup/master/repositories/cob_groovy.rosinstall
+
+
+$ rosdep update
+
+$ sudo cp -r /opt/ros/fuerte/stacks/visualization_common /opt/ros/groovy/stacks/. 

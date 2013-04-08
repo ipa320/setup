@@ -358,24 +358,25 @@ Check the rear scanner in the same way, the launch file is \texttt{laser\_rear.l
 
 You have to configurate the scanners and setup the safety region for each scanner. It can be done using the Sick CDS software \footnote{\url{http://www.sick.com/group/EN/home/service/software/Pages/configurationsoftwarecds.aspx}}.
 
-\textbf{Note on new Firmware (2.10 and greater):} 
-Sick changed the their scanner product line. From now on (April 2013) the Sick Professional CMS, that we used so far, has been replaced by the Sick Expert.
+\textbf{Note on new firmware (2.10 and greater):} 
+Sick changed their scanner product line. From now on (April 2013) the Sick Professional CMS, that we used so far, has been replaced by the Sick Expert.
 The main difference is, that there is now no additional CMS version anymore.
 Expert equals to CMS, whereas Professional no longer has the CMS capabilities.
 The new scanners are also shipped with a new firmware (2.10).
 It is thus not possible anymore, to simply flash an old configuration as it might break the scanner.
-Additionally, the new Scanner also have a new telegram protocoll version, which is not compatible with the current driver.
+Additionally, the new scanners also have a new telegram protocoll version, which is not compatible with the current driver.
 However, it can be configured to use the old protocoll versions.
 How to setup the scanner with the new firmware is described in the following.
 
-\textbf{How to setup Sick Laser Scanners with Firmware version 2.10:}
+\textbf{How to setup Sick laser scanners with firmware version 2.10:}
 Make sure you have CDS 3.6.7 installed (even though it is not the latest one, this is the recommended version from the Sick support).
 When the scanner is connected and the CDS has started, add a new device to the respective COM port (do NOT hit the \texttt{Recognize Project} button).
 Choose the correct device: S300 Expert (CMS should be entered automatically).
 Check the \texttt{Compatability Mode} box; this serves to enable the old telegram protocoll version.
-After that you can edit the configuration or import one (an example configuration for the new scanners can be found at GitHub\footnote{for the rob@work: \url{https://github.com/ipa320/setup/tree/master/backup_configuration/raw3-3/raw3-3_exert_front.sks}}).
+After that you can edit the configuration or import one (the current configurations for the scanners can be found in the robot specific folders on GitHub\footnote{\url{https://github.com/ipa320/setup/tree/master/backup_configuration}}, \texttt{raw3-3} contains configurations for the new scanners).
+If you are not sure which scanner your robot has, have a look at the distribution site on ros.org\footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/distribution}}.
 
-\textbf{Note on importing Scanner Fields:}
+\textbf{Note on importing scanner fields:}
 Please note that even though you can easily export and import any configurations, the scanner fields are not contained in the configuration files.
 You need to export and import the scanner fields seperatly using the CDS.
 This can be done in the \texttt{File} menu.

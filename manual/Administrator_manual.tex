@@ -29,7 +29,7 @@ Next we have to install some basic tools for the further setup of the pcs. In or
 
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install vim tree gitg meld curl openjdk-6-jdk zsh terminator
+sudo apt-get install vim tree gitg meld curl openjdk-6-jdk zsh terminator language-pack-de language-pack-en
 \end{lstlisting}
 
 \subsection{Setup ssh server}
@@ -52,13 +52,6 @@ cd ~/git
 git clone git://github.com/ipa320/setup.git
 \end{lstlisting}
 
-Enable passwordless login to all robot pcs for robot user
-\begin{lstlisting}
-ssh-keygen
-ssh-copy-id cob3-X-pc1
-ssh cob3-X-pc1
-ssh cob3-X-pc2
-\end{lstlisting}
 
 Allow robot user to execute sudo command without password. Add \texttt{robot ALL=(ALL) NOPASSWD: ALL} to \texttt{/etc/sudoers} on all robot pcs
 \begin{lstlisting}
@@ -70,14 +63,6 @@ Enable root account on all robot pcs
 \begin{lstlisting}
 ssh cob3-X-pcY
 sudo passwd root
-\end{lstlisting}
-
-Enable passwordless login to all robot pcs for root user
-\begin{lstlisting}
-su root
-ssh-keygen
-ssh-copy-id cob3-X-pcY
-ssh cob3-X-pcY
 \end{lstlisting}
 
 \subsection{Setup internal robot network}\label{sec:network}
@@ -224,6 +209,24 @@ After finishing you need to reboot the pc
 sudo reboot
 \end{lstlisting}
 
+
+\subsection{Enable passwordless login}
+Enable passwordless login to all robot pcs for robot user:
+\begin{lstlisting}
+ssh-keygen
+ssh-copy-id cob3-X-pc1
+ssh cob3-X-pc1
+ssh cob3-X-pc2
+\end{lstlisting}
+And for root user:
+\begin{lstlisting}
+su root
+ssh-keygen
+ssh-copy-id cob3-X-pc1
+ssh cob3-X-pc1
+ssh cob3-X-pc2
+\end{lstlisting}
+
 \subsection{Setup NTP time synchronitation}
 Install the ntp package
 
@@ -245,7 +248,7 @@ Edit \texttt{/etc/ntp.conf}, change the server to \texttt{cob3-X-pc1}:
 server cob3-X-pc1
 \end{lstlisting}
 
-\subsection{Install ROS and driver software}
+\subsection{Install ROS and driver software (electric distro)}
 For general instructions see \footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}}.
 
 \subsubsection{Setup bash environment}
@@ -322,8 +325,98 @@ Before setup the components you can build all the bringup level packages:
 rosmake --rosdep-install cob_bringup
 \end{lstlisting}
 
+\subsection{Install ROS and driver software (Groovy distro)}
+For general instructions see \footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/groovy}}.
 
-\subsubsection{Setup hardware components}
+\subsubsection{Setup bash environment}
+We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ on each pc. Copy the \texttt{cob.bash.bashrc.pcY} to \texttt{/etc/cob.bash.bashrc} on each pc.
+
+\begin{lstlisting}
+sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
+\end{lstlisting}
+
+All users have a pre-configured bash environment too, therefore copy \texttt{user.bashrc} to \texttt{$\sim$/.bashrc}
+\begin{lstlisting}
+cp ~/git/setup/cob-pcs/user.bashrc_groovy ~/.bashrc
+\end{lstlisting}
+The \texttt{.bashrc} file is preconfigured for cob3-3 and ipa-apartment, please change the following lines to fit your robot configuration. At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://cob3-X-pc1:11311}, \texttt{ROBOT} to be \texttt{cob3-X} and \texttt{ROBOT\_ENV} to point to your environment.
+\begin{lstlisting}
+ROS_MASTER_URI=http://cob3-X-pc1:11311
+ROBOT=cob3-X
+ROBOT_ENV=YOUR_ENVIRONMENT
+\end{lstlisting}
+
+If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. 
+
+\subsubsection{Install ROS and additional tools}
+\textbf{Install python tools}
+\begin{lstlisting}
+sudo apt-get install python-ros*
+\end{lstlisting}
+
+\textbf{Setup your sources.list}
+\\
+\\Ubuntu 12.04 (Precise)
+\begin{lstlisting}
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" > /etc/apt/sources.list.d/ros-latest.list'
+\end{lstlisting}
+\textbf{Set up your keys}
+\begin{lstlisting}
+wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+\end{lstlisting}
+\textbf{Install ROS}
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install ros-groovy-desktop-full
+\end{lstlisting}
+
+\textbf{Install extra packages}
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install python-setuptools rogre-tools os-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni 
+\end{lstlisting}
+
+\subsubsection{Create overlays for stacks}
+\textbf{Create and build  catkin workspace}
+\begin{lstlisting}
+mkdir ~/git/care-o-bot_catkin
+mkdir ~/git/care-o-bot_catkin/src
+mkdir ~/git/care-o-bot_catkin/build
+cd ~/git/care-o-bot_catkin/src
+catkin_init_workspace
+cd ~/git/care-o-bot_catkin
+cmake src
+catkin_make
+\end{lstlisting}
+
+\textbf{Create the dry packages overlays}
+\begin{lstlisting}
+mkdir ~/git/care-o-bot
+cd ~/git/care-o-bot
+rosws init . ~/git/care-o-bot_catkin/devel
+rosinstall ~/git/care-o-bot https://raw.github.com/ipa-nhg/setup/master/repositories/cob_groovy.rosinstall
+\end{lstlisting}
+
+If you check 
+\begin{lstlisting}
+rosdep update
+roscd cob_bringup
+pwd
+\end{lstlisting}
+you should end up in \texttt{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}.
+
+\paragraph{Build the bringup level packages}
+Before setup the components you can build all the bringup level packages:
+\begin{lstlisting}
+rosmake --rosdep-install cob_bringup
+\end{lstlisting}
+
+\textbf{Create the environment file on remote machine}
+\begin{lstlisting}
+cp ~/git/setup/env.sh ~/git/care-o-bot/.
+\end{lstlisting}
+
+\subsection{Setup hardware components}
 In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \texttt{cob\_hardware\_config} package.
 
 \paragraph{Setup udev rules}

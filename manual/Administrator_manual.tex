@@ -349,10 +349,7 @@ ROBOT_ENV=YOUR_ENVIRONMENT
 If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. 
 
 \subsubsection{Install ROS and additional tools}
-\textbf{Install python tools}
-\begin{lstlisting}
-sudo apt-get install python-ros*
-\end{lstlisting}
+
 
 \textbf{Setup your sources.list}
 \\
@@ -373,7 +370,12 @@ sudo apt-get install ros-groovy-desktop-full
 \textbf{Install extra packages}
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install python-setuptools rogre-tools os-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni 
+sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni ros-groovy-openni*
+\end{lstlisting}
+
+\textbf{Install python tools}
+\begin{lstlisting}
+sudo apt-get install python-ros*
 \end{lstlisting}
 
 \subsubsection{Create overlays for stacks}
@@ -394,11 +396,12 @@ catkin_make
 mkdir ~/git/care-o-bot
 cd ~/git/care-o-bot
 rosws init . ~/git/care-o-bot_catkin/devel
-rosinstall ~/git/care-o-bot https://raw.github.com/ipa-nhg/setup/master/repositories/cob_groovy.rosinstall
+rosinstall ~/git/care-o-bot https://raw.github.com/ipa320/setup/master/repositories/cob_groovy_bringup.rosinstall
 \end{lstlisting}
 
 If you check 
 \begin{lstlisting}
+sudo rosdep init
 rosdep update
 roscd cob_bringup
 pwd
@@ -408,7 +411,7 @@ you should end up in \texttt{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}.
 \paragraph{Build the bringup level packages}
 Before setup the components you can build all the bringup level packages:
 \begin{lstlisting}
-rosmake --rosdep-install cob_bringup
+rosmake cob_bringup
 \end{lstlisting}
 
 \textbf{Create the environment file on remote machine}

@@ -114,7 +114,6 @@ export ROS_MASTER_URI=http://myrobot-pc1:11311
 export ROBOT=myrobot
 export ROBOT_ENV=ipa-apartment
 export ROSLAUNCH_SSH_UNKNOWN=1
-export PKG_CONFIG_PATH=/opt/ros/lib/pkgconfig
 export JAVA_HOME=/usr/lib/jvm/java-6-opendjk-amd64
 
 COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)

@@ -62,58 +62,77 @@
 #
 #################################################################
 
+## Scan0 ##
+Scan0Attr1='ATTRS{bInterfaceNumber}=="00"'
+Scan0Attr2='ATTRS{idProduct}=="6010"'
+
+## Scan1 ##
+Scan1Attr1='ATTRS{bInterfaceNumber}=="01"'
+Scan1Attr2='ATTRS{idProduct}=="6010"'
+
+## Relayboard ##
+RelaisAttr1='ATTRS{idProduct}=="6001"'
+RelaisAttr2='ATTRS{bcdDevice}=="0400"'
+
+## LED ##
+LedAttr1='ATTRS{idProduct}=="6001"'
+LedAttr2='ATTRS{serial}=="A800K9NH"'
+
+
+
+
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB0) > /tmp/usb0
-if grep -qs 'ATTRS{idProduct}=="6001"' /tmp/usb0 && grep -qs 'ATTRS{serial}=="A800K9NH"' /tmp/usb0
+if grep -qs $LedAttr1 /tmp/usb0 && grep -qs $LedAttr2 /tmp/usb0
 then
     sudo ln -s ttyUSB0 /dev/ttyLed
 fi
-if grep -qs 'ATTRS{idProduct}=="6001"' /tmp/usb0 && grep -qs 'ATTRS{bcdDevice}=="0400"' /tmp/usb0
+if grep -qs $RelaisAttr1 /tmp/usb0 && grep -qs $RelaisAttr2 /tmp/usb0
 then
     sudo ln -s ttyUSB0 /dev/ttyRelais
 fi
-if grep -qs 'ATTRS{bInterfaceNumber}=="00"' /tmp/usb0  && grep -qs 'ATTRS{idProduct}=="6010"' /tmp/usb0 
+if grep -qs $Scan0Attr1 /tmp/usb0  && grep -qs $Scan0Attr2 /tmp/usb0 
 then
     sudo ln -s ttyUSB0 /dev/ttyScan0
 fi
-if grep -qs 'ATTRS{bInterfaceNumber}=="01"' /tmp/usb0  && grep -qs 'ATTRS{idProduct}=="6010"' /tmp/usb0 
+if grep -qs $Scan1Attr1 /tmp/usb0  && grep -qs $Scan1Attr2 /tmp/usb0 
 then
     sudo ln -s ttyUSB0 /dev/ttyScan1
 fi
 
 
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB1) > /tmp/usb1
-if grep -qs 'ATTRS{idProduct}=="6001"' /tmp/usb1 && grep -qs 'ATTRS{serial}=="A800K9NH"' /tmp/usb1
+if grep -qs $LedAttr1 /tmp/usb1 && grep -qs $LedAttr2 /tmp/usb1
 then
     sudo ln -s ttyUSB0 /dev/ttyLed
 fi
-if grep -qs 'ATTRS{idProduct}=="6001"' /tmp/usb1 && grep -qs 'ATTRS{bcdDevice}=="0400"' /tmp/usb1
+if grep -qs $RelaisAttr1 /tmp/usb1 && grep -qs $RelaisAttr2 /tmp/usb1
 then
     sudo ln -s ttyUSB1 /dev/ttyRelais
 fi
-if grep -qs 'ATTRS{bInterfaceNumber}=="00"' /tmp/usb1  && grep -qs 'ATTRS{idProduct}=="6010"' /tmp/usb1 
+if grep -qs $Scan0Attr1 /tmp/usb1  && grep -qs $Scan0Attr2 /tmp/usb1 
 then
     sudo ln -s ttyUSB1 /dev/ttyScan0
 fi
-if grep -qs 'ATTRS{bInterfaceNumber}=="01"' /tmp/usb1  && grep -qs 'ATTRS{idProduct}=="6010"' /tmp/usb1 
+if grep -qs $Scan1Attr1 /tmp/usb1  && grep -qs $Scan1Attr2 /tmp/usb1 
 then
     sudo ln -s ttyUSB1 /dev/ttyScan1
 fi
 
 
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB2) > /tmp/usb2
-if grep -qs 'ATTRS{idProduct}=="6001"' /tmp/usb0 && grep -qs 'ATTRS{serial}=="A800K9NH"' /tmp/usb2
+if grep -qs $LedAttr1 /tmp/usb0 && grep -qs $LedAttr2 /tmp/usb2
 then
     sudo ln -s ttyUSB0 /dev/ttyLed
 fi
-if grep -qs 'ATTRS{idProduct}=="6001"' /tmp/usb2 && grep -qs 'ATTRS{bcdDevice}=="0400"' /tmp/usb2
+if grep -qs $RelaisAttr1 /tmp/usb2 && grep -qs $RelaisAttr2 /tmp/usb2
 then
     sudo ln -s ttyUSB2 /dev/ttyRelais 
 fi
-if grep -qs 'ATTRS{bInterfaceNumber}=="00"' /tmp/usb2  && grep -qs 'ATTRS{idProduct}=="6010"' /tmp/usb2 
+if grep -qs $Scan0Attr1 /tmp/usb2  && grep -qs $Scan0Attr2 /tmp/usb2 
 then
     sudo ln -s ttyUSB2 /dev/ttyscan0
 fi
-if grep -qs 'ATTRS{bInterfaceNumber}=="01"' /tmp/usb2  && grep -qs 'ATTRS{idProduct}=="6010"' /tmp/usb2
+if grep -qs $Scan1Attr1 /tmp/usb2  && grep -qs $Scan1Attr2 /tmp/usb2
 then
     sudo ln -s ttyUSB2 /dev/ttyScan1
 fi

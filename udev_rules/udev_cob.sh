@@ -27,8 +27,8 @@
 # Implements helper script for working with git and the care-o-bot stacks.
 #
 # copy this executable into /etc/init.d 
-# chmod +x udev_desire.sh
-# sudo cp udev_desire.sh /etc/init.d/
+# chmod +x udev_cob.sh
+# sudo cp udev_cob.sh /etc/init.d/
 # sudo update-rc.d udev_desire.sh defaults
 #
 #################################################################
@@ -79,8 +79,14 @@ LedAttr1='ATTRS{idProduct}=="6001"'
 LedAttr2='ATTRS{serial}=="A800K9NH"'
 
 
+#Phidget rules for tray sensor
+PhidgetAttr1='ATTRS{idVendor}=="0925"'
 
+#Tactile Sensors
+TactAttr1='ATTRS{idVendor}=="10c4"' #ATTRS{idVendor}=="067b"
+TactAttr2='ATTRS{idProduct}=="ea60"' #,ATTRS{idProduct}=="2303"
 
+sudo chmod 666 /dev/ttyUSB0
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB0) > /tmp/usb0
 if grep -qs $LedAttr1 /tmp/usb0 && grep -qs $LedAttr2 /tmp/usb0
 then
@@ -99,7 +105,7 @@ then
     sudo ln -s ttyUSB0 /dev/ttyScan1
 fi
 
-
+sudo chmod 666 /dev/ttyUSB1
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB1) > /tmp/usb1
 if grep -qs $LedAttr1 /tmp/usb1 && grep -qs $LedAttr2 /tmp/usb1
 then
@@ -118,7 +124,7 @@ then
     sudo ln -s ttyUSB1 /dev/ttyScan1
 fi
 
-
+sudo chmod 666 /dev/ttyUSB2
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB2) > /tmp/usb2
 if grep -qs $LedAttr1 /tmp/usb0 && grep -qs $LedAttr2 /tmp/usb2
 then

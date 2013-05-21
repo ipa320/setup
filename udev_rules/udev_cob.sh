@@ -1,3 +1,4 @@
+#!/bin/bash
 #################################################################
 ##\file
 #
@@ -24,6 +25,11 @@
 #
 # \brief
 # Implements helper script for working with git and the care-o-bot stacks.
+#
+# copy this executable into /etc/init.d 
+# chmod +x udev_cob.sh
+# sudo cp udev_cob.sh /etc/init.d/
+# sudo update-rc.d udev_desire.sh defaults
 #
 #################################################################
 #
@@ -56,62 +62,81 @@
 #
 #################################################################
 
-##Scan0##
-Scan0Attr1='ATTRS{idProduct}=="6001"'
+## Scan0 ##
+Scan0Attr1='ATTRS{bInterfaceNumber}=="00"'
+Scan0Attr2='ATTRS{idProduct}=="6010"'
 
-##Scan1##
-Scan1Attr1='ATTRS{bInterfaceNumber}=="00"'
+## Scan1 ##
+Scan1Attr1='ATTRS{bInterfaceNumber}=="01"'
 Scan1Attr2='ATTRS{idProduct}=="6010"'
 
-##Relayboard##
-RelaisAttr1='ATTRS{bInterfaceNumber}=="01"'
-RelaisAttr2='ATTRS{idProduct}=="6010"'
+## Relayboard ##
+RelaisAttr1='ATTRS{idProduct}=="6001"'
+RelaisAttr2='ATTRS{bcdDevice}=="0400"'
+
+## LED ##
+LedAttr1='ATTRS{idProduct}=="6001"'
+LedAttr2='ATTRS{serial}=="A800K9NH"'
 
 
+#Phidget rules for tray sensor
+PhidgetAttr1='ATTRS{idVendor}=="0925"'
 
-##ttyUSB0
+#Tactile Sensors
+TactAttr1='ATTRS{idVendor}=="10c4"' #ATTRS{idVendor}=="067b"
+TactAttr2='ATTRS{idProduct}=="ea60"' #,ATTRS{idProduct}=="2303"
+
+sudo chmod 666 /dev/ttyUSB0
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB0) > /tmp/usb0
-if grep -qs $Scan0Attr1 /tmp/usb0 
+if grep -qs $LedAttr1 /tmp/usb0 && grep -qs $LedAttr2 /tmp/usb0
+then
+    sudo ln -s ttyUSB0 /dev/ttyLed
+fi
+if grep -qs $RelaisAttr1 /tmp/usb0 && grep -qs $RelaisAttr2 /tmp/usb0
+then
+    sudo ln -s ttyUSB0 /dev/ttyRelais
+fi
+if grep -qs $Scan0Attr1 /tmp/usb0  && grep -qs $Scan0Attr2 /tmp/usb0 
 then
     sudo ln -s ttyUSB0 /dev/ttyScan0
 fi
-
-if grep -qs $RelaisAttr1 /tmp/usb0  && grep -qs $RelaisAttr2 /tmp/usb0  
-then
-    sudo ln -s ttyUSB0 /dev/ttyRelays
-fi
-if grep -qs $Scan1Attr1 /tmp/usb0  && grep -qs $Scan1Attr2 /tmp/usb0
+if grep -qs $Scan1Attr1 /tmp/usb0  && grep -qs $Scan1Attr2 /tmp/usb0 
 then
     sudo ln -s ttyUSB0 /dev/ttyScan1
 fi
 
-
-
-##ttyUSB1
+sudo chmod 666 /dev/ttyUSB1
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB1) > /tmp/usb1
-if grep -qs $Scan0Attr1 /tmp/usb1
+if grep -qs $LedAttr1 /tmp/usb1 && grep -qs $LedAttr2 /tmp/usb1
 then
-    sudo ln -s ttyUSB1 /dev/ttyScan0
+    sudo ln -s ttyUSB0 /dev/ttyLed
 fi
-if grep -qs  $RelaisAttr1  /tmp/usb1  && grep -qs $RelaisAttr2 /tmp/usb1 
+if grep -qs $RelaisAttr1 /tmp/usb1 && grep -qs $RelaisAttr2 /tmp/usb1
 then
     sudo ln -s ttyUSB1 /dev/ttyRelais
+fi
+if grep -qs $Scan0Attr1 /tmp/usb1  && grep -qs $Scan0Attr2 /tmp/usb1 
+then
+    sudo ln -s ttyUSB1 /dev/ttyScan0
 fi
 if grep -qs $Scan1Attr1 /tmp/usb1  && grep -qs $Scan1Attr2 /tmp/usb1 
 then
     sudo ln -s ttyUSB1 /dev/ttyScan1
 fi
 
-
-##ttyUSB2
+sudo chmod 666 /dev/ttyUSB2
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB2) > /tmp/usb2
-if grep -qs $Scan0Attr1 /tmp/usb2
+if grep -qs $LedAttr1 /tmp/usb0 && grep -qs $LedAttr2 /tmp/usb2
 then
-    sudo ln -s ttyUSB2 /dev/ttyScan0
+    sudo ln -s ttyUSB0 /dev/ttyLed
 fi
-if grep -qs  $RelaisAttr1  && grep -qs $RelaisAttr2 /tmp/usb2 
+if grep -qs $RelaisAttr1 /tmp/usb2 && grep -qs $RelaisAttr2 /tmp/usb2
 then
-    sudo ln -s ttyUSB2 /dev/ttyRelais
+    sudo ln -s ttyUSB2 /dev/ttyRelais 
+fi
+if grep -qs $Scan0Attr1 /tmp/usb2  && grep -qs $Scan0Attr2 /tmp/usb2 
+then
+    sudo ln -s ttyUSB2 /dev/ttyscan0
 fi
 if grep -qs $Scan1Attr1 /tmp/usb2  && grep -qs $Scan1Attr2 /tmp/usb2
 then

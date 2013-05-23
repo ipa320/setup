@@ -76,15 +76,16 @@ RelaisAttr2='ATTRS{bcdDevice}=="0400"'
 
 ## LED ##
 LedAttr1='ATTRS{idProduct}=="6001"'
-LedAttr2='ATTRS{serial}=="A800K9NH"'
+LedAttr2='ATTRS{serial}=="A800K9ND"'
 
 
 #Phidget rules for tray sensor
 PhidgetAttr1='ATTRS{idVendor}=="0925"'
 
 #Tactile Sensors
-TactAttr1='ATTRS{idVendor}=="10c4"' #ATTRS{idVendor}=="067b"
-TactAttr2='ATTRS{idProduct}=="ea60"' #,ATTRS{idProduct}=="2303"
+TactAttr1='ATTRS{idVendor}=="067b"' #ATTRS{idVendor}=="10c4"
+TactAttr2='ATTRS{idProduct}=="2303' #ATTRS{idProduct}=="ea60"
+sudo chmod 666 /dev/ttyACM0
 
 sudo chmod 666 /dev/ttyUSB0
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB0) > /tmp/usb0
@@ -103,6 +104,10 @@ fi
 if grep -qs $Scan1Attr1 /tmp/usb0  && grep -qs $Scan1Attr2 /tmp/usb0 
 then
     sudo ln -s ttyUSB0 /dev/ttyScan1
+fi
+if grep -qs $TactAttr1 /tmp/usb0  && grep -qs $TactAttr2 /tmp/usb0 
+then
+    sudo ln -s ttyUSB0 /dev/ttyTact
 fi
 
 sudo chmod 666 /dev/ttyUSB1
@@ -123,12 +128,16 @@ if grep -qs $Scan1Attr1 /tmp/usb1  && grep -qs $Scan1Attr2 /tmp/usb1
 then
     sudo ln -s ttyUSB1 /dev/ttyScan1
 fi
+if grep -qs $TactAttr1 /tmp/usb1  && grep -qs $TactAttr2 /tmp/usb1
+then
+    sudo ln -s ttyUSB1 /dev/ttyTact
+fi
 
 sudo chmod 666 /dev/ttyUSB2
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB2) > /tmp/usb2
-if grep -qs $LedAttr1 /tmp/usb0 && grep -qs $LedAttr2 /tmp/usb2
+if grep -qs $LedAttr1 /tmp/usb2 && grep -qs $LedAttr2 /tmp/usb2
 then
-    sudo ln -s ttyUSB0 /dev/ttyLed
+    sudo ln -s ttyUSB2 /dev/ttyLed
 fi
 if grep -qs $RelaisAttr1 /tmp/usb2 && grep -qs $RelaisAttr2 /tmp/usb2
 then
@@ -141,4 +150,31 @@ fi
 if grep -qs $Scan1Attr1 /tmp/usb2  && grep -qs $Scan1Attr2 /tmp/usb2
 then
     sudo ln -s ttyUSB2 /dev/ttyScan1
+fi
+if grep -qs $TactAttr1 /tmp/usb2  && grep -qs $TactAttr2 /tmp/usb2 
+then
+    sudo ln -s ttyUSB2 /dev/ttyTact
+fi
+
+sudo chmod 666 /dev/ttyUSB3
+sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB3) > /tmp/usb3
+if grep -qs $LedAttr1 /tmp/usb3 && grep -qs $LedAttr2 /tmp/usb3
+then
+    sudo ln -s ttyUSB3 /dev/ttyLed
+fi
+if grep -qs $RelaisAttr1 /tmp/usb3 && grep -qs $RelaisAttr2 /tmp/usb3
+then
+    sudo ln -s ttyUSB3 /dev/ttyRelais 
+fi
+if grep -qs $Scan0Attr1 /tmp/usb3  && grep -qs $Scan0Attr2 /tmp/usb3 
+then
+    sudo ln -s ttyUSB3 /dev/ttyscan0
+fi
+if grep -qs $Scan1Attr1 /tmp/usb3  && grep -qs $Scan1Attr2 /tmp/usb3
+then
+    sudo ln -s ttyUSB3 /dev/ttyScan1
+fi
+if grep -qs $TactAttr1 /tmp/usb3  && grep -qs $TactAttr2 /tmp/usb3 
+then
+    sudo ln -s ttyUSB3 /dev/ttyTact
 fi

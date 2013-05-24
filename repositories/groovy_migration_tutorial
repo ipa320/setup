@@ -55,7 +55,7 @@ $ mkdir ~/git/care-o-bot
 $ cd ~/git/care-o-bot
 $ rosws init . ~/git/care-o-bot_catkin/devel
 $ git clone https://github.com/ipa320/cob_robots.git   (.....)  or:
-    $ rosinstall ~/git/care-o-bot https://raw.github.com/ipa-nhg/setup/master/repositories/cob_groovy.rosinstall
+    $ rosinstall ~/git/care-o-bot https://raw.github.com/ipa320/setup/master/repositories/cob_groovy_bringup.rosinstall
 
 [robot](user accounts)
 $ mkdir ~/git/care-o-bot

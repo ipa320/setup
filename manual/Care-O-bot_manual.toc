@@ -1,0 +1,87 @@
+\contentsline {chapter}{Nomenclature}{v}{section*.2}
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
+\contentsline {chapter}{\numberline {2}User Manual}{2}{chapter.2}
+\contentsline {section}{\numberline {2.1}Hardware overview}{2}{section.2.1}
+\contentsline {section}{\numberline {2.2}Software overview}{3}{section.2.2}
+\contentsline {section}{\numberline {2.3}Batteries and power supply}{4}{section.2.3}
+\contentsline {section}{\numberline {2.4}Emergency stop}{4}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Emergency stop buttons}{4}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Safety field from the Sick S300 scanners}{5}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}Remote emergency stop control}{6}{subsection.2.4.3}
+\contentsline {section}{\numberline {2.5}Running the robot}{6}{section.2.5}
+\contentsline {subsection}{\numberline {2.5.1}Logging in to the robot pcs}{7}{subsection.2.5.1}
+\contentsline {subsection}{\numberline {2.5.2}Bringup the robot}{7}{subsection.2.5.2}
+\contentsline {subsection}{\numberline {2.5.3}Using dashboard and command\_gui}{7}{subsection.2.5.3}
+\contentsline {subsubsection}{\numberline {2.5.3.1}cob\_dashboard}{8}{subsubsection.2.5.3.1}
+\contentsline {subsubsection}{\numberline {2.5.3.2}cob\_command\_gui}{9}{subsubsection.2.5.3.2}
+\contentsline {subsection}{\numberline {2.5.4}Rviz}{10}{subsection.2.5.4}
+\contentsline {subsection}{\numberline {2.5.5}Joystick}{11}{subsection.2.5.5}
+\contentsline {section}{\numberline {2.6}Power down the robot}{12}{section.2.6}
+\contentsline {section}{\numberline {2.7}Packing the robot}{12}{section.2.7}
+\contentsline {chapter}{\numberline {3}Administrator manual}{18}{chapter.3}
+\contentsline {section}{\numberline {3.1}Setup robot pcs}{18}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Install operating system}{19}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Install basic tools}{19}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.3}Setup ssh server}{19}{subsection.3.1.3}
+\contentsline {subsection}{\numberline {3.1.4}Setup robot account for administration tasks}{19}{subsection.3.1.4}
+\contentsline {subsection}{\numberline {3.1.5}Setup root account for administration tasks}{20}{subsection.3.1.5}
+\contentsline {subsection}{\numberline {3.1.6}Setup internal robot network}{20}{subsection.3.1.6}
+\contentsline {subsubsection}{\numberline {3.1.6.1}Network configuration on pc1}{21}{subsubsection.3.1.6.1}
+\contentsline {subsubsection}{\numberline {3.1.6.2}Network configuration on pc2}{21}{subsubsection.3.1.6.2}
+\contentsline {subsection}{\numberline {3.1.7}Install NFS}{21}{subsection.3.1.7}
+\contentsline {subsubsection}{\numberline {3.1.7.1}NFS configuration on pc2 (server)}{22}{subsubsection.3.1.7.1}
+\contentsline {subsubsection}{\numberline {3.1.7.2}NFS configuration on pc1 (client)}{22}{subsubsection.3.1.7.2}
+\contentsline {subsection}{\numberline {3.1.8}Enable passwordless login}{23}{subsection.3.1.8}
+\contentsline {subsection}{\numberline {3.1.9}Setup NTP time synchronitation}{23}{subsection.3.1.9}
+\contentsline {subsubsection}{\numberline {3.1.9.1}NTP configuration on pc1 (NTP server)}{24}{subsubsection.3.1.9.1}
+\contentsline {subsubsection}{\numberline {3.1.9.2}NTP configuration on pc2 (NTP client)}{24}{subsubsection.3.1.9.2}
+\contentsline {subsection}{\numberline {3.1.10}Install ROS and driver software (electric distro)}{24}{subsection.3.1.10}
+\contentsline {subsubsection}{\numberline {3.1.10.1}Setup bash environment}{24}{subsubsection.3.1.10.1}
+\contentsline {subsubsection}{\numberline {3.1.10.2}Create overlays for stacks}{25}{subsubsection.3.1.10.2}
+\contentsline {subsubsection}{\numberline {3.1.10.3}Install ROS and additional tools}{25}{subsubsection.3.1.10.3}
+\contentsline {paragraph}{Build the bringup level packages}{26}{section*.4}
+\contentsline {subsection}{\numberline {3.1.11}Install ROS and driver software (Groovy distro)}{26}{subsection.3.1.11}
+\contentsline {subsubsection}{\numberline {3.1.11.1}Setup bash environment}{27}{subsubsection.3.1.11.1}
+\contentsline {subsubsection}{\numberline {3.1.11.2}Install ROS and additional tools}{27}{subsubsection.3.1.11.2}
+\contentsline {subsubsection}{\numberline {3.1.11.3}Create overlays for stacks}{28}{subsubsection.3.1.11.3}
+\contentsline {paragraph}{Build the bringup level packages}{28}{section*.5}
+\contentsline {subsection}{\numberline {3.1.12}Setup hardware components}{29}{subsection.3.1.12}
+\contentsline {paragraph}{Setup udev rules}{29}{section*.6}
+\contentsline {paragraph}{Setup can bus drivers on pc1}{29}{section*.7}
+\contentsline {paragraph}{Sick S300 laser scanners}{29}{section*.8}
+\contentsline {paragraph}{Hokuyo URG laser scanner}{32}{section*.9}
+\contentsline {paragraph}{Relayboard}{32}{section*.10}
+\contentsline {paragraph}{Base}{33}{section*.11}
+\contentsline {paragraph}{Tray sensors}{33}{section*.12}
+\contentsline {paragraph}{Schunk SDH with tactile sensors}{33}{section*.13}
+\contentsline {paragraph}{Schunk powercubes (lwa, torso, tray)}{33}{section*.14}
+\contentsline {paragraph}{Head axis}{34}{section*.15}
+\contentsline {paragraph}{Prosilica cameras}{34}{section*.16}
+\contentsline {paragraph}{Kinect}{34}{section*.17}
+\contentsline {subsection}{\numberline {3.1.13}Create new user accounts}{35}{subsection.3.1.13}
+\contentsline {subsubsection}{\numberline {3.1.13.1}Preparation}{35}{subsubsection.3.1.13.1}
+\contentsline {subsubsection}{\numberline {3.1.13.2}Account creation}{35}{subsubsection.3.1.13.2}
+\contentsline {section}{\numberline {3.2}Network infrastructure for external access to the robot}{36}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Setting up your building network (recommended)}{36}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}Manual setup for each remote pc}{36}{subsection.3.2.2}
+\contentsline {section}{\numberline {3.3}Calibration}{37}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Manual calibration}{37}{subsection.3.3.1}
+\contentsline {paragraph}{Components with hardware reference positions}{37}{section*.18}
+\contentsline {paragraph}{Components without hardware reference positions}{37}{section*.19}
+\contentsline {subsection}{\numberline {3.3.2}Automatic calibration}{38}{subsection.3.3.2}
+\contentsline {section}{\numberline {3.4}Backup and Restore}{38}{section.3.4}
+\contentsline {subsection}{\numberline {3.4.1}Backup the entire system}{38}{subsection.3.4.1}
+\contentsline {subsection}{\numberline {3.4.2}Restore the entire system}{38}{subsection.3.4.2}
+\contentsline {chapter}{\numberline {4}Support}{40}{chapter.4}
+\contentsline {section}{\numberline {4.1}General support}{40}{section.4.1}
+\contentsline {section}{\numberline {4.2}Report a bug}{40}{section.4.2}
+\contentsline {section}{\numberline {4.3}Useful tools for debugging and working with the robot}{41}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Modifying and developing code}{41}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Working with git}{41}{subsection.4.3.2}
+\contentsline {section}{\numberline {4.4}FAQ}{42}{section.4.4}
+\contentsline {subsection}{\numberline {4.4.1}Working with the robot}{42}{subsection.4.4.1}
+\contentsline {paragraph}{The robot doesn't move when I press a button on the command\_gui.}{42}{section*.20}
+\contentsline {paragraph}{Reaction time of the robot slows down}{42}{section*.21}
+\contentsline {subsection}{\numberline {4.4.2}Developing on the robot}{43}{subsection.4.4.2}
+\contentsline {paragraph}{I have modified code or developed new code, how can others use it?}{43}{section*.22}
+\contentsline {paragraph}{I have new code, where should I put it?}{43}{section*.23}

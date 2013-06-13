@@ -76,7 +76,7 @@ RelaisAttr2='ATTRS{bcdDevice}=="0400"'
 
 ## LED ##
 LedAttr1='ATTRS{idProduct}=="6001"'
-LedAttr2='ATTRS{serial}=="A800K9ND"'
+LedAttr2='ATTRS{serial}=="A800K9NH"'
 
 
 #Phidget rules for tray sensor
@@ -177,4 +177,27 @@ fi
 if grep -qs $TactAttr1 /tmp/usb3  && grep -qs $TactAttr2 /tmp/usb3 
 then
     sudo ln -s ttyUSB3 /dev/ttyTact
+fi
+
+sudo chmod 666 /dev/ttyUSB4
+sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB4) > /tmp/usb4
+if grep -qs $LedAttr1 /tmp/usb4 && grep -qs $LedAttr2 /tmp/usb4
+then
+    sudo ln -s ttyUSB4 /dev/ttyLed
+fi
+if grep -qs $RelaisAttr1 /tmp/usb4 && grep -qs $RelaisAttr2 /tmp/usb4
+then
+    sudo ln -s ttyUSB4 /dev/ttyRelais 
+fi
+if grep -qs $Scan0Attr1 /tmp/usb4  && grep -qs $Scan0Attr2 /tmp/usb4 
+then
+    sudo ln -s ttyUSB4 /dev/ttyscan0
+fi
+if grep -qs $Scan1Attr1 /tmp/usb4  && grep -qs $Scan1Attr2 /tmp/usb4
+then
+    sudo ln -s ttyUSB4 /dev/ttyScan1
+fi
+if grep -qs $TactAttr1 /tmp/usb4  && grep -qs $TactAttr2 /tmp/usb4 
+then
+    sudo ln -s ttyUSB4 /dev/ttyTact
 fi

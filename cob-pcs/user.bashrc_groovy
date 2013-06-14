@@ -104,7 +104,8 @@ source /etc/cob.bash.bashrc
 # provide setup scripts for all users
 export PATH=/u/robot/git/setup:$PATH
 
-source /opt/ros/groovy/setup.bash
+#source /opt/ros/groovy/setup.bash
+source /u/robot/git/care-o-bot_catkin/devel/setup.bash
 export ROS_PACKAGE_PATH=/u/robot/git/care-o-bot:$ROS_PACKAGE_PATH
 export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/

@@ -169,12 +169,13 @@ install additional tools
 -------------
 
 sudo apt-get install python-rosinstall python-rosdep
-sudo apt-get install gitg meld curl openjdk-6-jdk zsh terminator
+sudo apt-get install gitg meld curl openjdk-6-jdk zsh terminator htop
 
 sudo apt-get install python-setuptools
 sudo easy_install -U rosinstall
 
 sudo apt-get install eclipse libtbb-dev libtbb2 libsuitesparse-dev libxerces-c2-dev libann-dev flashplugin-nonfree emacs chromium-browser gimp ipython geany meshlab postgresql pgadmin3 inkscape wmctrl dia octave libvtk5-qt4-dev
+sudo apt-get install pbuilder debootstrap devscripts pigz
 
 -------------
 setup ntp time synchronisation

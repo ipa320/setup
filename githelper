@@ -105,13 +105,13 @@ Commands:
 %prog status [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot]
   Executes 'git status -uno' 
 
-%prog pull [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=electric_dev]
-  Pulls latest changes from your origin electric_dev 
+%prog pull [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=groovy_dev]
+  Pulls latest changes from your origin groovy_dev 
 
-%prog push [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=electric_dev] 
-  Pushes local commits to origin electric_dev 
+%prog push [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=groovy_dev] 
+  Pushes local commits to origin groovy_dev 
 
-%prog merge [-u GITHUBUSER, default="ipa320"] [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=electric_dev]
+%prog merge [-u GITHUBUSER, default="ipa320"] [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=groovy_dev]
   Merges from a remote branch 
 
 githelper -h
@@ -121,7 +121,7 @@ githelper -h
 
 ## Main githelper script
 #
-# Parses arguments and starts helping. Everything is done regarding the local electric_dev branch
+# Parses arguments and starts helping. Everything is done regarding the local groovy_dev branch
 #TODO: check for latest version before executing command
 def main():
 	# check for existence of curl; abort if not installed
@@ -151,8 +151,8 @@ def main():
 		help="Access github repositories read-only")
 	
 	parser.add_option("-b", "--branch",
-		dest="branch", default="electric_dev",
-		help="Remote branch . Default = electric_dev")
+		dest="branch", default="groovy_dev",
+		help="Remote branch . Default = groovy_dev")
 
 	(options, args) = parser.parse_args()
 
@@ -422,13 +422,13 @@ def git_pull(options):
 	# check for uncommited changes
 	check_for_changes()
 	branch = os.path.expanduser(options.branch)
-	# operate on electric_dev branch
+	# operate on groovy_dev branch
 	os.system("git checkout" + branch + " >> " + _output + " 2>&1")
 
 	# fetch from origin
 	os.system("git fetch origin >> " + _output + " 2>&1")
 	
-	# merge own origin/electric_dev
+	# merge own origin/groovy_dev
 	os.system("git merge origin/" + branch + " >> " + _output)
 	if has_conflicts():
 		print "ERROR: Conflicts found. Please pull manually and resolve conflicts! Resetting changes and aborting..."
@@ -438,10 +438,10 @@ def git_pull(options):
 
 def git_push(options):
 	#print "git_push ... "
-	# first pull from origin electric_dev
+	# first pull from origin groovy_dev
 	git_pull(options)
 	branch = os.path.expanduser(options.branch)
-	# push to origin electric_dev
+	# push to origin groovy_dev
 	os.system("git push origin " + branch + " >> " + _output + " 2>&1")
 
 

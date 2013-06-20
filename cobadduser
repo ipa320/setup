@@ -42,8 +42,8 @@ if [ "$1" != "" ]; then
 	sudo -u $1 ssh $1@$ROBOT-pc1 -e "logout"
 	sudo -u $1 ssh $1@$ROBOT-pc2 -e "logout"
 	sudo -u $1 ssh $1@$ROBOT-pc3 -e "logout"
-	su -c "rosdep update" $1
-	su -c "mkdir -p ~/git/care-o-bot" $1
+	sudo -u $1 rosdep update
+	sudo -u $1 mkdir -p ~/git/care-o-bot
 fi
 
 echo "done adding user"

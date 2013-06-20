@@ -38,4 +38,8 @@
     uri: 'git://github.com/ipa320/schunk_modular_robotics.git'
     local-name: schunk_modular_robotics
     version: groovy_dev
+- git:
+    uri: 'git://github.com/ipa320/universal_robot.git'
+    local-name: universal_robot
+    version: groovy_dev
 

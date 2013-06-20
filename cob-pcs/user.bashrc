@@ -104,7 +104,8 @@ source /etc/cob.bash.bashrc
 # provide setup scripts for all users
 export PATH=/u/robot/git/setup:$PATH
 
-source /opt/ros/electric/setup.bash
+#source /opt/ros/groovy/setup.bash
+source /u/robot/git/care-o-bot_catkin/devel/setup.bash
 export ROS_PACKAGE_PATH=/u/robot/git/care-o-bot:$ROS_PACKAGE_PATH
 export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
@@ -113,6 +114,8 @@ export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 export ROS_MASTER_URI=http://myrobot-pc1:11311
 export ROBOT=myrobot
 export ROBOT_ENV=ipa-apartment
+export ROSLAUNCH_SSH_UNKNOWN=1
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64
 
 COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)
 COUNT=$(echo "$COUNT*2" | bc)

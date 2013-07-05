@@ -16,7 +16,7 @@ add proxy for apt
 -------------
 add the line to /etc/apt/apt.conf.d/proxy
 
-	Acquire::http { Proxy "http://cob-kitchen-server:3142"; };
+	Acquire::http { Proxy "http://cob-jenkins-server:3142"; };
 
 
 -------------

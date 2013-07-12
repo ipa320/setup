@@ -29,7 +29,7 @@ Next we have to install some basic tools for the further setup of the pcs. In or
 
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install vim tree gitg meld curl openjdk-6-jdk zsh terminator language-pack-de language-pack-en
+sudo apt-get install vim tree gitg meld curl openjdk-6-jdk zsh terminator language-pack-de language-pack-en ipython
 \end{lstlisting}
 
 \subsection{Setup ssh server}
@@ -117,7 +117,7 @@ iface eth0 inet dhcp
 auto eth1
 iface eth1 inet static
 address 192.168.21.99 # ip adress for camera network
-netmask 255.255.0.0 # netmask
+netmask 255.255.255.0 # netmask
 \end{lstlisting}
 
 \subsection{Install NFS}
@@ -148,7 +148,7 @@ sudo mount /u
 Activate \texttt{IDMAPD} in \texttt{/etc/default/nfs-common} by changing the \texttt{NEED\_IDMAPD} to yes
 
 \begin{lstlisting}
-NEED_IDMAPD=yes
+NEED_STADT=yes
 \end{lstlisting}
 
 
@@ -385,6 +385,7 @@ mkdir ~/git/care-o-bot_catkin
 mkdir ~/git/care-o-bot_catkin/src
 mkdir ~/git/care-o-bot_catkin/build
 cd ~/git/care-o-bot_catkin/src
+source /opt/ros/groovy/setup.bash
 catkin_init_workspace
 cd ~/git/care-o-bot_catkin
 cmake src

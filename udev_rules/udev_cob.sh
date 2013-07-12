@@ -145,7 +145,7 @@ then
 fi
 if grep -qs $Scan0Attr1 /tmp/usb2  && grep -qs $Scan0Attr2 /tmp/usb2 
 then
-    sudo ln -s ttyUSB2 /dev/ttyscan0
+    sudo ln -s ttyUSB2 /dev/ttyScan0
 fi
 if grep -qs $Scan1Attr1 /tmp/usb2  && grep -qs $Scan1Attr2 /tmp/usb2
 then
@@ -168,7 +168,7 @@ then
 fi
 if grep -qs $Scan0Attr1 /tmp/usb3  && grep -qs $Scan0Attr2 /tmp/usb3 
 then
-    sudo ln -s ttyUSB3 /dev/ttyscan0
+    sudo ln -s ttyUSB3 /dev/ttyScan0
 fi
 if grep -qs $Scan1Attr1 /tmp/usb3  && grep -qs $Scan1Attr2 /tmp/usb3
 then
@@ -191,7 +191,7 @@ then
 fi
 if grep -qs $Scan0Attr1 /tmp/usb4  && grep -qs $Scan0Attr2 /tmp/usb4 
 then
-    sudo ln -s ttyUSB4 /dev/ttyscan0
+    sudo ln -s ttyUSB4 /dev/ttyScan0
 fi
 if grep -qs $Scan1Attr1 /tmp/usb4  && grep -qs $Scan1Attr2 /tmp/usb4
 then

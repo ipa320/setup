@@ -1,11 +1,10 @@
 == Install Ubuntu 12.04 LTS "precise"
-
 ----
 username: ipa
 systemname: cob-stud-<client number>
 ----
 
-==== Update and upgrade your new operating system
+.Update and upgrade your new operating system
 ----
 $ sudo apt-get update
 $ sudo apt-get upgrade
@@ -15,22 +14,25 @@ $ sudo apt-get clean
 $ sudo reboot
 ----
 
-==== Create "shared" directory on local client
+.Create "shared" directory on local client
+---
+$ sudo mkdir /share
+$ sudo chmod -R a+rw /share
+---
 
- $ sudo mkdir /share
- $ sudo chmod -R a+rw /share
+.Create admin group
+----
+$ sudo addgroup admin
+----
 
-=== Create admin group
+.Create extra administrator account's
+----
+$ sudo adduser stud-admin --home /home-local/stud-admin 
+$ sudo adduser stud-admin admin
 
- $ sudo addgroup admin
-
-=== Create extra administrator account's
-
- $ sudo adduser stud-admin --home /home-local/stud-admin
- $ sudo adduser stud-admin admin
-
- $ sudo adduser jenkins --home /home-local/jenkins
- $ sudo adduser jenkins admin
+$ sudo adduser jenkins --home /home-local/jenkins
+$ sudo adduser jenkins admin
+----
 
 Went to System Settings/User Accounts and add the new admin users as Admin's and give them their name.
 After that logout from ipa account and login as stud-admin and delete the ipa account.

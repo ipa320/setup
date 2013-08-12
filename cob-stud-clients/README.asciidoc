@@ -117,155 +117,191 @@ $ sudo apt-get install pbuilder debootstrap devscripts
 
 === Add proxy for apt
 
- $ sudo nano /etc/apt/apt.conf.d/proxy
- ##add##
- Acquire::http { Proxy "http://cob-jenkins-server:3142"; };
+---
+$ sudo nano /etc/apt/apt.conf.d/proxy
+##add##
+Acquire::http { Proxy "http://cob-jenkins-server:3142"; };
+----
 
-== Setup nfs
 
- $ sudo apt-get install portmap nfs-common
-  
- $ sudo nano /etc/fstab
- ##add to the list##
- cob-kitchen-nas:/volume1/home-nas    /home nfs rw,hard,intr   0   0
+=== Setup nfs
 
-== Install LDAP clients
+----
+$ sudo apt-get install portmap nfs-common
+----
+----
+$ sudo nano /etc/fstab
+##add to the list##
+cob-kitchen-nas:/volume1/home-nas    /home nfs rw,hard,intr   0   0
+----
 
- $ sudo apt-get install libnss-ldap libpam-ldap nscd
+
+=== Install LDAP clients
+
+----
+$ sudo apt-get install libnss-ldap libpam-ldap nscd
+----
 
 Edit the follow files
 
- $ sudo gedit /etc/nsswitch.conf
- ##edit to##
- # /etc/nsswitch.conf
- passwd:    files ldap
- group:     files ldap
- shadow:    files ldap
- hosts:     files mdns4_minimal [NOTFOUND=return] dns mdns4
- networks:  files
- protocols: db files
- services:  db files
- ethers:    db files
- rpc:       db files
- netgroup:  nis
- sudoers:   ldap files
-  
- $ sudo gedit /etc/pam.d/common-auth
- ##edit to##
- # /etc/pam.d/common-auth
- auth [success=2 default=ignore] pam_unix.so nullok_secure
- auth [success=1 default=ignore] pam_ldap.so use_first_pass
- auth requisite                  pam_deny.so
- auth required                   pam_permit.so
- auth optional                   pam_cap.so
-  
- $ sudo gedit /etc/pam.d/common-account
- ##edit to##
- # /etc/pam.d/common-account
- account [success=2 new_authtok_reqd=done default=ignore] pam_unix.so
- account [success=1 default=ignore]                       pam_ldap.so
- account requisite                                        pam_deny.so
- account required                                         pam_permit.so
-  
- $ sudo gedit /etc/pam.d/common-password
- ##edit to##
- # /etc/pam.d/common-password
- password requisite                                   pam_cracklib.so retry=3 minlen=8 difok=3
- password [success=2 default=ignore]                  pam_unix.so obscure use_authtok try_first_pass sha512
- password [success=1 user_unknown=ignore default=die] pam_ldap.so use_authtok try_first_pass
- password requisite                                   pam_deny.so
- password required                                    pam_permit.so
- password optional                                    pam_gnome_keyring.so
-  
- $ sudo gedit /etc/pam.d/common-session
- ##edit to##
- # /etc/pam.d/common-session
- session  [default=1]  pam_permit.so
- session  requisite    pam_deny.so
- session  required     pam_permit.so
- session  optional     pam_umask.so
- session  required     pam_unix.so
- session  optional     pam_ldap.so
- session  optional     pam_ck_connector.so nox11
- session  optional     pam_mkhomedir.so skel=/etc/skel umask=0022
-  
- $ sudo gedit /etc/ldap.conf
- ##edit to##
- ###DEBCONF###
- base dc=cob-kitchen-server
- host 10.0.1.1
- ldap_version 3
- rootbinddn cn=directory manager
- pam_password md5
- sudoers_base ou=SUDOers,dc=cob-kitchen-server
- pam_lookup_policy yes
- pam_check_host_attr yes
- nss_initgroups_ignoreusers avahi,avahi-autoipd,backup,bin,colord,daemon,games,gnats,
-   hplip,irc,kernoops,libuuid,lightdm,list,lp,mail,man,messagebus,news,proxy,pulse,
-   root,rtkit,saned,speech-dispatcher,sshd,sync,sys,syslog,usbmux,uucp,whoopsie,www-data
+----
+$ sudo gedit /etc/nsswitch.conf
+##edit to##
+# /etc/nsswitch.conf
+passwd:    files ldap
+group:     files ldap
+shadow:    files ldap
+hosts:     files mdns4_minimal [NOTFOUND=return] dns mdns4
+networks:  files
+protocols: db files
+services:  db files
+ethers:    db files
+rpc:       db files
+netgroup:  nis
+sudoers:   ldap files
+----
+----
+$ sudo gedit /etc/pam.d/common-auth
+##edit to##
+# /etc/pam.d/common-auth
+auth [success=2 default=ignore] pam_unix.so nullok_secure
+auth [success=1 default=ignore] pam_ldap.so use_first_pass
+auth requisite                  pam_deny.so
+auth required                   pam_permit.so
+auth optional                   pam_cap.so
+----
+----
+$ sudo gedit /etc/pam.d/common-account
+##edit to##
+# /etc/pam.d/common-account
+account [success=2 new_authtok_reqd=done default=ignore] pam_unix.so
+account [success=1 default=ignore]                       pam_ldap.so
+account requisite                                        pam_deny.so
+account required                                         pam_permit.so
+----
+----
+$ sudo gedit /etc/pam.d/common-password
+##edit to##
+# /etc/pam.d/common-password
+password requisite                                   pam_cracklib.so retry=3 minlen=8 difok=3
+password [success=2 default=ignore]                  pam_unix.so obscure use_authtok try_first_pass sha512
+password [success=1 user_unknown=ignore default=die] pam_ldap.so use_authtok try_first_pass
+password requisite                                   pam_deny.so
+password required                                    pam_permit.so
+password optional                                    pam_gnome_keyring.so
+----
+----
+$ sudo gedit /etc/pam.d/common-session
+##edit to##
+# /etc/pam.d/common-session
+session  [default=1]  pam_permit.so
+session  requisite    pam_deny.so
+session  required     pam_permit.so
+session  optional     pam_umask.so
+session  required     pam_unix.so
+session  optional     pam_ldap.so
+session  optional     pam_ck_connector.so nox11
+session  optional     pam_mkhomedir.so skel=/etc/skel umask=0022
+----
+----
+$ sudo gedit /etc/ldap.conf
+##edit to##
+###DEBCONF###
+base dc=cob-kitchen-server
+host 10.0.1.1
+ldap_version 3
+rootbinddn cn=directory manager
+pam_password md5
+sudoers_base ou=SUDOers,dc=cob-kitchen-server
+pam_lookup_policy yes
+pam_check_host_attr yes
+nss_initgroups_ignoreusers avahi,avahi-autoipd,backup,bin,colord,daemon,games,gnats,
+hplip,irc,kernoops,libuuid,lightdm,list,lp,mail,man,messagebus,news,proxy,pulse,
+root,rtkit,saned,speech-dispatcher,sshd,sync,sys,syslog,usbmux,uucp,whoopsie,www-data
+----
+----
+$ sudo gedit /etc/ldap/ldap.conf
+##edit to##
+# LDAP Defaults
+BASE                   dc=cob-kitchen-server
+host                   10.0.1.1
+ssl                    on
+use_sasl               no
+tls_checkpeer          no
+sudoers_base           ou=SUDOers,dc=cob-kitchen-server
+sudoers_debug          2
+pam_lookup_policy      yes
+pam_check_host_attr    yes
+pam_lookup_policy      yes
+pam_check_host_attr    yes
+TLS_CACERT             /etc/ssl/certs/ca-certificates.crt
+TLS_REQCERT            never
+----
+----
+$ sudo gedit /etc/lightdm/lightdm.conf
+##add to the list##
+greeter-show-manual-login=true
+----
 
- $ sudo gedit /etc/ldap/ldap.conf
- ##edit to##
- # LDAP Defaults
- BASE                   dc=cob-kitchen-server
- host                   10.0.1.1
- ssl                    on
- use_sasl               no
- tls_checkpeer          no
- sudoers_base           ou=SUDOers,dc=cob-kitchen-server
- sudoers_debug          2
- pam_lookup_policy      yes
- pam_check_host_attr    yes
- pam_lookup_policy      yes
- pam_check_host_attr    yes
- TLS_CACERT             /etc/ssl/certs/ca-certificates.crt
- TLS_REQCERT            never
 
- $ sudo gedit /etc/lightdm/lightdm.conf
- ##add to the list##
- greeter-show-manual-login=true
+=== Install ROS "fuerte" "groovy"
 
-== Install ROS "fuerte" "groovy"
-
- $ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" > /etc/apt/sources.list.d/ros-latest.list'
- $ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
- $ sudo apt-get update
-
- $ sudo apt-get install ros-fuerte-desktop-full
- $ sudo apt-get install ros-groovy-desktop-full
-
- $ sudo rosdep init
- $ rosdep update
+----
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" > /etc/apt/sources.list.d/ros-latest.list'
+$ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+$ sudo apt-get update
+----
+----
+$ sudo apt-get install ros-fuerte-desktop-full
+$ sudo apt-get install ros-groovy-desktop-full
+----
+----
+$ sudo rosdep init
+$ rosdep update
+----
 
 Environment setup
 
- ###for fuerte###
- $ echo "source /opt/ros/fuerte/setup.bash" >> ~/.bashrc
- $ source ~/.bashrc
-
- ###for groovy###
- $ echo "source /opt/ros/groovy/setup.bash" >> ~/.bashrc
- $ source ~/.bashrc
+----
+###for fuerte###
+$ echo "source /opt/ros/fuerte/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+----
+----
+###for groovy###
+$ echo "source /opt/ros/groovy/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+----
 
 if you just want to change the environment of your current shell, you can type:
 
- ###for fuerte###
- $ source /opt/ros/fuerte/setup.bash
- 
- ###for groovy###
- $ source /opt/ros/groovy/setup.bash
+----
+###for fuerte###
+$ source /opt/ros/fuerte/setup.bash
+----
+----
+###for groovy###
+$ source /opt/ros/groovy/setup.bash
+----
 
-== Install additional tools
 
- $ sudo apt-get install python-rosinstall python-rosdep
- $ sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics-monitors
- $ sudo apt-get install ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni
- $ sudo apt-get install ros-groovy-openni*
+=== Install additional tools
 
- $ sudo easy_install -U rosinstall
+----
+$ sudo apt-get install python-rosinstall python-rosdep
+$ sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics-monitors
+$ sudo apt-get install ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni
+$ sudo apt-get install ros-groovy-openni*
+----
+----
+$ sudo easy_install -U rosinstall
+----
 
-== Setup ntp time synchronisation
 
- $ sudo nano /etc/ntp.conf
- ##change server to##
- server cob-kitchen-server
+=== Setup ntp time synchronisation
+
+----
+$ sudo nano /etc/ntp.conf
+##change server to##
+server cob-kitchen-server
+----

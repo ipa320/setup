@@ -1,11 +1,11 @@
 Install Ubuntu 12.04 LTS "precise"
-
+==================================
 username: ipa
 systemname: cob-stud-<client number>
 
 
 Update and upgrade your new operating system
-
+--------------------------------------------
 $ sudo apt-get update
 $ sudo apt-get upgrade
 $ sudo apt-get dist-upgrade
@@ -15,18 +15,18 @@ $ sudo reboot
 
 
 Create "shared" directory on local client
-
+-----------------------------------------
 $ sudo mkdir /share
 $ sudo chmod -R a+rw /share
 
 
 Create admin group
-
+------------------
 $ sudo addgroup admin
 
 
 Create extra administrator account's
-
+------------------------------------
 $ sudo adduser stud-admin --home /home-local/stud-admin
 $ sudo adduser stud-admin admin
 

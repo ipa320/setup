@@ -1,9 +1,9 @@
 Install Ubuntu 12.04 LTS "precise"
 ==================================
 
-  username: ipa
+  [username: ipa]
 
-  systemname: cob-stud-<client number>
+  [systemname: cob-stud-<client number>]
 
 
 Update and upgrade your new operating system

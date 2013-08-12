@@ -37,6 +37,7 @@ $ sudo addgroup admin
 $ sudo adduser stud-admin --home /home-local/stud-admin 
 $ sudo adduser stud-admin admin
 ----
+----
 $ sudo adduser jenkins --home /home-local/jenkins
 $ sudo adduser jenkins admin
 ----

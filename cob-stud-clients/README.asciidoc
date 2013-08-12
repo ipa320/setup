@@ -117,7 +117,7 @@ $ sudo apt-get install pbuilder debootstrap devscripts
 
 === Add proxy for apt
 
----
+----
 $ sudo nano /etc/apt/apt.conf.d/proxy
 ##add##
 Acquire::http { Proxy "http://cob-jenkins-server:3142"; };

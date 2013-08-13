@@ -125,7 +125,7 @@ $ sudo apt-get install tree wmctrl parallel
 
 Additional linux packages and tools:
 ----
-$ sudo apt-get install synaptic libpam-cracklib pbuilder debootstrap pigz htop
+$ sudo apt-get install synaptic libpam-cracklib pbuilder debootstrap pigz htop gnome-system-tools
 ----
 
 Development packages and tools:

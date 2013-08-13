@@ -24,6 +24,18 @@ $ sudo chmod -R a+rw /share
 ----
 
 
+==== Disable Ctrl+Alt+Del
+----
+$ sudo nano /etc/init/control-alt-delete.conf
+----
+comment out:
+----
+#start on control-alt-delete
+#task
+#exec shutdown -r now “Control-Alt-Delete pressed”
+----
+
+
 ==== Create admin group
 ----
 $ sudo addgroup admin

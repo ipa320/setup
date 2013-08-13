@@ -1,4 +1,4 @@
-=== Basic System Setup
+=== Basic system setup and configuration
 
 ==== Install Ubuntu 12.04 LTS "precise"
 ----

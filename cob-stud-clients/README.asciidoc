@@ -34,10 +34,12 @@ $ sudo addgroup admin
 ----
 $ sudo adduser stud-admin --home /home-local/stud-admin 
 $ sudo adduser stud-admin admin
+$ sudo adduser stud-admin sudo
 ----
 ----
 $ sudo adduser jenkins --home /home-local/jenkins
 $ sudo adduser jenkins admin
+$ sudo adduser jenkins sudo
 ----
 Went to System Settings/User Accounts and add the new admin users as Admin's and give them their name.
 After that logout from ipa account and login as stud-admin and delete the ipa account.

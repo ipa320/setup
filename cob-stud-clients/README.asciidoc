@@ -144,7 +144,7 @@ $ sudo apt-get install synaptic libpam-cracklib pbuilder debootstrap pigz htop g
 
 Development packages and tools:
 ----
-$ sudo apt-get install libtbb-dev libsuitesparse-dev libxerces-c2-dev libtbb2 libann-dev
+$ sudo apt-get install libtbb-dev libsuitesparse-dev libxerces-c2-dev libtbb2 libann-dev libavcodec-extra-53
 $ sudo apt-get install openjdk-6-jdk libvtk5-qt4-dev postgresql ipython octave pgadmin3 devscripts
 ----
 

@@ -70,6 +70,20 @@ $ sudo chmod 750 /home-local/jenkins
 ----
 
 
+==== Enable root account
+----
+$ sudo passwd root
+----
+
+==== Add printer
+First gain permission for admin user's
+----
+$ sudo -i
+$ gpasswd -a stud-admin lp
+$ gpasswd -a jenkins lp
+----
+
+
 ==== Enable passwordless login for SSH
 ----
 $ ssh-keygen

@@ -1,13 +1,14 @@
-== Install Ubuntu 12.04 LTS "precise"
+=== Basic System Setup
 
+==== Install Ubuntu 12.04 LTS "precise"
 ----
 username: ipa
 systemname: cob-stud-<client number>
+password: ****
 ----
 
 
 ==== Update and upgrade your new operating system
-
 ----
 $ sudo apt-get update
 $ sudo apt-get upgrade
@@ -17,7 +18,6 @@ $ sudo reboot
 
 
 ==== Create "shared" directory on local client
-
 ----
 $ sudo mkdir /share
 $ sudo chmod -R a+rw /share
@@ -25,14 +25,12 @@ $ sudo chmod -R a+rw /share
 
 
 ==== Create admin group
-
 ----
 $ sudo addgroup admin
 ----
 
 
 ==== Create extra administrator account's
-
 ----
 $ sudo adduser stud-admin --home /home-local/stud-admin 
 $ sudo adduser stud-admin admin
@@ -41,13 +39,11 @@ $ sudo adduser stud-admin admin
 $ sudo adduser jenkins --home /home-local/jenkins
 $ sudo adduser jenkins admin
 ----
-
 Went to System Settings/User Accounts and add the new admin users as Admin's and give them their name.
 After that logout from ipa account and login as stud-admin and delete the ipa account.
 
 
 ==== Gain root rights for admin user's
-
 ----
 $ sudo visudo -f /etc/sudoers
 ##add to the list###
@@ -57,7 +53,6 @@ jenkins    ALL=(ALL) NOPASSWD: ALL
 
 
 ==== Disable guest account
-
 ----
 $ sudo nano /etc/lightdm/lightdm.conf
 ##add##
@@ -67,7 +62,6 @@ $ sudo restart lightdm
 
 
 ==== Remove the world readable permissions
-
 ----
 $ sudo chmod 750 /home-local/stud-admin
 $ sudo chmod 750 /home-local/jenkins
@@ -75,8 +69,6 @@ $ sudo chmod 750 /home-local/jenkins
 
 
 ==== Enable passwordless login for SSH
-
-Login as stud-admin
 ----
 $ ssh-keygen
 $ ssh-copy-id stud-admin-desktop
@@ -89,8 +81,9 @@ $ ./git/setup/cob-stud-clients/cob-stud-install.sh vim
 ----
 
 
-=== Install nvidia driver
+=== Driver installation
 
+==== Graphiccard driver installation (nVidia)
 ----
 $ sudo add-apt-repository ppa:ubuntu-x-swat/x-updates
 $ sudo apt-get update
@@ -98,25 +91,56 @@ $ sudo apt-get install nvidia-current-dev
 ----
 
 
-=== Install basic tools
+=== Install basic software
 
+==== Adobe AcrobatReader
 ----
 $ sudo apt-add-repository "deb http://archive.canonical.com/ $(lsb_release -sc) partner"
 $ sudo apt-get update && sudo apt-get install flashplugin-installer acroread 
 ----
+
+==== Basic software installation
+
+Editors:
 ----
-$ sudo apt-get install vim tree openssh-server ntp synaptic
-$ sudo apt-get install eclipse libtbb-dev libtbb2 libsuitesparse-dev libxerces-c2-dev libpam-cracklib
-$ sudo apt-get install libann-dev emacs chromium-browser gimp ipython 
-$ sudo apt-get install geany meshlab postgresql pgadmin3 inkscape wmctrl dia octave libvtk5-qt4-dev
-$ sudo apt-get install pbuilder debootstrap devscripts pigz parallel
-$ sudo apt-get install gitg meld curl openjdk-6-jdk zsh terminator htop
-$ sudo apt-get install pbuilder debootstrap devscripts 
+$ sudo apt-get install vim-gtk emacs gimp geany meshlab
 ----
 
+Shells:
+----
+$ sudo apt-get install terminator zsh
+----
 
-=== Add proxy for apt
+Network:
+----
+$ sudo apt-get install openssh-server ntp curl portmap nfs-common libnss-ldap libpam-ldap nscd
+----
 
+Commands:
+----
+$ sudo apt-get install tree wmctrl parallel
+----
+
+Additional linux packages and tools:
+----
+$ sudo apt-get install synaptic libpam-cracklib pbuilder debootstrap pigz htop
+----
+
+Development packages and tools:
+----
+$ sudo apt-get install libtbb-dev libsuitesparse-dev libxerces-c2-dev libtbb2 libann-dev
+$ sudo apt-get install openjdk-6-jdk libvtk5-qt4-dev postgresql ipython octave pgadmin3 devscripts
+----
+
+Software:
+----
+$ sudo apt-get install eclipse meld gitg inkscape dia
+----
+
+
+=== Network configuration
+
+==== Add proxy for apt
 ----
 $ sudo nano /etc/apt/apt.conf.d/proxy
 ##add##
@@ -124,11 +148,7 @@ Acquire::http { Proxy "http://cob-jenkins-server:3142"; };
 ----
 
 
-=== Setup nfs
-
-----
-$ sudo apt-get install portmap nfs-common
-----
+==== Setup nfs
 ----
 $ sudo nano /etc/fstab
 ##add to the list##
@@ -136,14 +156,7 @@ cob-kitchen-nas:/volume1/home-nas    /home nfs rw,hard,intr   0   0
 ----
 
 
-=== Install LDAP clients
-
-----
-$ sudo apt-get install libnss-ldap libpam-ldap nscd
-----
-
-Edit the follow files
-
+==== Config ldap clients
 ----
 $ sudo gedit /etc/nsswitch.conf
 ##edit to##
@@ -244,8 +257,17 @@ greeter-show-manual-login=true
 ----
 
 
-=== Install ROS "fuerte" "groovy"
+==== Setup ntp time synchronisation
+----
+$ sudo nano /etc/ntp.conf
+##change server to##
+server cob-kitchen-server
+----
 
+
+=== Install ROS
+
+==== Install ROS "fuerte" and "groovy" with environment
 ----
 $ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" > /etc/apt/sources.list.d/ros-latest.list'
 $ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
@@ -261,7 +283,6 @@ $ rosdep update
 ----
 
 Environment setup
-
 ----
 ###for fuerte###
 $ echo "source /opt/ros/fuerte/setup.bash" >> ~/.bashrc
@@ -272,9 +293,7 @@ $ source ~/.bashrc
 $ echo "source /opt/ros/groovy/setup.bash" >> ~/.bashrc
 $ source ~/.bashrc
 ----
-
 if you just want to change the environment of your current shell, you can type:
-
 ----
 ###for fuerte###
 $ source /opt/ros/fuerte/setup.bash
@@ -285,8 +304,7 @@ $ source /opt/ros/groovy/setup.bash
 ----
 
 
-=== Install additional tools
-
+==== Install additional tools
 ----
 $ sudo apt-get install python-rosinstall python-rosdep
 $ sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics-monitors
@@ -297,11 +315,55 @@ $ sudo apt-get install ros-groovy-openni*
 $ sudo easy_install -U rosinstall
 ----
 
+=== Jenkins configuration
 
-=== Setup ntp time synchronisation
+==== Performance improvement
+For the configurations a file called +~/.pbuilderrc+ in the slaves +$HOME+-folder is needed (+/etc/pbuilder/pbuilderrc+ is an alternative).
+Don't use pbuilders aptcache
+
+The aptcach of pbuilder is very useful but when the cache is getting bigger gradually it takes quite a while to open a chroot from the tarball. If you don't want to use it (for instance if you use an external apt-cacher), add the following to +~/.pbuilderrc:+
 
 ----
-$ sudo nano /etc/ntp.conf
-##change server to##
-server cob-kitchen-server
+# don't use aptcache
+APTCACHE=""
+----
+
+==== Use ccache for build
+To use ccache inside the pbuilder add the following to +~/.pbuilderrc:+
+
+----
+# ccache
+sudo mkdir -p /var/cache/pbuilder/ccache
+sudo chmod a+w /var/cache/pbuilder/ccache
+export CCACHE_DIR="/var/cache/pbuilder/ccache"
+export PATH="/usr/lib/ccache:${PATH}"
+EXTRAPACKAGES=ccache
+BINDMOUNTS="${CCACHE_DIR}"
+----
+
+==== Use multi-core zipping
+add the following to +.pbuilderrc+:
+----
+# pigz; multicore zipping
+COMPRESSPROG=pigz
+----
+
+==== Mount memory to run the pbuilder chroots in it
+Installations and builds inside the chroot need quite a lot write accesses. If you don't have a SSD installed, you can use the memory for this. Therefore you have to create a filesystem in your RAM, using +tmpfs+ by adding the following to the slaves +/etc/fstab+:
+----
+# pbuilder
+tmpfs   /var/cache/pbuilder/build   tmpfs   defaults,size=32000M    0   0
+----
+
+The size depends on the size of the chroot you will work with (at least 3G, more is better). It can be larger then the RAM size. If the chroot size exceeds the RAM size it will use the SWAP as well.
+
+Additionally you have to add the following to +~/pbuilderrc+:
+----
+# tmpfs
+APTCACHEHARDLINK=no
+----
+
+Finally mount +tmpfs+ by entering:
+----
+$ mount -a
 ----

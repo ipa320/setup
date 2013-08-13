@@ -1,0 +1,385 @@
+=== Basic System Setup
+
+==== Install Ubuntu 12.04 LTS "precise"
+----
+username: ipa
+systemname: cob-stud-<client number>
+password: ****
+----
+
+
+==== Update and upgrade your new operating system
+----
+$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get dist-upgrade
+$ sudo reboot
+----
+
+
+==== Create "shared" directory on local client
+----
+$ sudo mkdir /share
+$ sudo chmod -R a+rw /share
+----
+
+
+==== Create admin group
+----
+$ sudo addgroup admin
+----
+
+
+==== Create extra administrator account's
+----
+$ sudo adduser stud-admin --home /home-local/stud-admin 
+$ sudo adduser stud-admin admin
+$ sudo adduser stud-admin sudo
+----
+----
+$ sudo adduser jenkins --home /home-local/jenkins
+$ sudo adduser jenkins admin
+$ sudo adduser jenkins sudo
+----
+Went to System Settings/User Accounts and add the new admin users as Admin's and give them their name.
+After that logout from ipa account and login as stud-admin and delete the ipa account.
+
+
+==== Gain root rights for admin user's
+----
+$ sudo visudo -f /etc/sudoers
+##add to the list###
+stud-admin ALL=(ALL) NOPASSWD: ALL
+jenkins    ALL=(ALL) NOPASSWD: ALL
+----
+
+
+==== Disable guest account
+----
+$ sudo nano /etc/lightdm/lightdm.conf
+##add##
+allow-guest=false
+$ sudo restart lightdm
+----
+
+
+==== Remove the world readable permissions
+----
+$ sudo chmod 750 /home-local/stud-admin
+$ sudo chmod 750 /home-local/jenkins
+----
+
+
+==== Enable root account
+----
+$ sudo passwd root
+----
+
+==== Add printer
+First gain permission for admin user's
+----
+$ sudo -i
+$ gpasswd -a stud-admin lp
+$ gpasswd -a jenkins lp
+----
+
+
+==== Enable passwordless login for SSH
+----
+$ ssh-keygen
+$ ssh-copy-id stud-admin-desktop
+$ ssh-copy-id cob-jenkins-server
+----
+
+Login to stud-admin@stud-admin-desktop and test if the following script works without throwing an error
+----
+$ ./git/setup/cob-stud-clients/cob-stud-install.sh vim
+----
+
+
+=== Driver installation
+
+==== Graphiccard driver installation (nVidia)
+----
+$ sudo add-apt-repository ppa:ubuntu-x-swat/x-updates
+$ sudo apt-get update
+$ sudo apt-get install nvidia-current-dev
+----
+
+
+=== Install basic software
+
+==== Adobe AcrobatReader
+----
+$ sudo apt-add-repository "deb http://archive.canonical.com/ $(lsb_release -sc) partner"
+$ sudo apt-get update && sudo apt-get install flashplugin-installer acroread 
+----
+
+==== Basic software installation
+
+Editors:
+----
+$ sudo apt-get install vim-gtk emacs gimp geany meshlab
+----
+
+Shells:
+----
+$ sudo apt-get install terminator zsh
+----
+
+Network:
+----
+$ sudo apt-get install openssh-server ntp curl portmap nfs-common libnss-ldap libpam-ldap nscd
+----
+
+Commands:
+----
+$ sudo apt-get install tree wmctrl parallel
+----
+
+Additional linux packages and tools:
+----
+$ sudo apt-get install synaptic libpam-cracklib pbuilder debootstrap pigz htop gnome-system-tools
+----
+
+Development packages and tools:
+----
+$ sudo apt-get install libtbb-dev libsuitesparse-dev libxerces-c2-dev libtbb2 libann-dev libavcodec-extra-53
+$ sudo apt-get install openjdk-6-jdk libvtk5-qt4-dev postgresql ipython octave pgadmin3 devscripts
+----
+
+Software:
+----
+$ sudo apt-get install eclipse meld gitg inkscape dia
+----
+
+
+=== Network configuration
+
+==== Add proxy for apt
+----
+$ sudo nano /etc/apt/apt.conf.d/proxy
+##add##
+Acquire::http { Proxy "http://cob-jenkins-server:3142"; };
+----
+
+
+==== Setup nfs
+----
+$ sudo nano /etc/fstab
+##add to the list##
+cob-kitchen-nas:/volume1/home-nas    /home nfs rw,hard,intr   0   0
+----
+
+
+==== Config ldap clients
+----
+$ sudo gedit /etc/nsswitch.conf
+##edit to##
+# /etc/nsswitch.conf
+passwd:    files ldap
+group:     files ldap
+shadow:    files ldap
+hosts:     files mdns4_minimal [NOTFOUND=return] dns mdns4
+networks:  files
+protocols: db files
+services:  db files
+ethers:    db files
+rpc:       db files
+netgroup:  nis
+sudoers:   ldap files
+----
+----
+$ sudo gedit /etc/pam.d/common-auth
+##edit to##
+# /etc/pam.d/common-auth
+auth [success=2 default=ignore] pam_unix.so nullok_secure
+auth [success=1 default=ignore] pam_ldap.so use_first_pass
+auth requisite                  pam_deny.so
+auth required                   pam_permit.so
+auth optional                   pam_cap.so
+----
+----
+$ sudo gedit /etc/pam.d/common-account
+##edit to##
+# /etc/pam.d/common-account
+account [success=2 new_authtok_reqd=done default=ignore] pam_unix.so
+account [success=1 default=ignore]                       pam_ldap.so
+account requisite                                        pam_deny.so
+account required                                         pam_permit.so
+----
+----
+$ sudo gedit /etc/pam.d/common-password
+##edit to##
+# /etc/pam.d/common-password
+password requisite                                   pam_cracklib.so retry=3 minlen=8 difok=3
+password [success=2 default=ignore]                  pam_unix.so obscure use_authtok try_first_pass sha512
+password [success=1 user_unknown=ignore default=die] pam_ldap.so use_authtok try_first_pass
+password requisite                                   pam_deny.so
+password required                                    pam_permit.so
+password optional                                    pam_gnome_keyring.so
+----
+----
+$ sudo gedit /etc/pam.d/common-session
+##edit to##
+# /etc/pam.d/common-session
+session  [default=1]  pam_permit.so
+session  requisite    pam_deny.so
+session  required     pam_permit.so
+session  optional     pam_umask.so
+session  required     pam_unix.so
+session  optional     pam_ldap.so
+session  optional     pam_ck_connector.so nox11
+session  optional     pam_mkhomedir.so skel=/etc/skel umask=0022
+----
+----
+$ sudo gedit /etc/ldap.conf
+##edit to##
+###DEBCONF###
+base dc=cob-kitchen-server
+host 10.0.1.1
+ldap_version 3
+rootbinddn cn=directory manager
+pam_password md5
+sudoers_base ou=SUDOers,dc=cob-kitchen-server
+pam_lookup_policy yes
+pam_check_host_attr yes
+nss_initgroups_ignoreusers avahi,avahi-autoipd,backup,bin,colord,daemon,games,gnats,
+hplip,irc,kernoops,libuuid,lightdm,list,lp,mail,man,messagebus,news,proxy,pulse,
+root,rtkit,saned,speech-dispatcher,sshd,sync,sys,syslog,usbmux,uucp,whoopsie,www-data
+----
+----
+$ sudo gedit /etc/ldap/ldap.conf
+##edit to##
+# LDAP Defaults
+BASE                   dc=cob-kitchen-server
+host                   10.0.1.1
+ssl                    on
+use_sasl               no
+tls_checkpeer          no
+sudoers_base           ou=SUDOers,dc=cob-kitchen-server
+sudoers_debug          2
+pam_lookup_policy      yes
+pam_check_host_attr    yes
+pam_lookup_policy      yes
+pam_check_host_attr    yes
+TLS_CACERT             /etc/ssl/certs/ca-certificates.crt
+TLS_REQCERT            never
+----
+----
+$ sudo gedit /etc/lightdm/lightdm.conf
+##add to the list##
+greeter-show-manual-login=true
+----
+
+
+==== Setup ntp time synchronisation
+----
+$ sudo nano /etc/ntp.conf
+##change server to##
+server cob-kitchen-server
+----
+
+
+=== Install ROS
+
+==== Install ROS "fuerte" and "groovy" with environment
+----
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu precise main" > /etc/apt/sources.list.d/ros-latest.list'
+$ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+$ sudo apt-get update
+----
+----
+$ sudo apt-get install ros-fuerte-desktop-full
+$ sudo apt-get install ros-groovy-desktop-full
+----
+----
+$ sudo rosdep init
+$ rosdep update
+----
+
+Environment setup
+----
+###for fuerte###
+$ echo "source /opt/ros/fuerte/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+----
+----
+###for groovy###
+$ echo "source /opt/ros/groovy/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+----
+if you just want to change the environment of your current shell, you can type:
+----
+###for fuerte###
+$ source /opt/ros/fuerte/setup.bash
+----
+----
+###for groovy###
+$ source /opt/ros/groovy/setup.bash
+----
+
+
+==== Install additional tools
+----
+$ sudo apt-get install python-rosinstall python-rosdep
+$ sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics-monitors
+$ sudo apt-get install ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni
+$ sudo apt-get install ros-groovy-openni*
+----
+----
+$ sudo easy_install -U rosinstall
+----
+
+=== Jenkins configuration
+
+==== Performance improvement
+For the configurations a file called +~/.pbuilderrc+ in the slaves +$HOME+-folder is needed (+/etc/pbuilder/pbuilderrc+ is an alternative).
+Don't use pbuilders aptcache
+
+The aptcach of pbuilder is very useful but when the cache is getting bigger gradually it takes quite a while to open a chroot from the tarball. If you don't want to use it (for instance if you use an external apt-cacher), add the following to +~/.pbuilderrc:+
+
+----
+# don't use aptcache
+APTCACHE=""
+----
+
+==== Use ccache for build
+To use ccache inside the pbuilder add the following to +~/.pbuilderrc:+
+
+----
+# ccache
+sudo mkdir -p /var/cache/pbuilder/ccache
+sudo chmod a+w /var/cache/pbuilder/ccache
+export CCACHE_DIR="/var/cache/pbuilder/ccache"
+export PATH="/usr/lib/ccache:${PATH}"
+EXTRAPACKAGES=ccache
+BINDMOUNTS="${CCACHE_DIR}"
+----
+
+==== Use multi-core zipping
+add the following to +.pbuilderrc+:
+----
+# pigz; multicore zipping
+COMPRESSPROG=pigz
+----
+
+==== Mount memory to run the pbuilder chroots in it
+Installations and builds inside the chroot need quite a lot write accesses. If you don't have a SSD installed, you can use the memory for this. Therefore you have to create a filesystem in your RAM, using +tmpfs+ by adding the following to the slaves +/etc/fstab+:
+----
+# pbuilder
+tmpfs   /var/cache/pbuilder/build   tmpfs   defaults,size=32000M    0   0
+----
+
+The size depends on the size of the chroot you will work with (at least 3G, more is better). It can be larger then the RAM size. If the chroot size exceeds the RAM size it will use the SWAP as well.
+
+Additionally you have to add the following to +~/pbuilderrc+:
+----
+# tmpfs
+APTCACHEHARDLINK=no
+----
+
+Finally mount +tmpfs+ by entering:
+----
+$ mount -a
+----

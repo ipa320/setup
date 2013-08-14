@@ -15,24 +15,17 @@ $ sudo apt-get upgrade
 $ sudo apt-get dist-upgrade
 $ sudo reboot
 ----
+if you have problems with update than try the follow:
+----
+$ sudo rm /var/lib/apt/lists/* -vf
+$ sudo apt-get update
+----
 
 
 ==== Create "shared" directory on local client
 ----
 $ sudo mkdir /share
 $ sudo chmod -R a+rw /share
-----
-
-
-==== Disable Ctrl+Alt+Del
-----
-$ sudo nano /etc/init/control-alt-delete.conf
-----
-comment out:
-----
-#start on control-alt-delete
-#task
-#exec shutdown -r now “Control-Alt-Delete pressed”
 ----
 
 
@@ -59,7 +52,7 @@ After that logout from ipa account and login as stud-admin and delete the ipa ac
 
 ==== Gain root rights for admin user's
 ----
-$ sudo visudo -f /etc/sudoers
+$ sudo nano /etc/sudoers
 ##add to the list###
 stud-admin ALL=(ALL) NOPASSWD: ALL
 jenkins    ALL=(ALL) NOPASSWD: ALL
@@ -87,6 +80,17 @@ $ sudo chmod 750 /home-local/jenkins
 $ sudo passwd root
 ----
 
+==== Enable shell auto-compl.
+----
+$ sudo nano /etc/bash.bashrc
+----
+and activate the follow lines:
+----
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    . /etc/bash_completion
+fi
+----
+
 ==== Add printer
 First gain permission for admin user's
 ----
@@ -94,12 +98,17 @@ $ sudo -i
 $ gpasswd -a stud-admin lp
 $ gpasswd -a jenkins lp
 ----
-
+printer ip-address: 10.0.1.99
 
 ==== Enable passwordless login for SSH
+login as stud-admin
 ----
 $ ssh-keygen
 $ ssh-copy-id stud-admin-desktop
+----
+login as jenkins
+----
+ssh-keygen
 $ ssh-copy-id cob-jenkins-server
 ----
 
@@ -186,7 +195,7 @@ cob-kitchen-nas:/volume1/home-nas    /home nfs rw,hard,intr   0   0
 
 ==== Config ldap clients
 ----
-$ sudo gedit /etc/nsswitch.conf
+$ sudo nano /etc/nsswitch.conf
 ##edit to##
 # /etc/nsswitch.conf
 passwd:    files ldap
@@ -202,7 +211,7 @@ netgroup:  nis
 sudoers:   ldap files
 ----
 ----
-$ sudo gedit /etc/pam.d/common-auth
+$ sudo nano /etc/pam.d/common-auth
 ##edit to##
 # /etc/pam.d/common-auth
 auth [success=2 default=ignore] pam_unix.so nullok_secure
@@ -212,7 +221,7 @@ auth required                   pam_permit.so
 auth optional                   pam_cap.so
 ----
 ----
-$ sudo gedit /etc/pam.d/common-account
+$ sudo nano /etc/pam.d/common-account
 ##edit to##
 # /etc/pam.d/common-account
 account [success=2 new_authtok_reqd=done default=ignore] pam_unix.so
@@ -221,7 +230,7 @@ account requisite                                        pam_deny.so
 account required                                         pam_permit.so
 ----
 ----
-$ sudo gedit /etc/pam.d/common-password
+$ sudo nano /etc/pam.d/common-password
 ##edit to##
 # /etc/pam.d/common-password
 password requisite                                   pam_cracklib.so retry=3 minlen=8 difok=3
@@ -232,7 +241,7 @@ password required                                    pam_permit.so
 password optional                                    pam_gnome_keyring.so
 ----
 ----
-$ sudo gedit /etc/pam.d/common-session
+$ sudo nano /etc/pam.d/common-session
 ##edit to##
 # /etc/pam.d/common-session
 session  [default=1]  pam_permit.so
@@ -245,7 +254,7 @@ session  optional     pam_ck_connector.so nox11
 session  optional     pam_mkhomedir.so skel=/etc/skel umask=0022
 ----
 ----
-$ sudo gedit /etc/ldap.conf
+$ sudo nano /etc/ldap.conf
 ##edit to##
 ###DEBCONF###
 base dc=cob-kitchen-server
@@ -261,7 +270,7 @@ hplip,irc,kernoops,libuuid,lightdm,list,lp,mail,man,messagebus,news,proxy,pulse,
 root,rtkit,saned,speech-dispatcher,sshd,sync,sys,syslog,usbmux,uucp,whoopsie,www-data
 ----
 ----
-$ sudo gedit /etc/ldap/ldap.conf
+$ sudo nano /etc/ldap/ldap.conf
 ##edit to##
 # LDAP Defaults
 BASE                   dc=cob-kitchen-server
@@ -279,7 +288,7 @@ TLS_CACERT             /etc/ssl/certs/ca-certificates.crt
 TLS_REQCERT            never
 ----
 ----
-$ sudo gedit /etc/lightdm/lightdm.conf
+$ sudo nano /etc/lightdm/lightdm.conf
 ##add to the list##
 greeter-show-manual-login=true
 ----

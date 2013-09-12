@@ -1,0 +1,24 @@
+- git:
+    uri: 'git://github.com/ipa320/cob_object_perception.git'
+    local-name: cob_object_perception
+    version: hydro_dev
+- git:
+    uri: 'git://github.com/ipa320/cob_perception_common.git'
+    local-name: cob_perception_common
+    version: hydro_dev
+- git:
+    uri: 'git://github.com/ipa320/cob_environment_perception.git'
+    local-name: cob_environment_perception
+    version: hydro_dev
+- git:
+    uri: 'git://github.com/ipa320/cob_people_perception.git'
+    local-name:  cob_people_perception
+    version: hydro_dev
+- git:
+    uri: 'git://github.com/ipa320/cob_manipulation.git'
+    local-name: cob_manipulation
+    version: hydro_dev
+- git:
+    uri: 'git://github.com/ipa320/cob_navigation.git'
+    local-name: cob_navigation
+    version: hydro_dev

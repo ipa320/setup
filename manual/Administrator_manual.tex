@@ -421,6 +421,87 @@ rosmake cob_bringup
 cp ~/git/setup/env.sh ~/git/care-o-bot/.
 \end{lstlisting}
 
+
+\subsection{Install ROS and driver software (Hydro distro)}
+For general instructions see \footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/hydro} (not yet exists)}.
+
+\subsubsection{Setup bash environment}
+We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ on each pc. Copy the \texttt{cob.bash.bashrc.pcY} to \texttt{/etc/cob.bash.bashrc} on each pc.
+
+\begin{lstlisting}
+sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
+\end{lstlisting}
+
+All users have a pre-configured bash environment too, therefore append \texttt{user.bashrc} to \texttt{$\sim$/.bashrc}
+\begin{lstlisting}
+~/git/setup/cob-pcs/user.bashrc_hydro >> ~/.bashrc
+\end{lstlisting}
+The \texttt{.bashrc} file is not configured for any robot or environment, please change the following lines to fit your configuration. At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://myrobot-pc1:11311}, \texttt{ROBOT} to be \texttt{myrobot} (where 'myrobot' is your robot name e.g. cob3-3) and \texttt{ROBOT\_ENV} to point to your environment.
+\begin{lstlisting}
+ROS_MASTER_URI=http://myrobot-pc1:11311
+ROBOT=myrobot
+ROBOT_ENV=myenvironment
+\end{lstlisting}
+
+
+If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. 
+
+\subsubsection{Install ROS and additional tools}
+
+
+\textbf{Setup your sources.list}
+\\
+\\Ubuntu 12.04 (Precise)
+\begin{lstlisting}
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
+\end{lstlisting}
+\textbf{Set up your keys}
+\begin{lstlisting}
+wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+\end{lstlisting}
+\textbf{Install ROS}
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install ros-hydro-desktop-full
+\end{lstlisting}
+
+\textbf{Install extra packages}
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics ros-hydro-rxtools ros-hydro-pr2-* ros-hydro-rosjava-tools ros-hydro-openni*
+\end{lstlisting}
+
+\textbf{Install python tools}
+\begin{lstlisting}
+sudo apt-get install python-ros*
+\end{lstlisting}
+
+\textbf{Initialize rosdep-list}
+\begin{lstlisting}
+sudo rosdep init
+rosdep update
+\end{lstlisting}
+
+\subsubsection{Create overlays for stacks}
+\textbf{Create, build catkin workspace and packages}
+\begin{lstlisting}
+mkdir ~/git/care-o-bot
+mkdir ~/git/care-o-bot/src
+cd ~/git/care-o-bot/src
+source /opt/ros/hydro/setup.bash
+catkin_init_workspace
+cd ~/git/care-o-bot
+cmake src
+catkin_make
+rosinstall ~/git/care-o-bot/src ~/git/setup/repositories/cob_hydro_bringup.rosinstall
+catkin_make
+\end{lstlisting}
+
+Do not forget update rosdep-list: 
+\begin{lstlisting}
+rosdep update
+\end{lstlisting}
+
 \subsection{Setup hardware components}
 In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \texttt{cob\_hardware\_config} package.
 

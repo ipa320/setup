@@ -450,8 +450,6 @@ If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should
 
 
 \textbf{Setup your sources.list}
-\\
-\\Ubuntu 12.04 (Precise)
 \begin{lstlisting}
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
 \end{lstlisting}
@@ -468,7 +466,7 @@ sudo apt-get install ros-hydro-desktop-full
 \textbf{Install extra packages}
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics ros-hydro-rxtools ros-hydro-pr2-* ros-hydro-rosjava-tools ros-hydro-openni*
+sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics ros-hydro-rxtools ros-hydro-pr2-* ros-hydro-rosjava-tools ros-hydro-openni* ros-hydro-moveit-full
 \end{lstlisting}
 
 \textbf{Install python tools}

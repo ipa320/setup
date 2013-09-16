@@ -443,7 +443,6 @@ ROBOT=myrobot
 ROBOT_ENV=myenvironment
 \end{lstlisting}
 
-
 If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. 
 
 \subsubsection{Install ROS and additional tools}
@@ -489,11 +488,10 @@ cd ~/git/care-o-bot/src
 source /opt/ros/hydro/setup.bash
 catkin_init_workspace
 cd ~/git/care-o-bot
-cmake src
-catkin_make
-rosinstall ~/git/care-o-bot/src ~/git/setup/repositories/cob_hydro_bringup.rosinstall
+rosinstall --catkin ~/git/care-o-bot/src ~/git/setup/repositories/cob_hydro_bringup.rosinstall
 catkin_make
 \end{lstlisting}
+You will probably get error that \texttt{rosinstall} can not write into \texttt{CMakeLists.txt} file but just ignore it and continue, because you already configured your workspace properly with \textit{catkin\_init\_workspace} command.
 
 Do not forget update rosdep-list: 
 \begin{lstlisting}

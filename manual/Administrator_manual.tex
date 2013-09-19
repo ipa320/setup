@@ -510,7 +510,15 @@ sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
 To activate these changes you have to restart the system.
 
 \paragraph{Setup can bus drivers on pc1}
-This step is necessary for all drivers with can bus interface (Schunk powercubes, Schunk sdh, head axis, base). In general both can drivers from Peak Systems\footnote{\url{http://www.peak-system.com/}} \texttt{libpcan} and ESD\footnote{\url{http://www.esd-electronics.com}} \texttt{libntcan} can be used. Installation instructions can be found in the package documentation of libpcan \url{http://www.ros.org/wiki/libpcan} and libntcan \url{http://www.ros.org/wiki/libntcan}.
+This step is necessary for all drivers with can bus interface (Schunk powercubes, Schunk sdh, head axis, base). In general both can drivers from Peak Systems\footnote{\url{http://www.peak-system.com/}} \texttt{libpcan} and ESD\footnote{\url{http://www.esd-electronics.com}} \texttt{libntcan} can be used.
+
+If you use ROS hydro and catkin, and if you compiled successfully your workspace then the easiest way to install can drivers is to copy \texttt{*.ko} file into \texttt{/lib/modules/your\_kernel\_version/misc} (if this folder doesn't exist made it) and after system restart the \texttt{can}-module should be loaded. Example with  for \texttt{libpcan} driver:
+\begin{lstlisting}
+  sudo cp `rospack find libpcan`/build/peak-linux-driver/driver/pcan.ko /lib/modules/`uname -r`/misc/
+\end{lstlisting}
+Detailed installation instructions can be found in the package documentation of \texttt{libpcan} \url{http://www.ros.org/wiki/libpcan} and \texttt{libntcan} \url{http://www.ros.org/wiki/libntcan}.
+
+\textbf{Note}: If you have linux kernel version $>= 3.4$ you can use new \texttt{linux-can} drivers. More information on libpcan site.
 
 \paragraph{Sick S300 laser scanners}
 The Sick S300 scanners on the front side and backside of the robot are connected via USB to pc1. Configuration is done in the \texttt{cob\_hardware\_config} package in \texttt{config/laser\_front.yaml} and \texttt{config/laser\_rear.yaml}, documentation about parameters in \footnote{\url{http://www.ros.org/wiki/cob_sick_s300}}.

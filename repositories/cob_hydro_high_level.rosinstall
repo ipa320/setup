@@ -19,6 +19,6 @@
     local-name: cob_manipulation
     version: hydro_dev
 - git:
-    uri: 'git://github.com/ipa320/cob_navigation.git'
+    uri: 'git://github.com/ipr-sr2/cob_navigation.git'
     local-name: cob_navigation
     version: hydro_dev

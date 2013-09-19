@@ -434,7 +434,7 @@ sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
 
 All users have a pre-configured bash environment too, therefore append \texttt{user.bashrc} to \texttt{$\sim$/.bashrc}
 \begin{lstlisting}
-~/git/setup/cob-pcs/user.bashrc_hydro >> ~/.bashrc
+cat ~/git/setup/cob-pcs/user.bashrc_hydro >> ~/.bashrc
 \end{lstlisting}
 The \texttt{.bashrc} file is not configured for any robot or environment, please change the following lines to fit your configuration. At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://myrobot-pc1:11311}, \texttt{ROBOT} to be \texttt{myrobot} (where 'myrobot' is your robot name e.g. cob3-3) and \texttt{ROBOT\_ENV} to point to your environment.
 \begin{lstlisting}
@@ -465,7 +465,7 @@ sudo apt-get install ros-hydro-desktop-full
 \textbf{Install extra packages}
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics ros-hydro-rxtools ros-hydro-pr2-* ros-hydro-rosjava-tools ros-hydro-openni* ros-hydro-moveit-full
+sudo apt-get install python-setuptools ogre-tools ros-hydro-diagnostics ros-hydro-pr2-* ros-hydro-rosjava-tools ros-hydro-openni* ros-hydro-moveit-full
 \end{lstlisting}
 
 \textbf{Install python tools}
@@ -490,6 +490,7 @@ catkin_init_workspace
 cd ~/git/care-o-bot
 rosinstall --catkin ~/git/care-o-bot/src ~/git/setup/repositories/cob_hydro_bringup.rosinstall
 catkin_make
+source ~/.bashrc
 \end{lstlisting}
 You will probably get error that \texttt{rosinstall} can not write into \texttt{CMakeLists.txt} file but just ignore it and continue, because you already configured your workspace properly with \textit{catkin\_init\_workspace} command.
 

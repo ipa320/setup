@@ -348,9 +348,6 @@ $ sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics-monit
 $ sudo apt-get install ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni
 $ sudo apt-get install ros-groovy-openni*
 ----
-----
-$ sudo easy_install -U rosinstall
-----
 
 === Jenkins configuration
 

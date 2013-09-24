@@ -7,15 +7,15 @@
     local-name: cob_command_tools
     version: hydro_dev
 - git:
-    uri: 'git://github.com/ipr-sr2/cob_common.git'
+    uri: 'git://github.com/ipa320/cob_common.git'
     local-name: cob_common
     version: hydro_dev
 - git:
-    uri: 'git://github.com/ipr-sr2/cob_driver.git'
+    uri: 'git://github.com/ipa320/cob_driver.git'
     local-name: cob_driver
     version: hydro_dev
 - git:
-    uri: 'git://github.com/ipr-sr2/cob_environments.git'
+    uri: 'git://github.com/ipa320/cob_environments.git'
     local-name: cob_environments
     version: hydro_dev
 - git:
@@ -23,7 +23,7 @@
     local-name: cob_extern
     version: hydro_dev
 - git:
-    uri: 'git://github.com/ipr-sr2/cob_robots.git'
+    uri: 'git://github.com/ipa320/cob_robots.git'
     local-name: cob_robots
     version: hydro_dev
 - git:
@@ -35,11 +35,11 @@
     local-name: cob_substitute
     version: hydro_dev
 - git:
-    uri: 'git://github.com/ipr-sr2/schunk_modular_robotics.git'
+    uri: 'git://github.com/ipa320/schunk_modular_robotics.git'
     local-name: schunk_modular_robotics
     version: hydro_dev
 - git:
-    uri: 'git://github.com/ipr-sr2/universal_robot.git'
+    uri: 'git://github.com/ipa320/universal_robot.git'
     local-name: universal_robot
     version: hydro_dev
 

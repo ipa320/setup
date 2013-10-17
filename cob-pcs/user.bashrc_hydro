@@ -1,0 +1,18 @@
+
+# use global color settings
+source /etc/cob.bash.bashrc
+
+# provide setup scripts for all users
+export PATH=/u/robot/git/setup:$PATH
+
+source /u/robot/git/care-o-bot/devel/setup.bash
+
+export ROS_MASTER_URI=http://myrobot-pc1:11311
+export ROBOT=myrobot
+export ROBOT_ENV=myenvironment
+export ROSLAUNCH_SSH_UNKNOWN=1
+export JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64
+
+COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)
+COUNT=$(echo "$COUNT*2" | bc)
+export ROS_PARALLEL_JOBS=-j$COUNT

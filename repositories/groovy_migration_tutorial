@@ -48,16 +48,26 @@ $ mkdir ~/git/care-o-bot_catkin/src
 $ mkdir ~/git/care-o-bot_catkin/build
 $ cd ~/git/care-o-bot_catkin/src
 $ catkin_init_workspace
-$ cd ../build
-$ cmake ../src
-$ make
+$ cd ..
+$ cmake src
+$ catkin_make
 $ mkdir ~/git/care-o-bot
 $ cd ~/git/care-o-bot
 $ rosws init . ~/git/care-o-bot_catkin/devel
-$ git clone https://github.com/ipa320/cob_robots.git   (.....)
-$ rosinstall ~/git/care-o-bot_rosbuild https://raw.github.com/ipa-nhg/setup/repositories/cob_groovy.rosinstall
+$ git clone https://github.com/ipa320/cob_robots.git   (.....)  or:
+    $ rosinstall ~/git/care-o-bot https://raw.github.com/ipa320/setup/master/repositories/cob_groovy_bringup.rosinstall
 
+[robot](user accounts)
+$ mkdir ~/git/care-o-bot
+$ cd ~/git/care-o-bot/
+$ rosws init . /u/robot/git/care-o-bot
+
+[ pulling the source for gmapping into the rosbuild workspace ]
+$ cd ~/git/care-o-bot
+$ wstool set cob_robots --git https://github.com/ipa320/cob_robots.git
+$ rosws update cob_robots
+$ source setup.bash
 
 $ rosdep update
 
-$ sudo cp -r /opt/ros/fuerte/stacks/visualization_common /opt/ros/groovy/stacks/. 
+

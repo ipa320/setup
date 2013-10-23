@@ -499,9 +499,9 @@ def get_all_stacks(options):
 	# get all directories
 	dirs = os.walk(os.path.expanduser(options.install_dir)).next()[1]
 	
-	# check if directory is a stack
+	# check if directory is a git repository
 	for directory in dirs:
-		if os.path.exists(os.path.expanduser(options.install_dir) + "/" + directory + "/stack.xml"):
+		if os.path.exists(os.path.expanduser(options.install_dir) + "/" + directory + "/.git/config"):
 			#print "directory, "is a stack"
 			stacks.append(directory)
 		else:

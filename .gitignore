@@ -1,0 +1,10 @@
+/build
+*~
+*.pyc
+
+# latex tmp files
+*.aux
+*.log
+*.nlo
+*.out
+*.toc

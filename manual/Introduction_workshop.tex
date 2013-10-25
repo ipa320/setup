@@ -1,0 +1,265 @@
+%##########################################################################
+%                                                                     
+%                        Care-O-bot User manual - UR arm section                                                   
+%                                     
+%##########################################################################
+
+
+%##########################################################################
+% Formatierungsoptionen
+% fuer Bilder die Option "draft" entfernen
+\documentclass[12pt,twoside]{report}
+
+% Standard Style-Files
+%\usepackage{german}
+\usepackage{a4}
+%\usepackage{psfig}
+\usepackage{graphicx}
+\usepackage{subfigure}
+%\usepackage{equations}
+\usepackage{thb}
+\usepackage{amssymb}
+\usepackage{listings}
+
+% define colors
+\usepackage{color}
+\definecolor{light-gray}{gray}{0.85}
+
+% Abruerzungsverzeichnis
+\usepackage{nomencl}
+
+% Hyperlinks
+\usepackage[bookmarksnumbered=true,backref=page,breaklinks=true,pdftitle={Care-O-bot manual},
+pdfauthor={Florian Weisshardt},pdfsubject={Care-O-bot administration and user manual},
+pdfkeywords={Care-O-bot, ROS, setup, install, manual}]{hyperref}
+
+
+% Seitenstil
+\pagestyle{headings}
+%
+% Abstand zwischen Abs"atzen
+\setlength{\parskip}{1.5ex}
+
+% Einr"uckung der ersten Zeile eines Absatzes unterdr"ucken
+\setlength{\parindent}{0pt}
+
+% Grosszuegigere Wortabstaende
+\sloppy
+
+% Tiefe der numerierten Kapitel definieren
+\setcounter{secnumdepth}{3}
+
+% Tiefe der Kapitel im Inahltsverzeichnis definieren
+\setcounter{tocdepth}{2}
+
+
+% Damit Bilder m"oglichst da sind, wo man sie will
+\setcounter{topnumber}{20}
+\setcounter{bottomnumber}{20}
+\setcounter{totalnumber}{20}
+\renewcommand{\topfraction}{.9999}
+\renewcommand{\bottomfraction}{.9999}
+\renewcommand{\textfraction}{0}
+
+% source code
+\lstset{
+basicstyle=\footnotesize,
+frame=single,
+breaklines=true,
+backgroundcolor=\color{light-gray}
+}
+
+
+%##########################################################################
+% Abkuerzungen 
+\let\abbrev\nomenclature
+\renewcommand{\nomname}{Abk"urzungsverzeichnis} 
+\setlength{\nomlabelwidth}{.24\hsize} % Punkte zw. Abkrzung und Erklrung
+\renewcommand{\nomlabel}[1]{#1 \dotfill}
+%\setlength{\nomitemsep}{-\parsep} % Zeilenabstnde verkleinern
+\makenomenclature 
+% einfuegen mit \abbrev{Abkuerzung}{Beschreibung}
+
+
+%###########################################################################
+% Bearbeitung von einzelnen Kapiteln
+
+%\includeonly{berichttitle}
+%\includeonly{berichttoc}
+%\includeonly{bericht1}
+%\includeonly{bericht2}
+%\includeonly{bericht3}
+%\includeonly{bericht4}
+%\includeonly{bericht5}
+%\includeonly{berichtapp}
+%\includeonly{berichtlof}
+%\includeonly{berichtloc}
+%\includeonly{berichtlot}
+%\includeonly{berichtbib}
+
+
+%###########################################################################
+\begin{document}
+
+%################
+%   Titelseite
+%################
+\begin{titlepage}
+\vspace*{13mm}
+\begin{center}
+  \vspace{10mm} 
+         {\large \hspace{20mm} Agenda and Content\\}
+  \vspace{10mm}
+       {\Large
+          \bf
+          \hspace{20mm} Introduction workshop\\} 
+  \vspace{5mm}
+       {\Large
+          \bf
+          \hspace{20mm} Care-O-bot \\}
+
+  \vspace{80mm}
+  \makebox[40mm]{\large \hspace{16mm} Autors: }\makebox[65mm][l]
+                                   {\large Florian Weisshardt}
+% \makebox[40mm]{}\makebox[65mm][l]{\large Name}\\
+  \vspace{10mm}
+         {\large \hspace{20mm} Fraunhofer IPA} \\
+  \vspace{5mm}
+         {\large \hspace{20mm} Institute for Manufacturing Engineering and Automation} \\
+         {\large \hspace{20mm} Stuttgart, Germany} \\
+  %\vspace{20mm}
+  \vfill
+         {\large \hspace{20mm} Last modified on \today}
+\end{center}
+\end{titlepage}
+
+%################
+%   intermediate pages
+%################
+\clearpage
+\thispagestyle{empty}
+\cleardoublepage
+\thispagestyle{empty}\cleardoublepage % Inhalt auf der rechten Seite beginnen
+% Raendereinstellungen fuer Doppelseitigen Ausdruck
+\evensidemargin=2pt
+\oddsidemargin=40pt
+% Zeilenabstand strecken
+\renewcommand{\baselinestretch}{1.15}\normalsize
+\pagenumbering{roman}
+\pagenumbering{arabic}
+
+%################
+%   begin content
+%################
+\chapter{Agenda}
+This is an Agenda for a two days workshop after shipping the robot. It will cover topics for unpacking, setting up, safety introduction, starting up the robot, first steps for moving the robot, navigation introduction.
+
+\begin{table}[htb]
+\begin{tabular}{|l|l|l|}
+  \hline
+  Topic & approx. Duration & involved persons \\ \hline \hline
+  Unpacking the robot & 2h & customer contact person (1 person) \\ \hline
+  Technical handover & 0.5h & customer contact person (1 person) \\ \hline
+  Presentation: Introduction to ROS and Care-O-bot & 1h & all interessted people (10-30 persons) \\ \hline
+  Safety instructions & 1h & customer contact person, robot administrator, all people working with robot (5-15 persons) \\ \hline
+  Starting up the robot & 1h & robot administrator, all people working with robot (5-15 persons) \\ \hline
+  First steps for moving the robot & 3h & robot administrator, all people working with robot (5-15 persons) \\ \hline
+  Important ROS packages & 1h & robot administrator, all people working with robot (5-15 persons) \\ \hline
+  Introduction to navigation & 2h & robot administrator, all people working with robot (5-15 persons) \\ \hline
+  Introduction to administration & 1h & robot administrator \\ \hline 
+  
+  
+\end{tabular}
+\end{table}
+
+\chapter{Content}
+
+\section{Unpacking}
+loocking for transportation damage, taking photos
+
+show how to fix the robot in the box
+
+show how to protect the robot in the box from getting scratches and losing parts
+
+content of supply box
+
+\section{Technical handover}
+go through the daily morning show
+
+sign a daily morning show protocol (mark damages or errors)
+
+\section{Presentation: Introduction to ROS and Care-O-bot}
+self introduction from the robot
+
+\subsection{Introduction to ROS}
+See slides from ROS workshop on 1.10.13 in Stuttgart
+\subsection{Introduction to Care-O-bot}
+See slides from 24.10.13 in Odense: Motivation, Hardware, applications, SW architecture, community, testing, collabration
+
+\section{Safety instructions}
+what issues to be taken care about: see slides from 24.10.14 in Odense
+
+show how to stop the robot: buttons, laser canner, wireless emergency stop
+
+show how to release the emergency stop again
+
+charging the robot
+
+\section{Starting up the robot}
+turn key, login, run bringup, initialise, diagnostics dashboard: see Care-O-bot manual
+
+\section{First steps for moving the robot}
+joystick, command gui
+
+simple\_script\_server: blocking and non-blocking, using predefined positions and direct joint positions, leds, sound
+
+cob\_default\_robot\_config: add your own package for robot configuration, add new predefined positions, add new command gui buttons
+
+cob\_default\_env\_config: add environment specific parameter to your own package, add buttons to command gui
+
+\section{Introduction to navigation}
+show various navigation possibilities dwa, tr, linear
+
+visualize and command through rviz
+
+cob\_navigation\_local
+
+cob\_mapping\_slam: tips tricks for creating a map
+
+cob\_navigation\_global
+
+cob\_navigation\_slam
+
+\section{Important ROS packages}
+cob\_bringup
+
+cob\_hardware\_config
+
+cob\_calibration\_data
+
+cob\_default\_robot\_config
+
+cob\_default\_env\_config
+
+tf frames
+
+simulation
+
+where to start which ROS node: distribution of CPU and network traffic
+
+\section{Introduction to administration}
+pc and network hardware setup: router, pcs, extension cards, CAN, usb, ethernet, camera network, CPU, RAM, disk usage
+
+network configuration: IP adresses, DHCP, DNS, integration into building network
+
+pc configuration on robot: ntp, nfs, robot user, 
+
+setup repository: manual, cobadduser, cob-pcs-install, cob-pcs-execute
+
+overcome wireless emergency stop
+
+ROS configuration: bashrc, ROS\_PACKAGE\_PATH, ROS\_MASTER\_URI, bringup stacks, user overlays
+
+
+\end{document}
+%##########################################################################

@@ -101,31 +101,98 @@ backgroundcolor=\color{light-gray}
 %###########################################################################
 \begin{document}
 
-% Titelseite einfgen
-\include{ur_title}
-\thispagestyle{empty}\cleardoublepage % Inhalt auf der rechten Seite beginnen
+%################
+%   Titelseite
+%################
+\begin{titlepage}
+\vspace*{13mm}
+\begin{center}
+  \vspace{10mm} 
+         {\large \hspace{20mm} Care-O-bot Manual\\}
+  \vspace{10mm}
+       {\Large
+          \bf
+          \hspace{20mm} Extension for\\} 
+  \vspace{5mm}
+       {\Large
+          \bf
+          \hspace{20mm} Universal Robot UR5 and connector\\}
 
+  \vspace{80mm}
+  \makebox[40mm]{\large \hspace{16mm} Autors: }\makebox[65mm][l]
+                                   {\large Florian Weisshardt}
+  \makebox[40mm]{}\makebox[65mm][l]{\large Nadia Hammoudeh Garcia}\\
+  \makebox[40mm]{}\makebox[65mm][l]{\large Bernhard Waterkamp}\\
+% \makebox[40mm]{}\makebox[65mm][l]{\large Name}\\
+  \vspace{10mm}
+         {\large \hspace{20mm} Fraunhofer IPA} \\
+  \vspace{5mm}
+         {\large \hspace{20mm} Institute for Manufacturing Engineering and Automation} \\
+         {\large \hspace{20mm} Stuttgart, Germany} \\
+  %\vspace{20mm}
+  \vfill
+         {\large \hspace{20mm} Last modified on \today}
+\end{center}
+\end{titlepage}
+
+%################
+%   intermediate pages
+%################
+\clearpage
+\thispagestyle{empty}
+\cleardoublepage
+\thispagestyle{empty}\cleardoublepage % Inhalt auf der rechten Seite beginnen
 % Raendereinstellungen fuer Doppelseitigen Ausdruck
 \evensidemargin=2pt
 \oddsidemargin=40pt
-
 % Zeilenabstand strecken
 \renewcommand{\baselinestretch}{1.15}\normalsize
-
-
 \pagenumbering{roman}
-
-% Inhaltsverzeichnis einfgen
-%\tableofcontents
-%\thispagestyle{empty}\cleardoublepage
-
-% Abkrzungsverzeichnis einfgen
-%\include{berichtnom}
-%\thispagestyle{empty}\cleardoublepage
-
-% Kapitel einfgen
 \pagenumbering{arabic}
-\include{ur_manual}
+
+%################
+%   begin content
+%################
+\chapter{Universal Robot on Care-O-bot}
+This chapter is an addition to the Care-O-bot manual which can be found at \url{https://github.com/ipa320/setup/raw/master/manual/Care-O-bot_manual.pdf} and explains handling the Universal Robot UR5 arm on Care-O-bot.
+
+\subsection{The UR arm}
+
+\subsubsection{Startup the UR controller}
+You can turn on the UR controller by pressing the button next to the key. After pressing the button the button should light up in green and the UR controller should boot up.
+
+Next, you will need to release the emergency stop and initialize the UR arm by following the user interface on the touch panel.
+
+\textbf{NOTE}: You can only release the emergency stop if the UR controller is bootet up.
+
+\subsubsection{Operating the arm}
+For operating the arm a ROS node needs to be started. This is done by the bringup launch file
+\begin{lstlisting}
+roslaunch cob_bringup robot.launch
+\end{lstlisting}
+or separately with 
+\begin{lstlisting}
+roslaunch cob_bringup ur\_solo.launch ur\_ip:=<<IP ADRESS OF YOUR UR CONTROLLER>>
+\end{lstlisting}
+After that you can directly operate the arm by using the command\_gui or send a FollowJointTrajectoryAction to the arm.
+
+\subsection{The UR connector}
+To extend the workspace there's a ur connector which is an external 7th axis to the arm to be able to operate on the front and back side.
+
+\subsubsection{Startup the UR connector}
+TODO
+
+\subsubsection{Operating the UR connector}
+TODO
+
+\subsubsection{Handle failure situations}
+This section will cover some failure situation which might appear and how to resolve these.
+
+\paragraph{limit switches}
+TODO
+
+\paragraph{no movement}
+TOOD: use elmo\_move\_position
 
 
 \end{document}

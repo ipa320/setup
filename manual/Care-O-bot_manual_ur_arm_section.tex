@@ -119,10 +119,11 @@ backgroundcolor=\color{light-gray}
           \hspace{20mm} Universal Robot UR5 and connector\\}
 
   \vspace{80mm}
-  \makebox[40mm]{\large \hspace{16mm} Autors: }\makebox[65mm][l]
+  \makebox[40mm]{\large \hspace{16mm} Authors: }\makebox[65mm][l]
                                    {\large Florian Weisshardt}
   \makebox[40mm]{}\makebox[65mm][l]{\large Nadia Hammoudeh Garcia}\\
   \makebox[40mm]{}\makebox[65mm][l]{\large Bernhard Waterkamp}\\
+    \makebox[40mm]{}\makebox[65mm][l]{\large Thiago de Freitas}\\
 % \makebox[40mm]{}\makebox[65mm][l]{\large Name}\\
   \vspace{10mm}
          {\large \hspace{20mm} Fraunhofer IPA} \\
@@ -158,12 +159,12 @@ This chapter is an addition to the Care-O-bot manual which can be found at \url{
 
 \subsection{The UR arm}
 
-\subsubsection{Startup the UR controller}
+\subsubsection{Start-up the UR controller}
 You can turn on the UR controller by pressing the button next to the key. After pressing the button the button should light up in green and the UR controller should boot up.
 
 Next, you will need to release the emergency stop and initialize the UR arm by following the user interface on the touch panel.
 
-\textbf{NOTE}: You can only release the emergency stop if the UR controller is bootet up.
+\textbf{NOTE}: You can only release the emergency stop if the UR controller is booted up.
 
 \subsubsection{Operating the arm}
 For operating the arm a ROS node needs to be started. This is done by the bringup launch file
@@ -172,27 +173,50 @@ roslaunch cob_bringup robot.launch
 \end{lstlisting}
 or separately with 
 \begin{lstlisting}
-roslaunch cob_bringup ur\_solo.launch ur\_ip:=<<IP ADRESS OF YOUR UR CONTROLLER>>
+roslaunch cob_bringup ur_solo.launch ur_ip:=<<IP ADRESS OF YOUR UR CONTROLLER>>
 \end{lstlisting}
 After that you can directly operate the arm by using the command\_gui or send a FollowJointTrajectoryAction to the arm.
 
 \subsection{The UR connector}
 To extend the workspace there's a ur connector which is an external 7th axis to the arm to be able to operate on the front and back side.
 
-\subsubsection{Startup the UR connector}
-TODO
+\subsubsection{Start-up the UR connector}
+The ur\_connector should be powered and ready to operate once there is no emergency stop active.
 
 \subsubsection{Operating the UR connector}
-TODO
+For operating the ur\_connector a ROS node needs to be started. This is also done by the bringup launch file, which if started before should no be relaunched.
+\begin{lstlisting}
+roslaunch cob_bringup robot.launch
+\end{lstlisting}
+or separately with 
+\begin{lstlisting}
+roslaunch cob_bringup ur_connector_solo.launch ur_ip:=<<IP ADRESS OF YOUR UR CONTROLLER>>
+\end{lstlisting}
+After that you can directly operate the ur\_connector by using the command\_gui or send a FollowJointTrajectoryAction to the arm.
+
 
 \subsubsection{Handle failure situations}
 This section will cover some failure situation which might appear and how to resolve these.
 
-\paragraph{limit switches}
-TODO
+\paragraph{Limit switches:}
+When the ur\_connector reaches one of the limit switches,the procedure for re-enabling its operation is to hold the brake lever down and manually move the ur\_connector towards the opposite direction.
 
-\paragraph{no movement}
-TOOD: use elmo\_move\_position
+After that you should press the \emph{Recover} button on the command\_gui or call the ROS service by the command line, as:
+
+\begin{lstlisting}
+rosservice call /ur_connector_controller/recover
+\end{lstlisting}
+
+\paragraph{No movement:}
+If ever the ur\_connector reaches a state where you can not move it anymore. First try to press the emergency stop button, release it, and further proceed with the aforementioned recover step.
+
+If that still not work, stop all the other running programs, and call the \emph{elmo\_position} tool that can be found in the ipa\_canopen package. To run the tool proceed with the following command:
+
+\begin{lstlisting}
+./elmo_position /dev/pcanDEVICENUMBER CANID
+\end{lstlisting}
+
+In which, the arguments should initially be set to \emph{/dev/pcan0} and \emph{CANID} to 11.
 
 
 \end{document}

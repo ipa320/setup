@@ -19,7 +19,7 @@ On all Care-O-bots there are at least two pcs. Some Care-O-bots have an optional
 To pc1 all actuators are connected, sensors are connected both, to pc1 and pc2. All camera sensors are connected to pc2, whereas all other sensors like e.g. laser scanners are connected to pc1. By default pc3 is not connected to any hardware and therefore can be used as additional computing power.
 
 \subsection{Install operating system}
-The first step is to install the operating system for each pc, which means pc1 and pc2 (optionally pc3). We are using Ubuntu as the main operating system for the robot. We recommend to install the \textbf{Ubuntu 10.4 LTS (long term stable) 64-bit} version because this version is well tested to work with the hardware. 
+The first step is to install the operating system for each pc, which means pc1 and pc2 (optionally pc3). We are using Ubuntu as the main operating system for the robot. We recommend to install the \textbf{Ubuntu 12.4 LTS (long term stable) 64-bit} version because this version is well tested to work with the hardware. 
 
 First please install Ubuntu (English version) creating a normal swap partition. Please choose \texttt{robot} as an admin account with a really safe password which should only be known to the local robot administrator. The hostname of the pc should be \texttt{cob3-X-pc1} and \texttt{cob3-X-pc2}.
 \abbrev{X}{Robot configuration number}
@@ -246,83 +246,6 @@ restrict 192.168.IP.0 mask 255.255.255.0 nomodify notrap
 Edit \texttt{/etc/ntp.conf}, change the server to \texttt{cob3-X-pc1}:
 \begin{lstlisting}
 server cob3-X-pc1
-\end{lstlisting}
-
-\subsection{Install ROS and driver software (electric distro)}
-For general instructions see \footnote{\url{http://www.ros.org/wiki/Robots/Care-O-bot/electric}}.
-
-\subsubsection{Setup bash environment}
-We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ on each pc. Copy the \texttt{cob.bash.bashrc.pcY} to \texttt{/etc/cob.bash.bashrc} on each pc.
-
-\begin{lstlisting}
-sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
-\end{lstlisting}
-
-All users have a pre-configured bash environment too, therefore copy \texttt{user.bashrc} to \texttt{$\sim$/.bashrc}
-\begin{lstlisting}
-cp ~/git/setup/cob-pcs/user.bashrc ~/.bashrc
-\end{lstlisting}
-The \texttt{.bashrc} file is preconfigured for cob3-3 and ipa-apartment, please change the following lines to fit your robot configuration. At the bottom of your \texttt{.bashrc} you have to define \texttt{ROS\_MASTER\_URI} to be \texttt{http://cob3-X-pc1:11311}, \texttt{ROBOT} to be \texttt{cob3-X} and \texttt{ROBOT\_ENV} to point to your environment.
-\begin{lstlisting}
-ROS_MASTER_URI=http://cob3-X-pc1:11311
-ROBOT=cob3-X
-ROBOT_ENV=YOUR_ENVIRONMENT
-\end{lstlisting}
-
-If you logout and login again or source your \texttt{$\sim$/.bashrc}, you should see different terminal colors for each pc and the \texttt{ROS\_PACKAGE\_PATH} should be configured. 
-
-\subsubsection{Create overlays for stacks}
-If the release version of the stacks are not working for you, you can install overlays for individual stacks on the \texttt{robot} user account. To facilitate this process we have created a script which automatically generates ssh-keys, uploads them to github, forkes the stack (if necessary) and clones it to your machine. You can either install a read-only version from our main fork (\texttt{ipa320}) or insert your own username and password to fork and clone your own version of the stack. The script can be used by simply typing
-\begin{lstlisting}
-githelper setup
-githelper clone -s COMMA_SEPARATED_LIST_OF_PACKAGES
-\end{lstlisting}
-
-All stacks needed for the bringup layer are listed at section \ref{sec:software_overview}. 
-
-\textbf{Note}: It should typically only be necessary to create an overlay for three stacks, \texttt{cob\_robots}, \texttt{cob\_calibration\_data} and \texttt{cob\_environments}. All other stacks should be used from their release version. If you need to modify a stack to work for you, please send us a pull request to \texttt{ipa320} on \url{www.github.com}.
-
-
-\subsubsection{Install ROS and additional tools}
-\textbf{Install python tools}
-\begin{lstlisting}
-sudo apt-get install python-ros*
-\end{lstlisting}
-\textbf{Setup your sources.list}
-\\
-\\Ubuntu 10.04 (Lucid)
-\begin{lstlisting}
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu lucid main" > /etc/apt/sources.list.d/ros-latest.list'
-\end{lstlisting}
-Ubuntu 10.10 (Maverick)
-\begin{lstlisting}
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu maverick main" > /etc/apt/sources.list.d/ros-latest.list'
-\end{lstlisting}
-Ubuntu 11.04 (Natty)
-\begin{lstlisting}
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu natty main" > /etc/apt/sources.list.d/ros-latest.list'
-\end{lstlisting}
-\textbf{Set up your keys}
-\begin{lstlisting}
-wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
-\end{lstlisting}
-\textbf{Install ROS}
-\begin{lstlisting}
-sudo apt-get update
-sudo apt-get install ros-electric-care-o-bot-robot
-\end{lstlisting}
-
-If you check 
-\begin{lstlisting}
-roscd cob_bringup
-pwd
-\end{lstlisting}
-you should end up in \texttt{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}.
-
-\paragraph{Build the bringup level packages}
-Before setup the components you can build all the bringup level packages:
-\begin{lstlisting}
-rosmake --rosdep-install cob_bringup
 \end{lstlisting}
 
 \subsection{Install ROS and driver software (Groovy distro)}

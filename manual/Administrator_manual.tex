@@ -1,4 +1,3 @@
-
 \chapter{Administrator manual}
 \label{chap:admin}
 
@@ -29,7 +28,7 @@ Next we have to install some basic tools for the further setup of the pcs. In or
 
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install vim tree gitg meld curl openjdk-6-jdk zsh terminator language-pack-de language-pack-en ipython
+sudo apt-get install vim tree gitg meld curl openjdk-6-jdk zsh terminator language-pack-de language-pack-en ipython 
 \end{lstlisting}
 
 \subsection{Setup ssh server}
@@ -70,7 +69,7 @@ Inside the robot there's a router which connects the pcs and acts as gateway to 
 
 The ip address of the router should be \texttt{192.168.IP.1} and for the internal network dhcp should be activated. Use \texttt{cob3-X} as hostname for the router. Register the MAC addresses of pc1 and pc2 so that they get a fixed ip address over dhcp. Use \texttt{192.168.IP.101} for pc1 and \texttt{192.168.IP.102} for pc2. Enable portforwarding for port \texttt{2201} to \texttt{192.168.IP.101} and for port \texttt{2202} to \texttt{192.168.IP.102}, where IP parameter is defined depending on the robot \ref{IP_table}.
 
-\begin{table}
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{ | l | c | }
   \hline
@@ -287,18 +286,7 @@ wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
 \textbf{Install ROS}
 \begin{lstlisting}
 sudo apt-get update
-sudo apt-get install ros-groovy-desktop-full
-\end{lstlisting}
-
-\textbf{Install extra packages}
-\begin{lstlisting}
-sudo apt-get update
-sudo apt-get install python-setuptools ogre-tools ros-groovy-diagnostics-monitors ros-groovy-rxtools ros-groovy-pr2-* ros-groovy-client-rosjava-jni ros-groovy-openni*
-\end{lstlisting}
-
-\textbf{Install python tools}
-\begin{lstlisting}
-sudo apt-get install python-ros*
+sudo apt-get install ros-groovy-care-o-bot-robot
 \end{lstlisting}
 
 \subsubsection{Create overlays for stacks}
@@ -320,7 +308,8 @@ catkin_make
 mkdir ~/git/care-o-bot
 cd ~/git/care-o-bot
 rosws init . ~/git/care-o-bot_catkin/devel
-rosinstall ~/git/care-o-bot https://raw.github.com/ipa320/setup/master/repositories/cob_groovy_bringup.rosinstall
+git clone https://github.com/ipa-cob3-X/cob_robots.git
+git clone https://github.com/ipa-cob3-X/cob_calibration_data.git
 \end{lstlisting}
 
 If you check 
@@ -336,7 +325,8 @@ you should end up in \texttt{/u/robot/git/care-o-bot/cob\_robots/cob\_bringup}.
 \paragraph{Build the bringup level packages}
 Before setup the components you can build all the bringup level packages:
 \begin{lstlisting}
-rosmake cob_bringup
+rosmake -au
+rosmake -ai
 \end{lstlisting}
 
 \textbf{Create the environment file on remote machine}
@@ -348,14 +338,26 @@ cp ~/git/setup/env.sh ~/git/care-o-bot/.
 In order to use the different hardware components we have to install the drivers and set permission rights. All hardware configuration is stored in the \texttt{cob\_hardware\_config} package.
 
 \paragraph{Setup udev rules}
-In order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules from the setup repository to \texttt{/etc/udev/rules.d} on pc1 and pc2:
+In order to have fixed device names we setup udev rules for Care-O-bot. Copy the udev rules script from the setup repository to \texttt{/etc/init.d/} on pc1 and pc2:
 \begin{lstlisting}
-sudo cp ~/git/setup/udev_rules/01-cob.rules /etc/udev/rules.d
+sudo cp ~/git/setup/udev_rules/udev_cob.sh /etc/init.d
 \end{lstlisting}
+
+Be sure that the script has executable permissions and enable this service  using  the command update-rc.d :
+\begin{lstlisting}
+sudo chmod +x /etc/init.d/udev_cob.sh
+sudo update-rc.d udev_cob.sh defaults
+\end{lstlisting}
+
 To activate these changes you have to restart the system.
 
-\paragraph{Setup can bus drivers on pc1}
+\paragraph{Setup can bus drivers}
 This step is necessary for all drivers with can bus interface (Schunk powercubes, Schunk sdh, head axis, base). In general both can drivers from Peak Systems\footnote{\url{http://www.peak-system.com/}} \texttt{libpcan} and ESD\footnote{\url{http://www.esd-electronics.com}} \texttt{libntcan} can be used. Installation instructions can be found in the package documentation of libpcan \url{http://www.ros.org/wiki/libpcan} and libntcan \url{http://www.ros.org/wiki/libntcan}.
+
+\paragraph{Install ipa\_canopen}\label{ipacanopen} TODO
+This package is needed for Schunk PRL-plus modules and ur\_connector....
+
+\subsubsection{Scanners}
 
 \paragraph{Sick S300 laser scanners}
 The Sick S300 scanners on the front side and backside of the robot are connected via USB to pc1. Configuration is done in the \texttt{cob\_hardware\_config} package in \texttt{config/laser\_front.yaml} and \texttt{config/laser\_rear.yaml}, documentation about parameters in \footnote{\url{http://www.ros.org/wiki/cob_sick_s300}}.
@@ -453,6 +455,8 @@ You can check the output of the topic:
 rostopic hz /scan_top
 \end{lstlisting}
 
+\subsubsection{Base}
+
 \paragraph{Relayboard}
 The Relayboard is connected to PC1 via USB. The configuration file (\texttt{relayboard.yaml}) is in the package \texttt{cob\_hardware\_config} inside the folder \texttt{cob3-X/config}.
 
@@ -479,8 +483,161 @@ rosservice call /base_controller/init
 \end{lstlisting}
 And try to move the base using the joystick \ref{subsec:joystick}
 
-\paragraph{Tray sensors}
-The tray sensors are defined in udev\_rules and the library libphidgets\footnote{\url{http://www.ros.org/wiki/libphidgets}} for this component is already built in the bringup level.
+\subsubsection{Torso}
+\paragraph{Torso with PRL modules}
+There are two parts where configuration needs to be set. One part of the configuration is done inside the firmware of the powercubes and the other one is done through ROS parameters.
+
+First make sure that the powercube settings in the firmware are correct. You can see and modify the parameters using the windows based PowerCubeCtrl software from the schunk homepage\footnote{\url{http://www.schunk-modular-robotics.com/left-navigation/service-robotics/service-download/software/prl/powercube.html}}. A sample configuration can be fount at \footnote{\url{tbd}}.
+
+The ROS configuration is done in \texttt{cob\_hardware\_config}, in \texttt{cob3-X/config/torso.yaml}. Documentation about the ROS parameters can be found at \footnote{\url{http://www.ros.org/wiki/schunk_powercube_chain}} and \footnote{\url{http://www.ros.org/wiki/cob_trajectory_controller}}.
+
+There is a launch file in cob\_bringup per schunk component for testing:
+
+\begin{lstlisting}
+roslaunch cob_bringup torso_solo.launch
+\end{lstlisting}
+
+For initialing and moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
+
+These components should be manual calibrated as it is explained on \ref{sec:manual_calibration}.
+
+\paragraph{Torso with PRL-plus modules}
+\ref{ipacanopen}
+TODO: configure the modules with the windows software
+TODO: config files (cob\_hardware\_config)  torso\_canopenmaster.yaml and torso.yaml
+
+
+There is a launch file in cob\_bringup per schunk component for testing:
+
+\begin{lstlisting}
+roslaunch cob_bringup torso_canopen_solo.launch
+\end{lstlisting}
+
+For initialing and moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
+
+These components should be manual calibrated as it is explained on \ref{sec:manual_calibration}.
+
+\subsubsection{Trays}
+\paragraph{One DOF tray}
+
+There are two parts where configuration needs to be set. One part of the configuration is done inside the firmware of the powercubes and the other one is done through ROS parameters.
+
+First make sure that the powercube settings in the firmware are correct. You can see and modify the parameters using the windows based PowerCubeCtrl software from the schunk homepage\footnote{\url{http://www.schunk-modular-robotics.com/left-navigation/service-robotics/service-download/software/prl/powercube.html}}. A sample configuration can be fount at \footnote{\url{tbd}}.
+
+The ROS configuration is done in \texttt{cob\_hardware\_config}, in \texttt{cob3-X/config/tray.yaml}. Documentation about the ROS parameters can be found at \footnote{\url{http://www.ros.org/wiki/schunk_powercube_chain}} and \footnote{\url{http://www.ros.org/wiki/cob_trajectory_controller}}.
+
+There is a launch file in cob\_bringup per schunk component for testing:
+
+\begin{lstlisting}
+roslaunch cob_bringup tray_solo.launch
+\end{lstlisting}
+
+For initialing and moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
+
+These components should be manual calibrated as it is explained on \ref{sec:manual_calibration}.
+
+\paragraph{3 DOF tray}
+\ref{ipacanopen}
+TODO: configure the modules with the windows software
+TODO: config files (cob\_hardware\_config)  tray\_canopenmaster.yaml and tray.yaml
+
+
+There is a launch file in cob\_bringup per schunk component for testing:
+
+\begin{lstlisting}
+roslaunch cob_bringup tray_canopen_solo.launch
+\end{lstlisting}
+
+For initialing and moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
+
+These components should be manual calibrated as it is explained on \ref{sec:manual_calibration}.
+
+\subsubsection{Arms}
+
+
+\paragraph{Schunk powercubes LWA}
+There are two parts where configuration needs to be set. One part of the configuration is done inside the firmware of the powercubes and the other one is done through ROS parameters.
+
+First make sure that the powercube settings in the firmware are correct. You can see and modify the parameters using the windows based PowerCubeCtrl software from the schunk homepage\footnote{\url{http://www.schunk-modular-robotics.com/left-navigation/service-robotics/service-download/software/prl/powercube.html}}. A sample configuration can be fount at \footnote{\url{tbd}}.
+
+The ROS configuration is done in \texttt{cob\_hardware\_config}, in \texttt{cob3-X/config/lwa.yaml} or \texttt{/config/torso.yaml}. Documentation about the ROS parameters can be found at \footnote{\url{http://www.ros.org/wiki/schunk_powercube_chain}} and \footnote{\url{http://www.ros.org/wiki/cob_trajectory_controller}}.
+
+There is a launch file in cob\_bringup per schunk component for testing:
+
+\begin{lstlisting}
+roslaunch cob_bringup lwa_solo.launch
+\end{lstlisting}
+
+For initialing and moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
+
+These components should be manual calibrated as it is explained on \ref{sec:manual_calibration}.
+
+\paragraph{KUKA LBR}
+The Kuka LBR PC is connected to PC1 by Ethernet cable, you have to configure the IP address adding to the file /etc/network/interfaces the following lines:
+\begin{lstlisting}
+auto eth1
+iface eth1 inet static
+address 192.168.42.15
+netmask 255.255.255.0
+\end{lstlisting}
+
+You can also give the alias name (lbr\_box) to the arm ip address, adding the this line to /etc/hosts:
+\begin{lstlisting}
+192.168.42.146  lbr_box
+\end{lstlisting}
+
+You have to compile the cob\_lbr repository (this repository is not public, please ask us for it) :
+\begin{lstlisting}
+rosmake cob_lbr
+\end{lstlisting}
+
+For testing , the first step is check the connection with the arm PC:
+\begin{lstlisting}
+ping 192.168.42.146
+ping lbr_box
+\end{lstlisting}
+
+The initialization process for LBR is done through the lbr\_box, you can login from PC1 to the lbr\_box via telnet:
+\begin{lstlisting}
+telnet lbr_box
+\end{lstlisting}
+
+Now you can initialize the LBR, therefore type: 
+\begin{lstlisting}
+<l
+\end{lstlisting}
+
+in the telnet terminal and wait for the line ”Stable state RUNNING reached!”. If you don’t see this line, contact your robot administrator: there’s possibly something wrong.
+For a correct operation of the LBR it is important that the controller gets to know both states, emergency stop active and released. Therefore activate the emergency stop for about 15 seconds until you see ”administrationThread emerg change 1 0”. After releasing the emergency stop again you should see ”administrationThread emerg change 0 1”.
+To lougout from telnet use Ctrl+D.
+
+Now you can bringup the LBR with the command:
+\begin{lstlisting}
+roslaunch cob_bringup lbr.launch
+\end{lstlisting}
+
+For moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
+
+\paragraph{Universal Robot 5}
+
+The arm with universal robot manipulator has 2 components the universal robot and a connector. This connector is managed by ipa\_canopen package \ref{ipacanopen}.
+
+TODO: configure the module with the windows software
+TODO: config files (cob\_hardware\_config)  ur\_connector\_canopenmaster.yaml and ur\_connector.yaml
+
+
+There is a launch file in cob\_bringup for launching the driver:
+
+\begin{lstlisting}
+roslaunch cob_bringup ur_connector_canopen_solo.launch
+\end{lstlisting}
+
+For initialing and moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
+
+These components should be manual calibrated as it is explained on \ref{sec:manual_calibration}.
+
+
+\subsubsection{Gripper}
 
 \paragraph{Schunk SDH with tactile sensors}
 There is only one specific Firmware and library version supported. The version number is listed on \footnote{\url{http://www.ros.org/wiki/schunk_sdh}}. Add the robot user to the group \texttt{dialout} in the \texttt{/etc/group} file.
@@ -492,24 +649,7 @@ roslaunch cob_bringup sdh_solo.launch
 
 You can init and move the SDH using the cob\_command\_gui (\ref{subsec:command_gui})
 
-\paragraph{Schunk powercubes (lwa, torso, tray)}
-There are two parts where configuration needs to be set. One part of the configuration is done inside the firmware of the powercubes and the other one is done through ROS parameters.
-
-First make sure that the powercube settings in the firmware are correct. You can see and modify the parameters using the windows based PowerCubeCtrl software from the schunk homepage\footnote{\url{http://www.schunk-modular-robotics.com/left-navigation/service-robotics/service-download/software/prl/powercube.html}}. A sample configuration can be fount at \footnote{\url{tbd}}.
-
-The ROS configuration is done in \texttt{cob\_hardware\_config}, e.g. in \texttt{cob3-X/config/lwa.yaml} or \texttt{/config/torso.yaml}. Documentation about the ROS parameters can be found at \footnote{\url{http://www.ros.org/wiki/schunk_powercube_chain}} and \footnote{\url{http://www.ros.org/wiki/cob_trajectory_controller}}.
-
-There is a launch file in cob\_bringup per schunk component for testing:
-
-\begin{lstlisting}
-roslaunch cob_bringup lwa_solo.launch
-roslaunch cob_bringup torso_solo.launch
-roslaunch cob_bringup tray_solo.launch
-\end{lstlisting}
-
-For initialing and moving you can use the cob\_command\_gui \ref{subsec:command_gui}.
-
-These components should be manual calibrated as it is explained on \ref{sec:manual_calibration}.
+\subsubsection{Head}
 
 \paragraph{Head axis}
 The configuration is in the package \texttt{cob\_hardware\_config} in \texttt{cob3-X/config/head.yaml}. Documentation about parameters can be found at \footnote{\url{http://www.ros.org/wiki/cob_head_axis}}.
@@ -520,6 +660,12 @@ roslaunch cob_bringup head_solo.launch
 \end{lstlisting}
 
 This component needs a manual calibration, for more information please see the section \ref{sec:manual_calibration}.
+
+\subsubsection{Sensors} 
+
+\paragraph{Tray sensors}
+The tray sensors are defined in udev\_rules and the library libphidgets\footnote{\url{http://www.ros.org/wiki/libphidgets}} for this component is already built in the bringup level.
+
 
 \paragraph{Prosilica cameras}
 The IP address for the cameras should be \texttt{192.168.21.101} for the right camera and \texttt{192.168.21.102} for the left camera. You can set the camera IP address using the instructions on \footnote{\url{http://www.ros.org/wiki/cob_camera_sensors/AVT_Prosilica}}.
@@ -552,6 +698,10 @@ rostopic hz /cam3d/depth/points
 
 Or use the tool rviz as it is explained on section \ref{subsec:rviz}.
 
+\subsubsection{Touch Screen} 
+
+\subsubsection{Sound}
+ 
 \subsection{Create new user accounts}
 \subsubsection{Preparation}
 \label{sec:account}
@@ -592,28 +742,6 @@ ping your_hostname
 
 If ping and DNS is not setup correctly, there are multiple ways to enable access and name resolution.
 
-\subsection{Setting up your building network (recommended)}
-Setting up you building network to enable dns and port forwarding to the internal network.
-
-\subsection{Manual setup for each remote pc}
-You can setup a route to the internal network addresses. Please change the robot name and your network device to fit your settings. E.g. for connecting to \texttt{cob3-X} on \texttt{eth0}
-\begin{lstlisting}
-sudo route add -net 192.168.IP.0 netmask 255.255.0.0 gw cob3-X dev eth0
-\end{lstlisting}
-
-For connecting to \texttt{cob3-X} on \texttt{wlan0}
-\begin{lstlisting}
-sudo route add -net 192.168.IP.0 netmask 255.255.0.0 gw cob3-X dev wlan0
-\end{lstlisting}
-
-
-For name resolution you will probably have to edit the file \texttt{/etc/hosts} on the robot pcs as well as on the remote pc. Therefore add the following addresses to the \texttt{/etc/hosts} of your remote pc.
-\begin{lstlisting}
-192.168.IP.101 cob3-X-pc1
-192.168.IP.102 cob3-X-pc2
-\end{lstlisting}
-
-Add your ip adress and hostname to the \texttt{/etc/hosts} of all robot pcs.
 
 \section{Calibration}
 The calibration is divided into two steps, the manual preparation and automatic calibration. All calibration parameters are defined in \texttt{cob\_calibration\_data/cob3-X/calibration/calibration.urdf.xacro}

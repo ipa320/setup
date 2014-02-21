@@ -199,23 +199,16 @@ sudo apt-get install ldap-utils libpam-ldap libnss-ldap nslcd
 ----
 
 Select the following configuration for ldap:
-
+----
 Should debconf manage LDAP configuration? Yes
-
 LDAP server Uniform Resource Identifier: ldap://10.0.1.1:390
-
 Distinguished name of the search base: dc=ipa-apartment,dc=org
-
 LDAP version to use: 3
-
 Make local root Database admin: No
-
 Does the LDAP database require login? Yes
-
 Unprivileged database user: cn=zentyalro,dc=ipa-apartment,dc=org
-
 Password for database login account: (Please ask nhg)
-
+----
 
 You can reconfigurate it with the command:
 
@@ -224,11 +217,10 @@ sudo dpkg-reconfigure ldap-auth-config
 ----
 
 Select the following configuration for nslcd:
-
+----
 LDAP server URI: ldap://10.0.1.1:390
-
 LDAP server search base: dc=ipa-apartment,dc=org
-
+----
 ----
 $ sudo vi /etc/nsswitch.conf
 ##append "ldap" word to the lines passwd, group and shadow##

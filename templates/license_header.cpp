@@ -3,7 +3,7 @@
  * \file
  *
  * \note
- *   Copyright (c) 2012 \n
+ *   Copyright (c) TODO FILL IN YEAR HERE \n
  *   Fraunhofer Institute for Manufacturing Engineering
  *   and Automation (IPA) \n\n
  *
@@ -12,7 +12,7 @@
  * \note
  *   Project name: TODO FILL IN PROJECT NAME HERE
  * \note
- *   ROS stack name: TODO FILL IN STACK NAME HERE
+ *   Repository name: TODO FILL IN REPOSITORY NAME HERE
  * \note
  *   ROS package name: TODO FILL IN PACKAGE NAME HERE
  *

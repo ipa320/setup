@@ -1,0 +1,4 @@
+# USB to Serial Adapter for Laserscanners
+SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="00",ATTRS{../idProduct}=="6010",ATTRS{../idVendor}=="0403",MODE="0666",SYMLINK+="ttyScan0"
+SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="01",ATTRS{../idProduct}=="6010",ATTRS{../idVendor}=="0403",MODE="0666",SYMLINK+="ttyScan1"
+

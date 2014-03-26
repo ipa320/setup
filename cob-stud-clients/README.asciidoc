@@ -199,23 +199,16 @@ sudo apt-get install ldap-utils libpam-ldap libnss-ldap nslcd
 ----
 
 Select the following configuration for ldap:
-
+----
 Should debconf manage LDAP configuration? Yes
-
 LDAP server Uniform Resource Identifier: ldap://10.0.1.1:390
-
 Distinguished name of the search base: dc=ipa-apartment,dc=org
-
 LDAP version to use: 3
-
 Make local root Database admin: No
-
 Does the LDAP database require login? Yes
-
 Unprivileged database user: cn=zentyalro,dc=ipa-apartment,dc=org
-
 Password for database login account: (Please ask nhg)
-
+----
 
 You can reconfigurate it with the command:
 
@@ -224,11 +217,10 @@ sudo dpkg-reconfigure ldap-auth-config
 ----
 
 Select the following configuration for nslcd:
-
+----
 LDAP server URI: ldap://10.0.1.1:390
-
 LDAP server search base: dc=ipa-apartment,dc=org
-
+----
 ----
 $ sudo vi /etc/nsswitch.conf
 ##append "ldap" word to the lines passwd, group and shadow##
@@ -245,47 +237,10 @@ rpc:       db files
 netgroup:  nis
 sudoers:   ldap files
 ----
-----
-$ sudo vi /etc/pam.d/common-auth
-##edit to##
-# /etc/pam.d/common-auth
-auth [success=2 default=ignore] pam_unix.so nullok_secure
-auth [success=1 default=ignore] pam_ldap.so use_first_pass
-auth requisite                  pam_deny.so
-auth required                   pam_permit.so
-auth optional                   pam_cap.so
-----
-----
-$ sudo vi /etc/pam.d/common-account
-##edit to##
-# /etc/pam.d/common-account
-account [success=2 new_authtok_reqd=done default=ignore] pam_unix.so
-account [success=1 default=ignore]                       pam_ldap.so
-account requisite                                        pam_deny.so
-account required                                         pam_permit.so
-----
-----
-$ sudo vi /etc/pam.d/common-password
-##edit to##
-# /etc/pam.d/common-password
-password requisite                                   pam_cracklib.so retry=3 minlen=8 difok=3
-password [success=2 default=ignore]                  pam_unix.so obscure use_authtok try_first_pass sha512
-password [success=1 user_unknown=ignore default=die] pam_ldap.so use_authtok try_first_pass
-password requisite                                   pam_deny.so
-password required                                    pam_permit.so
-password optional                                    pam_gnome_keyring.so
-----
+
 ----
 $ sudo vi /etc/pam.d/common-session
-##edit to##
-# /etc/pam.d/common-session
-session  [default=1]  pam_permit.so
-session  requisite    pam_deny.so
-session  required     pam_permit.so
-session  optional     pam_umask.so
-session  required     pam_unix.so
-session  optional     pam_ldap.so
-session  optional     pam_ck_connector.so nox11
+##add to the list##
 session  optional     pam_mkhomedir.so skel=/etc/skel umask=0022
 ----
 
@@ -316,7 +271,7 @@ sudo update-rc.d nslcd enable
 ----
 $ sudo nano /etc/ntp.conf
 ##change server to##
-server cob-kitchen-server
+server cob-kitchen-svr
 ----
 
 

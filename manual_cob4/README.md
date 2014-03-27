@@ -2,9 +2,9 @@
 
 ## Contents
 
-1. <a href="#1--Administrator Manual">Administrator Manual</a>
-1.1. <a href="#Setup robot pcs">Setup robot pcsl</a>
-2. <a href="#2-User Manual">User Manual</a>
+. <a href="#1--Administrator Manual">Administrator Manual</a>
+.. <a href="#Setup robot pcs">Setup robot pcs</a>
+. <a href="#2-User Manual">User Manual</a>
 
 ## 1. Administrator Manual
 

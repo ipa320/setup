@@ -1,30 +1,5 @@
 # Care-O-bot 4 Manual
 
-
-Heading-a
-==========
-
----text---
-
-Heading-b
-------------
-
---- text ---
-
-Heading-c
-----------
-
---- text---
-
-Heading-d
-=========
-
---- text----
-
-Heading-e
----
-
-
 ## Contents
 
 1. <a href="#1--Administrator Manual">Administrator Manual</a>

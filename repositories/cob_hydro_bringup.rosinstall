@@ -35,11 +35,15 @@
     local-name: cob_substitute
     version: hydro_release_candidate
 - git:
+    uri: 'git://github.com/ipa320/ipa_canopen.git'
+    local-name: ipa_canopen
+    version: hydro_release_candidate
+- git:
     uri: 'git://github.com/ipa320/schunk_modular_robotics.git'
     local-name: schunk_modular_robotics
     version: hydro_release_candidate
 - git:
-    uri: 'git://github.com/ipa320/universal_robot.git'
+    uri: 'git://github.com/ros-industrial/universal_robot.git'
     local-name: universal_robot
     version: hydro_release_candidate
 

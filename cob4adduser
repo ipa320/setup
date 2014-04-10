@@ -1,0 +1,43 @@
+#!/bin/bash
+
+if [ "$USER" != "robot" ]; then 
+	echo 'FATAL: CAN ONLY BE EXECUTED AS "robot" USER'
+	exit
+fi
+
+if [ "$HOSTNAME" != "$ROBOT-b1" ]; then 
+	echo "FATAL: CAN ONLY BE EXECUTED ON BASE PC"
+	exit
+fi
+
+echo "Executing adduser"
+sudo /usr/sbin/adduser $1 --home /u/$1
+
+echo "Syncing passwd file to other cob-pcs"
+sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$ROBOT-t1:/etc/
+sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$ROBOT-t2:/etc/
+sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$ROBOT-t3:/etc/
+sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$ROBOT-s1:/etc/
+
+if [ "$1" != "" ]; then
+	echo "setup bash environment"
+	sudo cp /u/robot/git/setup/cob-pcs/user.bashrc /u/$1/.bashrc
+	sudo sed -i "s/myrobot/$ROBOT/g" /u/$1/.bashrc
+
+	if [ ! -d /u/$1/.ssh ]; then
+        	echo "create new ssh key"
+	        sudo -u $1 ssh-keygen -f /u/$1/.ssh/id_rsa
+	fi
+
+	echo "copying ssh-keys to other pcs, please enter password of new user"
+	sudo -u $1 ssh-copy-id -i /u/$1/.ssh/id_rsa $1@$ROBOT-b1
+	sudo -u $1 ssh $1@$ROBOT-b1 -e "logout"
+	sudo -u $1 ssh $1@$ROBOT-t1 -e "logout"
+	sudo -u $1 ssh $1@$ROBOT-t2 -e "logout"
+	sudo -u $1 ssh $1@$ROBOT-t3 -e "logout"
+	sudo -u $1 ssh $1@$ROBOT-s1 -e "logout"
+	sudo su -c "rosdep update" $1
+	sudo su -c "mkdir -p ~/git/care-o-bot" $1
+fi
+
+echo "done adding user"

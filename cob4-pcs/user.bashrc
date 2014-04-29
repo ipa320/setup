@@ -109,17 +109,35 @@ source /etc/cob.bash.bashrc
 # provide setup scripts for all users
 export PATH=/u/robot/git/setup:$PATH
 
-source /opt/ros/hydro/setup.bash
-source /u/robot/git/care-o-bot/devel/setup.bash
-export ROS_PACKAGE_PATH=/u/robot/git/care-o-bot:$ROS_PACKAGE_PATH
-export ROS_PACKAGE_PATH=~/git/care-o-bot:$ROS_PACKAGE_PATH
-export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
 
+# ROS specific settings
 
-export ROS_MASTER_URI=http://cob4-X-b1:11311
-export ROBOT=cob4-X
+export MY_CATKIN_WORKSPACE=~/git/care-o-bot
+
+export ROBOT=cob4-1
 export ROBOT_ENV=ipa-apartment
 export ROSLAUNCH_SSH_UNKNOWN=1
+export ROS_MASTER_URI=http://cob4-1-b1:11311
+
+# DONT TOUCH THIS BELOW THE LINE !!!
+
+if [ -e $MY_CATKIN_WORKSPACE/devel/setup.bash ]; then
+    source $MY_CATKIN_WORKSPACE/devel/setup.bash
+elif [ -e /u/robot/git/care-o-bot/install/setup.bash ]; then
+    source /u/robot/git/care-o-bot/install/setup.bash
+else
+    source /opt/ros/hydro/setup.bash
+fi
+
+case '$ROS_PACKAGE_PATH' in
+    */u/robot/git/care-o-bot/install*);;
+    *)
+    if [ -e /u/robot/git/care-o-bot/install/setup.bash ]; then
+        echo -e "***************************\nYour robot admin created an overlay for the robot user\nYour catkin workspace is not linke"
+    fi
+    ;;
+esac
+
 export JAVA_HOME=/usr/lib/jvm/java-6-openjdk-amd64
 
 COUNT=$(cat /proc/cpuinfo | grep 'processor' | wc -l)

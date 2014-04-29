@@ -78,6 +78,8 @@ Scan3Attr2='ATTRS{serial}=="FTH86Q3C"'
 JoyAttr1='ATTRS{idVendor}=="046d"'
 #JoyAttr2='ATTRS{idProduct}=="c21f"'
 
+sleep 10
+
 sudo chmod 666 /dev/ttyUSB0
 sudo udevadm info -a -p $(udevadm info -q path -n /dev/ttyUSB0) > /tmp/usb0
 if grep -qs $Scan1Attr1 /tmp/usb0  && grep -qs $Scan1Attr2 /tmp/usb0 

@@ -12,6 +12,13 @@ fi
 
 echo "Executing adduser"
 sudo /usr/sbin/adduser $1 --home /u/$1
+sudo adduser $1 dialout 
+sudo adduser $1 cdrom 
+sudo adduser $1 floppy 
+sudo adduser $1 audio
+sudo adduser $1 video
+sudo adduser $1 plugdev
+sudo adduser $1 users 
 
 echo "Syncing passwd file to other cob-pcs"
 sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$ROBOT-t1:/etc/
@@ -21,7 +28,7 @@ sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$ROBOT-s1:/etc/
 
 if [ "$1" != "" ]; then
 	echo "setup bash environment"
-	sudo cp /u/robot/git/setup/cob-pcs/user.bashrc /u/$1/.bashrc
+	sudo cp /u/robot/git/setup/cob4-pcs/user.bashrc /u/$1/.bashrc
 	sudo sed -i "s/myrobot/$ROBOT/g" /u/$1/.bashrc
 
 	if [ ! -d /u/$1/.ssh ]; then

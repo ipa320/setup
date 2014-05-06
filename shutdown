@@ -8,11 +8,9 @@ if [ "$HOSTNAME" != "$ROBOT-b1" ]; then
 fi
 
 client_list="
-$ROBOT-t1
-$ROBOT-t2
-$ROBOT-t3
-$ROBOT-s1
-$ROBOT-b1"
+$ROBOT-p1
+$ROBOT-p2
+$ROBOT-p3"
 
 for client in $client_list; do
 	echo "-------------------------------------------"

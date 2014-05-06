@@ -138,10 +138,11 @@ auto eth0
 iface eth0 inet dhcp
 ----
 
+Be sure that you are using the eth0 network port, you can rename your port modifying the udev rules (/etc/udev/rules.d/70-persistent-net.rules).
+
 === [[Install NFS]] Install NFS
 
-After the network is configured properly we can setup a NFS between the robot
-pcs. cob4-X-b1 (base pc) will act as the NFS server and the others as NFS client.
+After the network is configured properly we can setup a NFS between the robot pcs. cob4-X-b1 (base pc) will act as the NFS server and the others as NFS client.
 
 In order to protect the pc’s access, we recommend create a local administrator user( <<RootUser, root user>>) in each pc, in this case if there is a problem in the sever (cob4-X-b1) or in the network this local user can access.
 
@@ -167,8 +168,7 @@ Now we can mount the drive
 sudo mount /u
 ----
 
-Activate +STATD+ in +/etc/default/nfs-common+ by changing th +NEED_STATD+ to
-yes
+Activate +STATD+ in +/etc/default/nfs-common+ by changing th +NEED_STATD+ to yes
 
 ----
 NEED_STADT=yes
@@ -290,20 +290,20 @@ server 10.4.X.11
 
 === [[Install ROS and driver software]] Install ROS and driver software
 
-For general instructions see http://wiki.ros.org/groovy/Installation/Ubuntu[Ubuntu install of ROS Groovy]
+For general instructions see http://wiki.ros.org/hydro/Installation/Ubuntu[Ubuntu install of ROS Hydro]
 
 ==== Setup bash environment
 
 We setup a special bash environment to be used on the Care-O-bot pcs. The environments differ on each pc. Copy the +cob.bash.bashrc.pcY+ to +/etc/cob.bash.bashrc+ on each pc, where Y is b, t, s or h depending of the component, b for base pc, t for torso pcs, s for sensorring pc and h for head pc.
 
 ----
-sudo cp ~/git/setup/cob-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
+sudo cp ~/git/setup/cob4-pcs/cob.bash.bashrc.pcY /etc/cob.bash.bashrc
 ---- 
 
 All users have a pre-configured bash environment too, therefore copy +user.bashrc+ to +∼/.bashrc+
 
 ----
-cp ~/git/setup/cob-pcs/user.bashrc_groovy ~/.bashrc
+cp ~/git/setup/cob4-pcs/user.bashrc ~/.bashrc
 ----
 
 The .bashrc file is preconfigured for +cob4-1+ and +ipa-apartment+, please change

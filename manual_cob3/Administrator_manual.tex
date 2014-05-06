@@ -144,7 +144,7 @@ Now we can mount the drive
 sudo mount /u
 \end{lstlisting}
 
-Activate \texttt{IDMAPD} in \texttt{/etc/default/nfs-common} by changing the \texttt{NEED\_IDMAPD} to yes
+Activate \texttt{IDMAPD} in \texttt{/etc/default/nfs-common} by changing the \texttt{NEED\_STADT} to yes
 
 \begin{lstlisting}
 NEED_STADT=yes
@@ -174,10 +174,10 @@ sudo apt-get install nfs-kernel-server autofs
 sudo mkdir /u
 \end{lstlisting}
 
-Activate \texttt{IDMAPD} in \texttt{/etc/default/nfs-common} by changing the \texttt{NEED\_IDMAPD} to yes
+Activate \texttt{STADT} in \texttt{/etc/default/nfs-common} by changing the \texttt{NEED\_STADT} to yes
 
 \begin{lstlisting} 
-NEED_IDMAPD=yes
+NEED_STADT=yes
 \end{lstlisting}
 
 Edit \texttt{/etc/auto.master} and add

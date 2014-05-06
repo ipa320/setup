@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# Script for executing commands on all cob-pc's.
+
+if [ "$HOSTNAME" != "$ROBOT-b1" ]; then 
+	echo "FATAL: CAN ONLY BE EXECUTED ON BASE PC(b1)"
+	exit
+fi
+
+client_list="
+$ROBOT-p1
+$ROBOT-p2
+$ROBOT-p3"
+
+for client in $client_list; do
+	echo "-------------------------------------------"
+	echo "Executing <<"shutdown">> on $client"
+	echo "-------------------------------------------"
+	echo ""
+	ssh $client "sudo shutdown now -P 0"
+	ret=${PIPESTATUS[0]}
+	if [ $ret != 0 ] ; then
+		echo "command return an error (error code: $ret), aborting..."
+		#exit 1
+	fi
+	echo ""
+done

@@ -29,6 +29,7 @@ We defined a layer called \textit{bringup layer}, which covers all hardware driv
 \item \texttt{cob\_command\_tools}: This stack provides the source code of the tools that you need to command the robot: \texttt{cob\_command\_gui}, \texttt{cob\_dashboard}, \texttt{cob\_script\_server} and \texttt{cob\_teleop}.
 \item \texttt{cob\_robots}:  The \texttt{cob\_robots} stack collects Care-O-bot components that are used in bringing up a robot. The user's interface to the \texttt{cob\_robots} stack is \texttt{cob\_bringup}. In this package you find all the hardware configuration and launch files to bringup the hardware.
 \item \texttt{cob\_environments}: This stack provides the parameters for default environment configurations.
+\item \texttt{cob\_calibration\_data}: This repository holds the current calibration data for Care-O-bot.
 \end{itemize}
 
 \section{Batteries and power supply}
@@ -83,13 +84,15 @@ ssh -X user_name@cob3-3-pc1
 \end{lstlisting}
 
 \subsection{Bringup the robot}
-\textbf{Note: The following steps can only be done once by one person at the same time. It is not possible to start for example mulitple roscore or brinup.}
+\textbf{Note: The following steps can only be done once by one person at the same time. It is not possible to start for example mulitple roscore or bringup.}
 
 The first step to bringup the robot is to start a roscore, this is necessary to have communication between the nodes. You can run it using
 \begin{lstlisting}
 roscore
 \end{lstlisting}
 
+\textbf{Note: If your Care-O-bot has a KUKA LBR arm please see the section \ref{LBR}.}
+\textbf{Note:  If your Care-O-bot has a Universal robot arm please see the section \ref{UR}.}
 If you want to run the robot you have a launch file for launching all the components of the robot. It is located in the package cob\_bringup.
 \begin{lstlisting}
 roslaunch cob_bringup robot.launch
@@ -120,12 +123,16 @@ If you click the first button, you will see a new window popping up with three l
 All diagnostics information for the actors and sensors should be green after successfully initializing the components, see section \ref{subsec:command_gui}.
 
 \subsubsection{cob\_command\_gui}\label{subsec:command_gui}
-The command gui can be used for sending low level movement commands to the robot components. The standard view of the command\_gui is:
-\begin{center}
- \includegraphics[width=1\textwidth]{images/cob_command_gui.png}
-\end{center}
+The command gui can be used for sending low level movement commands to the robot components. The standard view of the command\_gui is \ref{commandgui}
 
-In this screen-shot you can see different columns: general, base, torso, tray, arm settings, arm pos, arm traj, sdh and eyes. The first column is very important, when you run the robot. If you want to move it, first initialize all components with a click on \texttt{init all} and make sure that the \textbf{emergency stop is not active}. It will take some time and the actuators will do their homing sequence if necessary. After an emergency stop was activated, each component has to be recovered. Therefore press the button \texttt{recover all}. 
+In this screen-shot \ref{commandgui} you can see different columns: general, base, torso, tray, arm settings, arm pos, arm traj, sdh and eyes. The first column is very important, when you run the robot. If you want to move it, first initialize all components with a click on \texttt{init all} and make sure that the \textbf{emergency stop is not active}. It will take some time and the actuators will do their homing sequence if necessary. After an emergency stop was activated, each component has to be recovered. Therefore press the button \texttt{recover all}. 
+
+\begin{figure}[ht]
+\centering
+ \includegraphics[width=1\textwidth]{images/cob_command_gui.png}
+ \caption{Standard view of the command\_gui}
+ \label{commandgui}
+\end{figure}
 
 The other columns of the components have different predefined positions where you can move to. Additionally Each component has a \texttt{stop}, \texttt{init} and \texttt{recover} button, to stop, initialize or recover a single component.
 
@@ -167,75 +174,119 @@ Have a look at the following image to see which buttons command which components
 \section{Power down the robot}
 To power down the robot press the emergency button and turn the key to position I, disconnect the power cable and turn off the power supply.
 
-\section{Packing the robot}
-In this section, the necessary steps for preparing the robot for shipment are described. Please consult the photos in this section for details.
-A checklist of the material that you should take along in the robot shipping box in order to properly pack the robot is listed at \footnote{\url{https://raw.github.com/ipa320/setup/master/manual_ipa/ShippingBox.pdf}}.
-Moreover, you should also always travel with a ''first-aid'' box that allows you to address common problems that may arise with the robot. The checklist for this first-aid box is listed at \footnote{\url{https://raw.github.com/ipa320/setup/master/manual_ipa/FirstAidKit.pdf}}.
+\section{Operating KUKA LBR} \label{LBR}
+\subsection{Initializing the LBR}\label{lbr_init}
+In order to initialize the LBR, login to pc1 with:
+\begin{lstlisting}
+ssh -X user_name@cob3-X-pc1
+\end{lstlisting}
+and from pc1 login to the lbr box via telnet
+\begin{lstlisting}
+telnet lbr_box
+\end{lstlisting}
 
-The necessary packing steps are as follows:
+Now you can initialize the LBR, therefore type
+\begin{lstlisting}
+<l
+\end{lstlisting}
+
+in the telnet terminal and wait for the line \textbf{”Stable state RUNNING reached!”}. If you don’t see this line, contact your robot administrator: there’s possibly something wrong.
+For a correct operation of the LBR it is important that the controller gets to know both states, emergency stop active and released. Therefore activate the emergency stop for about 15 seconds until you see \textbf{”administrationThread
+emerg change 1 0”}. After releasing the emergency stop again you should see \textbf{”administrationThread emerg change 0 1”}.
+To lougout from telnet use Ctrl+D or type
+\begin{lstlisting}
+logout
+\end{lstlisting}
+With that procedure the LBR is ready to be used.
+
+\subsection{Starting the LBR}
+
+You can bringup the whole robot
+\begin{lstlisting}
+roslaunch cob_bringup robot.launch
+\end{lstlisting}
+
+or only the LBR using:
+\begin{lstlisting}
+roslaunch cob_bringup lbr.launch
+\end{lstlisting}
+
+The LBR is now ready to be moved. This can be done using the cob\_command\_gui or the joystick.
+
+\begin{center}
+\begin{LARGE}
+!! ATTENTION !!
+\end{LARGE}
+\end{center}
+
+The operation and recovering of the LBR after an emergency stop has to be done carefully following the steps below, Unexpected and fast movements can happen which could damage you, the robot and the environment.
+
 \begin{itemize}
-\item {\em Prepare the box.} Take out everything that could be in the way. Lay the tension belt flat on the ramp or under it. Open the front door (snap-on magnet). Remove the {\bf 2} rear cover from the robot.
-\item {\em Drive the robot into the box.} Take care that the robot is centered in the box as much as possible. Make sure that the black marks are free and there are some centimeters to the board of the lower belts.
-\item {\em Push emergency stop button, then power off.} {\bf Attention:} Always push the emergency button before turning power off. Otherwise, the torso may lose its reference position, requiring a lenghty recalibration process.
-\item {\em Fasten the robot with a tension belt, but not too hard!} {\bf Attention:} Make sure the fastener or the tension belt is not in contact with the robot cover. 
-\item {\em Use foam material to protect the robot and to prevent slipping.} Make sure that no part of the robot is in contact with the tension belts and the robot hast a good safty distance all around to the box. 
-\item {\em Air travle} For air travel, fix an additional tension belt around the box. Moreover, seal the hinges with a plastic seal.
+\item First of all bring the robot away from any obstacles, especially obstacles in the workspace of the LBR.
+\item Press the LBR hardware reset button shown in figure \ref{lbr_em} and wait for 30 sec.
 \end{itemize}
 
-\newpage
+\begin{center}
+ \includegraphics[width=0.4\textwidth]{images/lbr_em.jpg}\label{lbr_em}
+\end{center}
 
-\begin{figure}[!ht]
-%\centering
-\mbox{\subfigure{\includegraphics[width=7cm,angle=180]{images/packing_01.jpg}}\quad
-\subfigure{\includegraphics[width=7cm,angle=270]{images/packing_02.jpg} }}
-\caption{Step 0: Remove board and put the belt aside (left). Open the front door (right).} % \label{fig12}
-\end{figure}
+The next steps depend on how the emergency stop got activated. There are two versions:
+\begin{itemize}
+\item (a) is a short version which is not 100% safe
+\item (b) is a safe version which involves some more steps
+\end{itemize}
 
-\begin{figure}[!ht]
-\centering
-\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_03.jpg}}\quad
-\subfigure{\includegraphics[width=7cm,angle=90]{images/packing_04.jpg} }}
-\caption{Step 1: Drive the robot in the box and park it as centrally as possible (left). {\bf Always push the emergency stop button before power off!}} % \label{fig12} 
-\end{figure}
+\subsubsection{Version (a), ”the short one”} can be used if the emergency stop was activated while the LBR was not moving and not stressed with low stiffness values. If you can use version (a), you can simply launch the LBR node again with
+\begin{lstlisting}
+roslaunch cob_bringup lbr.launch
+\end{lstlisting}
 
-\begin{figure}[!ht]
-\centering
-\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_05.jpg}}\quad
-\subfigure{\includegraphics[width=7cm]{images/packing_06.jpg} }}
-\caption{Step 2: Place the borad under the lower belts (left). Hook in the ends of the belt and fasten it \bf{moderatly} (right).} % \label{fig12} 
-\end{figure}
+\subsubsection{Version (b), ”the safe one”}
+If the LBR was moving or stressed with low stiffness values use version (b). If you are not sure how the emergency stop got activated, use the safe version (b). If you have to use version (b) you will have to reboot the lbr box with
+\begin{lstlisting}
+telnet lbr_box
+reboot
+\end{lstlisting}
 
-\begin{figure}[!ht]
-\centering
-\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_07.jpg}}\quad
-\subfigure{\includegraphics[width=7cm]{images/packing_08.jpg} }}
-\caption{Step 3: Hook in the ends of the upper belt (left). Fasten the belt from the front (right).} % \label{fig12} 
-\end{figure}
+Wait for the lbr box to reboot and start again with the initializing procedure from section \ref{lbr_init}
 
-\begin{figure}[!ht]
-\centering
-\mbox{\subfigure{\includegraphics[width=8cm, angle=90]{images/packing_09.jpg}}\quad
-\subfigure{\includegraphics[width=7cm]{images/packing_10.jpg} }}
-\caption{Step 4: Put bubble wrap around the tray and over the head.} %\label{fig12}
-\end{figure}
+\subsubsection{LBR handling overview}
+\begin{center}
+ \includegraphics[width=0.8\textwidth]{images/lbr_diagram.jpg}
+\end{center}
 
-\begin{figure}[!ht]
-\centering
-\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_11.jpg}}\quad
-\subfigure{\includegraphics[width=6cm,angle=0]{images/packing_12.jpg} }}
-\caption{Step 5: Put the ''first-aid'' box in holder and fasten the strap (left). Wrap the rear covers in bubble foil an put it infront of the robot. (right).} % \label{fig12} 
-\end{figure}
+\section{Operating Universal robot} \label{UR}
+\subsubsection{Start-up the UR controller}
+You can turn on the UR controller by pressing the button next to the key. After pressing the button the button should light up in green and the UR controller should boot up.
 
-\begin{figure}[!ht]
-\centering
-\mbox{\subfigure{\includegraphics[width=7cm]{images/packing_13.jpg}}\quad
-\subfigure{\includegraphics[width=6cm,angle=0]{images/packing_14.jpg} }}
-\caption{Step 6: Pack the accessory box as shown (left) and place it in the rails (right).} % \label{fig12} 
-\end{figure}
+Next, you will need to release the emergency stop and initialize the UR arm by following the user interface on the touch panel.
 
-\begin{figure}[!ht]
-\centering
-\mbox{\subfigure{\includegraphics[width=6cm]{images/packing_20.jpg}}\quad
-\subfigure{\includegraphics[width=7cm,angle=90]{images/packing_21.jpg} }}
-\caption{For air travel, also fix an additional tension belt around the box (left), and seal the hinges with a plastic seal (right).} % \label{fig12}
-\end{figure}
+\textbf{NOTE}: You can only release the emergency stop if the UR controller is booted up.
+
+\subsubsection{Operating the arm}
+For operating the arm a ROS node needs to be started. This is done by the bringup launch file
+\begin{lstlisting}
+roslaunch cob_bringup robot.launch
+\end{lstlisting}
+or separately with 
+\begin{lstlisting}
+roslaunch cob_bringup ur_solo.launch ur_ip:=<<IP ADRESS OF YOUR UR CONTROLLER>>
+\end{lstlisting}
+After that you can directly operate the arm by using the command\_gui or send a FollowJointTrajectoryAction to the arm.
+
+\subsection{The UR connector}
+To extend the workspace there's a ur connector which is an external 7th axis to the arm to be able to operate on the front and back side.
+
+\subsubsection{Start-up the UR connector}
+The ur\_connector should be powered and ready to operate once there is no emergency stop active.
+
+\subsubsection{Operating the UR connector}
+For operating the ur\_connector a ROS node needs to be started. This is also done by the bringup launch file, which if started before should no be relaunched.
+\begin{lstlisting}
+roslaunch cob_bringup robot.launch
+\end{lstlisting}
+or separately with 
+\begin{lstlisting}
+roslaunch cob_bringup ur_connector_solo.launch ur_ip:=<<IP ADRESS OF YOUR UR CONTROLLER>>
+\end{lstlisting}
+After that you can directly operate the ur\_connector by using the command\_gui or send a FollowJointTrajectoryAction to the arm.

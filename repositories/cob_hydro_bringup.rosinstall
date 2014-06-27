@@ -11,6 +11,10 @@
     local-name: cob_common
     version: hydro_release_candidate
 - git:
+    uri: 'git://github.com/ipa320/cob_control.git'
+    local-name: cob_control
+    version: hydro_release_candidate
+- git:
     uri: 'git://github.com/ipa320/cob_driver.git'
     local-name: cob_driver
     version: hydro_release_candidate

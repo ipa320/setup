@@ -24,8 +24,8 @@
 
 % define colors
 \usepackage{color}
-\definecolor{light-gray}{gray}{0.85}
-
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{mygreen}{RGB}{230,255,230}
 % Abruerzungsverzeichnis
 \usepackage{nomencl}
 
@@ -63,13 +63,28 @@ pdfkeywords={Care-O-bot, ROS, setup, install, manual}]{hyperref}
 \renewcommand{\bottomfraction}{.9999}
 
 % source code
-\lstset{
-basicstyle=\footnotesize,
-frame=single,
-breaklines=true,
-backgroundcolor=\color{light-gray}
-}
+%\lstset{
+%basicstyle=\footnotesize,
+%frame=single,
+%breaklines=true,
+%backgroundcolor=\color{light-gray}
+%}
 
+\lstset{ 
+	language=Scilab,
+	upquote=true,
+	basicstyle=\ttfamily\bfseries,
+	columns=fullflexible,
+	backgroundcolor=\color{light-gray},
+	breaklines=true,
+	frame=single,
+	literate={*}{{\char42}}1
+			 {-}{{\char45}}1
+			 {'}{{\char39}}1
+			 {"}{{\char34}}1
+			 {/}{{\char47}}1
+			 {~}{{\char126}}1
+}
 
 %##########################################################################
 % Abkuerzungen 
@@ -128,6 +143,7 @@ backgroundcolor=\color{light-gray}
 \pagenumbering{arabic}
 \include{Introduction}
 \include{User_manual}
+\include{Packing_robot}
 \include{Administrator_manual}
 \include{Support}
 

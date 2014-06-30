@@ -101,10 +101,9 @@ $ gpasswd -a jenkins lp
 printer ip-address: 10.0.1.99
 
 ==== Enable passwordless login for SSH
-login as stud-admin
 ----
 $ ssh-keygen
-$ ssh-copy-id stud-admin-desktop
+$ ssh-copy-id admin@cob-kitchen-svr
 ----
 login as jenkins
 ----
@@ -112,7 +111,7 @@ ssh-keygen
 $ ssh-copy-id cob-jenkins-server
 ----
 
-Login to stud-admin@stud-admin-desktop and test if the following script works without throwing an error
+Login to admin@cob-kitchen-svr and test if the following script works without throwing an error
 ----
 $ ./git/setup/cob-stud-clients/cob-stud-install.sh vim
 ----
@@ -150,7 +149,7 @@ $ sudo apt-get install terminator zsh
 
 Network:
 ----
-$ sudo apt-get install openssh-server ntp curl portmap nfs-common libnss-ldap libpam-ldap nscd
+$ sudo apt-get install openssh-server ntp curl portmap nfs-common
 ----
 
 Commands:
@@ -194,13 +193,41 @@ cob-kitchen-nas:/volume1/home-nas    /home nfs rw,hard,intr   0   0
 
 
 ==== Config ldap clients
+
 ----
-$ sudo nano /etc/nsswitch.conf
-##edit to##
+sudo apt-get install ldap-utils libpam-ldap libnss-ldap nslcd 
+----
+
+Select the following configuration for ldap:
+----
+Should debconf manage LDAP configuration? Yes
+LDAP server Uniform Resource Identifier: ldap://10.0.1.1:390
+Distinguished name of the search base: dc=ipa-apartment,dc=org
+LDAP version to use: 3
+Make local root Database admin: No
+Does the LDAP database require login? Yes
+Unprivileged database user: cn=zentyalro,dc=ipa-apartment,dc=org
+Password for database login account: (Please ask nhg)
+----
+
+You can reconfigurate it with the command:
+
+----
+sudo dpkg-reconfigure ldap-auth-config
+----
+
+Select the following configuration for nslcd:
+----
+LDAP server URI: ldap://10.0.1.1:390
+LDAP server search base: dc=ipa-apartment,dc=org
+----
+----
+$ sudo vi /etc/nsswitch.conf
+##append "ldap" word to the lines passwd, group and shadow##
 # /etc/nsswitch.conf
-passwd:    files ldap
-group:     files ldap
-shadow:    files ldap
+passwd: compat ldap
+group : compat ldap  
+shadow: compat ldap 
 hosts:     files mdns4_minimal [NOTFOUND=return] dns mdns4
 networks:  files
 protocols: db files
@@ -210,87 +237,33 @@ rpc:       db files
 netgroup:  nis
 sudoers:   ldap files
 ----
+
 ----
-$ sudo nano /etc/pam.d/common-auth
-##edit to##
-# /etc/pam.d/common-auth
-auth [success=2 default=ignore] pam_unix.so nullok_secure
-auth [success=1 default=ignore] pam_ldap.so use_first_pass
-auth requisite                  pam_deny.so
-auth required                   pam_permit.so
-auth optional                   pam_cap.so
-----
-----
-$ sudo nano /etc/pam.d/common-account
-##edit to##
-# /etc/pam.d/common-account
-account [success=2 new_authtok_reqd=done default=ignore] pam_unix.so
-account [success=1 default=ignore]                       pam_ldap.so
-account requisite                                        pam_deny.so
-account required                                         pam_permit.so
-----
-----
-$ sudo nano /etc/pam.d/common-password
-##edit to##
-# /etc/pam.d/common-password
-password requisite                                   pam_cracklib.so retry=3 minlen=8 difok=3
-password [success=2 default=ignore]                  pam_unix.so obscure use_authtok try_first_pass sha512
-password [success=1 user_unknown=ignore default=die] pam_ldap.so use_authtok try_first_pass
-password requisite                                   pam_deny.so
-password required                                    pam_permit.so
-password optional                                    pam_gnome_keyring.so
-----
-----
-$ sudo nano /etc/pam.d/common-session
-##edit to##
-# /etc/pam.d/common-session
-session  [default=1]  pam_permit.so
-session  requisite    pam_deny.so
-session  required     pam_permit.so
-session  optional     pam_umask.so
-session  required     pam_unix.so
-session  optional     pam_ldap.so
-session  optional     pam_ck_connector.so nox11
+$ sudo vi /etc/pam.d/common-session
+##add to the list##
 session  optional     pam_mkhomedir.so skel=/etc/skel umask=0022
 ----
+
 ----
-$ sudo nano /etc/ldap.conf
-##edit to##
-###DEBCONF###
-base dc=cob-kitchen-server
-host 10.0.1.1
-ldap_version 3
-rootbinddn cn=directory manager
-pam_password md5
-sudoers_base ou=SUDOers,dc=cob-kitchen-server
-pam_lookup_policy yes
-pam_check_host_attr yes
-nss_initgroups_ignoreusers avahi,avahi-autoipd,backup,bin,colord,daemon,games,gnats,
-hplip,irc,kernoops,libuuid,lightdm,list,lp,mail,man,messagebus,news,proxy,pulse,
-root,rtkit,saned,speech-dispatcher,sshd,sync,sys,syslog,usbmux,uucp,whoopsie,www-data
-----
-----
-$ sudo nano /etc/ldap/ldap.conf
-##edit to##
-# LDAP Defaults
-BASE                   dc=cob-kitchen-server
-host                   10.0.1.1
-ssl                    on
-use_sasl               no
-tls_checkpeer          no
-sudoers_base           ou=SUDOers,dc=cob-kitchen-server
-sudoers_debug          2
-pam_lookup_policy      yes
-pam_check_host_attr    yes
-pam_lookup_policy      yes
-pam_check_host_attr    yes
-TLS_CACERT             /etc/ssl/certs/ca-certificates.crt
-TLS_REQCERT            never
-----
-----
-$ sudo nano /etc/lightdm/lightdm.conf
+$ sudo vi /etc/lightdm/lightdm.conf
 ##add to the list##
 greeter-show-manual-login=true
+----
+
+----
+$ sudo vi /etc/pam.d/login
+##add to the list##
+session required pam_mkhomedir.so skel=/etc/skel umask=0022 
+----
+
+----
+$ sudo vi /etc/pam.d/lightdm
+##add to the list##
+session required pam_mkhomedir.so skel=/etc/skel umask=0022
+----
+
+----
+sudo update-rc.d nslcd enable
 ----
 
 
@@ -298,7 +271,7 @@ greeter-show-manual-login=true
 ----
 $ sudo nano /etc/ntp.conf
 ##change server to##
-server cob-kitchen-server
+server cob-kitchen-svr
 ----
 
 

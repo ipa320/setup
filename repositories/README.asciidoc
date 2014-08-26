@@ -2,12 +2,13 @@
 
 ==== Ubuntu 14.04 LTS "trusty" + Indigo_Dev
 
-Prerequisites:
+1. Prerequisites:
+
 * Install Ubuntut 14.04 LTS "trusty" (either fresh from an image or using dist-ugrade)
 * Install ros-indigo-dektop-full as described here: http://wiki.ros.org/indigo/Installation/Ubuntu)
-* Install additional tools: ```sudo apt-get install python-wstool```
+* Install additional tools: sudo apt-get install python-wstool
 
-Create catkin workspace
+2. Create catkin workspace
 ----
 source /opt/ros/indigo/setup.bash
 mkdir -p ~/catkin_ws/src
@@ -15,23 +16,27 @@ cd ~/catkin_ws/src && catkin_init_workspace
 cd ~/catkin_ws/src && wstool init
 ----
 
-Get sources from ipa320
+3. Get sources from ipa320
+(Make sure you add the ssh-key of your machine to your github accound)
 ----
 cd ~/catkin_ws/src && wstool merge -y https://raw.githubusercontent.com/ipa320/setup/master/repositories/cob_indigo_bringup.rosinstall
 cd ~/catkin_ws/src &&  wstool update
 ----
 
-Get dependendies
+4. Get dependendies
+(Note: you need sudo rights!)
 ----
+sudo rosdep init
+rosdep update
 cd ~/catkin_ws && rosdep install --from-paths src -i -y
 ----
 
-Compile sources
+5. Compile sources
 ----
 cd ~/catkin_ws && catkin_make
 ----
 
-Source setup.bash
+6. Source setup.bash
 ----
 source ~/catkin_ws/devel/setup.bash
 ----

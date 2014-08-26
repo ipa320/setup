@@ -63,6 +63,7 @@ jenkins    ALL=(ALL) NOPASSWD: ALL
 ----
 $ sudo nano /etc/lightdm/lightdm.conf
 ##add##
+[SeatDefaults]
 allow-guest=false
 $ sudo restart lightdm
 ----

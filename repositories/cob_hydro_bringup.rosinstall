@@ -28,7 +28,7 @@
     version: hydro_release_candidate
 - git:
     uri: 'git://github.com/ipa320/cob_perception_common.git'
-    local-name: cob_robots
+    local-name: cob_perception_common
     version: hydro_release_candidate
 - git:
     uri: 'git://github.com/ipa320/cob_robots.git'

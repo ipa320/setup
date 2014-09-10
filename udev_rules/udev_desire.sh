@@ -60,11 +60,11 @@
 Scan0Attr1='ATTRS{idProduct}=="6001"'
 
 ##Scan1##
-Scan1Attr1='ATTRS{bInterfaceNumber}=="00"'
+RelaisAttr1='ATTRS{bInterfaceNumber}=="00"'
 Scan1Attr2='ATTRS{idProduct}=="6010"'
 
 ##Relayboard##
-RelaisAttr1='ATTRS{bInterfaceNumber}=="01"'
+Scan1Attr1='ATTRS{bInterfaceNumber}=="01"'
 RelaisAttr2='ATTRS{idProduct}=="6010"'
 
 
@@ -109,7 +109,7 @@ if grep -qs $Scan0Attr1 /tmp/usb2
 then
     sudo ln -s ttyUSB2 /dev/ttyScan0
 fi
-if grep -qs  $RelaisAttr1  && grep -qs $RelaisAttr2 /tmp/usb2 
+if grep -qs  $RelaisAttr1  /tmp/usb2 && grep -qs $RelaisAttr2 /tmp/usb2 
 then
     sudo ln -s ttyUSB2 /dev/ttyRelais
 fi

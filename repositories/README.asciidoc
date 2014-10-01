@@ -6,7 +6,7 @@
 
 * Install Ubuntut 14.04 LTS "trusty" (either fresh from an image or using dist-ugrade)
 * Install ros-indigo-dektop-full as described here: http://wiki.ros.org/indigo/Installation/Ubuntu)
-* Install additional tools: sudo apt-get install python-wstool
+* Install additional tools: sudo apt-get install python-wstool python-rosinstall
 
 2. Create catkin workspace
 ----

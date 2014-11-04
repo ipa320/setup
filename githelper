@@ -114,6 +114,9 @@ Commands:
 %prog merge [-u GITHUBUSER, default="ipa320"] [-s STACK(s), default=all stacks] [-d install_dir=~/git/care-o-bot] [-b branch=groovy_dev]
   Merges from a remote branch 
 
+%prog fetch_all [-s STACK(s), default=all stacks]
+  Executes 'git fetch -p --all'
+
 githelper -h
   Further help on options
 """
@@ -377,6 +380,9 @@ def main():
 			if args[0] == "status":
 				write_to_log("status of stack " + stack + "...")
 				git_status()
+			elif args[0] == "fetch_all":
+				write_to_log("fetch upstream info " + stack + "...")
+				git_fetch_all()
 			elif args[0] == "pull":
 				print "pulling..."
 				write_to_log("pulling stack " + stack + "...")
@@ -415,6 +421,10 @@ def write_to_log(message):
 def git_status():
 	#print "git_status ... "
 	os.system("git status -uno")
+
+def git_fetch_all():
+	#print "git_fetch_all ... "
+	os.system("git fetch -p --all")
 
 
 def git_pull(options):
@@ -502,7 +512,7 @@ def get_all_stacks(options):
 	# check if directory is a git repository
 	for directory in dirs:
 		if os.path.exists(os.path.expanduser(options.install_dir) + "/" + directory + "/.git/config"):
-			#print "directory, "is a stack"
+			#print directory, "is a stack"
 			stacks.append(directory)
 		else:
 			#print directory, "is not a stack"

@@ -35,11 +35,11 @@
     local-name: cob_substitute
     version: groovy_release_candidate
 - git:
-    uri: 'git://github.com/ipa320/schunk_modular_robotics.git'
-    local-name: schunk_modular_robotics
+    uri: 'git://github.com/ipa320/ipa_canopen.git'
+    local-name: ipa_canopen
     version: groovy_release_candidate
 - git:
-    uri: 'git://github.com/ipa320/universal_robot.git'
-    local-name: universal_robot
+    uri: 'git://github.com/ipa320/schunk_modular_robotics.git'
+    local-name: schunk_modular_robotics
     version: groovy_release_candidate
 

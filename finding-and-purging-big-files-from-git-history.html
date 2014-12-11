@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Finding and Purging Big Files From Git History - Ted Naleid</title>
+  <meta name="author" content="Ted Naleid">
+
+  
+  <meta name="description" content="On a recent grails project, we&rsquo;re using a git repo that was originally converted from a SVN repo with a ton of large binary objects in it (lots &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://naleid.com/blog/2012/01/17/finding-and-purging-big-files-from-git-history">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Ted Naleid" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=Sorts+Mill+Goudy' rel='stylesheet' type='text/css'>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-5332279-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:naleid.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Ted Naleid</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/blog/contact">Contact</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
+    
+      <h1 class="entry-title">Finding and Purging Big Files From Git History</h1>
+    
+  
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-17T00:00:00-06:00" pubdate data-updated="true">Jan 17<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>On a recent grails project, we&rsquo;re using a git repo that was originally converted from a SVN repo with a ton of large binary objects in it (lots of jar files that really should come from an ivy/maven repo).  The <code>.git</code> directory was over a gigabyte in size and this made it very cumbersome to clone and manipulate.</p>
+
+<p>We decided to leverage git&rsquo;s history rewriting capabilities to make a much smaller repository (and kept our previous repo as a backup just in case).</p>
+
+<p>Here are a few questions/answers that I figured out how to answer with git and some shell commands:</p>
+
+<h4>What object SHA is associated with each file in the Repo?</h4>
+
+
+<p>Git has a unique SHA that it associates with each object (such as files which it calls blobs) throughout it&rsquo;s history.</p>
+
+<p>This helps us find that object and decide whether it&rsquo;s worth deleting later on:</p>
+
+<pre lang="bash">
+git rev-list --objects --all | sort -k 2 > allfileshas.txt
+</pre>
+
+
+<p>Take a look at the resulting <code>allfileshas.txt</code> file for the full list.</p>
+
+<h4>What Unique Files Exist Throughout The History of My Git Repo?</h4>
+
+
+<p>If you want to see the unique files throughout the history of your git repo (such as to grep for .jar files that you might have committed a while ago):</p>
+
+<pre lang="bash">
+    git rev-list --objects --all | sort -k 2 | cut -f 2 -d\  | uniq
+</pre>
+
+
+
+
+<h4>How Big Are The Files In My Repo?</h4>
+
+
+<p>We can find the big files in our repo by doing a <code>git gc</code> which makes git compact the archive and stores an index file that we can analyse.</p>
+
+<p>Get the last object SHA for all committed files and sort them in biggest to smallest order:</p>
+
+<pre lang="bash">
+git gc && git verify-pack -v .git/objects/pack/pack-*.idx | egrep "^\w+ blob\W+[0-9]+ [0-9]+ [0-9]+$" | sort -k 3 -n -r > bigobjects.txt
+</pre>
+
+
+<p>Take that result and iterate through each line of it to find the SHA, file size in bytes, and real file name (you also need the allfileshas.txt output file from above):</p>
+
+<pre lang="bash">
+for SHA in `cut -f 1 -d\  < bigobjects.txt`; do
+echo $(grep $SHA bigobjects.txt) $(grep $SHA allfileshas.txt) | awk '{print $1,$3,$7}' >> bigtosmall.txt
+done;
+</pre>
+
+
+<p>(there&rsquo;s probably a more efficient way to do this, but this was fast enough for my purposes with ~50k files in our repo)</p>
+
+<p>Then, just take a look at the bigtosmall.txt file to see your biggest file culprits.</p>
+
+<h4>Purging a file or directory from history</h4>
+
+
+<p>Use filter-branch to remove the file/directory (replace <code>MY-BIG-DIRECTORY-OR-FILE</code> with the path that you&rsquo;d like to delete relative to the root of the git repo:</p>
+
+<pre lang="bash">
+git filter-branch --prune-empty --index-filter 'git rm -rf --cached --ignore-unmatch MY-BIG-DIRECTORY-OR-FILE' --tag-name-filter cat -- --all
+</pre>
+
+
+<p>Then clone the repo and make sure to not leave any hard links with:</p>
+
+<pre lang="bash">
+git clone --no-hardlinks file:///Users/yourUser/your/full/repo/path repo-clone-name
+</pre>
+
+
+<p>You can use this command from the parent directory that contains your git repository and it&rsquo;s clone to see how much space each of them take, and how much you&rsquo;ve shrunk the repo in size:</p>
+
+<pre lang="bash">
+du -s *(/)     # add the -h flag to see the output in human readable size formats, just like ls -lah vs ls -la
+</pre>
+
+
+<p>With these commands, I was able to reduce the file size of our repo with a few thousand commits down below the size of the checked out repository (more than an order of magnitude smaller).  I only removed old binary files, we still have full history for all code files.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Ted Naleid</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-17T00:00:00-06:00" pubdate data-updated="true">Jan 17<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/command-line/'>command line</a>, <a class='category' href='/blog/categories/git/'>git</a>, <a class='category' href='/blog/categories/osx/'>osx</a>, <a class='category' href='/blog/categories/shortcut/'>shortcut</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://naleid.com/blog/2012/01/17/finding-and-purging-big-files-from-git-history/" data-via="tednaleid" data-counturl="http://naleid.com/blog/2012/01/17/finding-and-purging-big-files-from-git-history/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/01/12/how-to-use-kdiff3-as-a-3-way-merge-tool-with-mercurial-git-and-tower-app/" title="Previous Post: How to use kdiff3 as a 3-way merge tool with mercurial, git, and Tower.app">&laquo; How to use kdiff3 as a 3-way merge tool with mercurial, git, and Tower.app</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/02/29/quick-shell-function-to-bootstrap-a-gradle-groovy-project/" title="Next Post: Quick Shell Function to Bootstrap a Gradle Groovy Project">Quick Shell Function to Bootstrap a Gradle Groovy Project &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/11/10/debugging-grails-forked-mode/">Debugging Grails Forked Mode</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/29/understanding-git-presentation/">Understanding Git Presentation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/29/using-grails-asset-pipeline-plugin-presentation/">Using Grails Asset-Pipeline Plugin Presentation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/03/declaring-closures-in-swift/">Declaring Closures in Swift</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/01/30/auto-refreshing-grails-applications-that-leverage-the-grails-resources-plugin/">Auto-Refreshing Grails Applications That Leverage the Grails Resources Plugin</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Ted Naleid <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'tednaleid';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://naleid.com/blog/2012/01/17/finding-and-purging-big-files-from-git-history/';
+        var disqus_url = 'http://naleid.com/blog/2012/01/17/finding-and-purging-big-files-from-git-history/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

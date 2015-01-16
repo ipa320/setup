@@ -180,8 +180,8 @@ function NFSSetup
 
 }
 
-#### FUNCTION COB4 SETUP
-function Cob4Setup
+#### FUNCTION COB SETUP
+function CobSetup
 {
   if [ "$HOSTNAME" != "$ROBOT-pc2" ]; then 
 	  echo "FATAL: CAN ONLY BE EXECUTED ON MASTER PC"

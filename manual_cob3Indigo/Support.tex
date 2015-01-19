@@ -1,0 +1,84 @@
+\chapter{Support}\label{chap:support}
+\section{General support}
+Please consult ros answers\footnote{\url{http://answers.ros.org/questions/?tags=care-o-bot,cob_driver&start_over=true}} to see if your problem is already known. 
+
+Please please contact your local administrator or use the mailing list\footnote{\url{http://www.care-o-bot-research.org/contributing/mailing-lists}} for additional support or feature discussion.
+
+\section{Report a bug}
+If you discover a bug in one of the Care-O-bot stacks, please fill a ticket on our trac system\footnote{\url{http://www.care-o-bot-research.org/trac}}. A view of active tickets can be found at \footnote{\url{http://www.care-o-bot-research.org/trac/report/1}}.
+
+
+\section{Useful tools for debugging and working with the robot}
+In this section we introduce some useful tools which can be used while working with the robot to facilitate the source code management.
+
+\subsection{Modifying and developing code}
+If you want to modify code from existing stacks, we recommend to create an overlay of the stack in you home directory. To facilitate this process we have created a \textit{githelper} script which automatically sets up your git environment with generating ssh-keys, uploading them to github, forking stacks (if necessary) and cloning stacks to your machine. You can either install a read-only version from our main fork (\textit{ipa320}) or insert your own username and password to fork and clone your own version of the stack. 
+
+You can get the script with
+\begin{lstlisting}
+wget https://raw.github.com/ipa320/setup/master/githelper
+chmod +x githelper
+\end{lstlisting}
+
+The script can be used by simply typing
+\begin{lstlisting}
+./githelper --help
+\end{lstlisting}
+
+\subsection{Working with git}
+If you are not used to it, working with git is difficult in the beginning. Nevertheless it is a great tool which helps a lot managing decentralised development of our source code. \url{www.github.com} offers a reliable hosting service and offers tools for graphical visualisation or merging pull requests. We recommend everybody to do some basic git tutorials which can be found on various places in the web.
+
+To make your live with git a little easier we have created a tool called \texttt{githelper}, which allows you to do git operations like getting the status, pushing, pulling and even merging in an easy way over multiple repositories at the same time. To know what githelper can do type
+\begin{lstlisting}
+./githelper --help
+\end{lstlisting}
+
+\section{FAQ}
+In this section we try to answer some frequently asked questions. If your question is not covered, but you think it is relevant for others too, please contact \href{mailto:fmw@ipa.fhg.de}{fmw@ipa.fhg.de}.
+
+\subsection{Working with the robot}
+\paragraph{The robot doesn't move when I press a button on the command\_gui.}
+Make sure that the emergency stop is released properly, see section \ref{sec:emergency_stop}. To inspect which component is failing have a look at your dashboard, see section \ref{subsec:dashboard}.
+
+\paragraph{Reaction time of the robot slows down}
+Make sure you don't hit the boarder of either CPU, IO or network load on all pcs. You can use commands from the ROS cheat sheet\footnote{\url{http://www.ros.org/wiki/Documentation?action=AttachFile&do=get&target=ROScheatsheet.pdf}}. Especially the following commands can be useful while inspecting your system (you'll find documentation about this tool in the cheat sheet):
+\begin{lstlisting}
+roswtf
+rosnode ping
+rosnode machine
+rostopic bw
+rostopic hz
+rxgraph 
+\end{lstlisting}
+
+Additionally to the ROS specifiq tools you can use standard linux tools to inspect your system:
+\begin{lstlisting}
+top
+iotop
+gnome-system-monitor
+\end{lstlisting}
+
+\textbf{Some tips and tricks:} In general you should try to distribute CPU, IO and network load between the robot pcs in a way that during normal operation you don't come close the limits. E.g. keep the CPU load lower than 75\% and overall network traffic lower than 75\% of the maximum bandwidth of your ethernet router (have in mind that there are different maximum rates for cable-based and wireless ethernet). Possible ways to reach this is
+\begin{itemize}
+\item Reduce computing effort with optimizing implementation for your algorithms
+\item Put nodes together on the same machine which need to either 
+\begin{itemize}
+  \item communicate in a high rate \\
+  (e.g. laser scanners, base controller and navigation, check frequency with \texttt{rostopic hz})
+  \item exchange huge amount of data \\
+  (e.g. camera driver and object detection, check with \texttt{rostopic bw})
+\end{itemize}
+\item for data flow triggered nodes, reduce frequency of input data stream\\
+(e.g. don't use full frame rate of cameras as input if your detection algorithm if it is not capable of calculating each frame anyway, e.g. reduce 30Hz frame rate of kinect to 1-5Hz for object detection)
+\item use a mechanism to start and stop components
+(e.g. stop object detection if no object detection is needed at the moment to reduce CPU load and consider unsubscribing from topics to reduce network load.)
+\end{itemize}
+
+
+\subsection{Developing on the robot}
+\paragraph{I have modified code or developed new code, how can others use it?}
+Use the pull request feature at \url{www.github.com}, for help see \footnote{\url{http://help.github.com/send-pull-requests/}}.
+
+\paragraph{I have new code, where should I put it?}
+We already have a big variety of stacks containing different functionalities. An overview of all stacks which belong to the bringup layer are listed in section \ref{sec:software_overview}. Except for new drivers there shouldn't be a need for you to add new packages to this stacks.\\
+Above the bringup layer there are several stacks for navigation, manipulation and perception functionalities. It is hard to say in which stack you can put your code, therefore please contact \href{mailto:fmw@ipa.fhg.de}{fmw@ipa.fhg.de} to discuss where your code fits best.

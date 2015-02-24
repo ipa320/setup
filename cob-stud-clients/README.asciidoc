@@ -38,12 +38,12 @@ $ sudo addgroup admin
 ==== Create extra administrator account's
 ----
 $ sudo adduser stud-admin --home /home-local/stud-admin 
-$ sudo adduser stud-admin admin
+$ sudo adduser stud-admin adm
 $ sudo adduser stud-admin sudo
 ----
 ----
 $ sudo adduser jenkins --home /home-local/jenkins
-$ sudo adduser jenkins admin
+$ sudo adduser jenkins adm
 $ sudo adduser jenkins sudo
 ----
 Went to System Settings/User Accounts and add the new admin users as Admin's and give them their name.
@@ -104,7 +104,7 @@ printer ip-address: 10.0.1.99
 ==== Enable passwordless login for SSH
 ----
 $ ssh-keygen
-$ ssh-copy-id admin@cob-kitchen-svr
+$ ssh-copy-id stud-admin@cob-kitchen-svr
 ----
 login as jenkins
 ----
@@ -112,7 +112,7 @@ ssh-keygen
 $ ssh-copy-id cob-jenkins-server
 ----
 
-Login to admin@cob-kitchen-svr and test if the following script works without throwing an error
+Login to stud-admin@cob-kitchen-svr and test if the following script works without throwing an error
 ----
 $ ./git/setup/cob-stud-clients/cob-stud-install.sh vim
 ----

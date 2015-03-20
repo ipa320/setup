@@ -27,6 +27,10 @@
     local-name: cob_extern
     version: indigo_dev
 - git:
+    uri: 'https://github.com/ipa320/cob_gazebo_plugins.git'
+    local-name: cob_gazebo_plugins
+    version: indigo_dev
+- git:
     uri: 'https://github.com/ipa320/cob_perception_common.git'
     local-name: cob_perception_common
     version: indigo_dev
@@ -43,8 +47,8 @@
     local-name: cob_substitute
     version: indigo_dev
 - git:
-    uri: 'https://github.com/ipa320/ipa_canopen.git'
-    local-name: ipa_canopen
+    uri: 'https://github.com/ipa320/ros_canopen.git'
+    local-name: ros_canopen
     version: indigo_dev
 - git:
     uri: 'https://github.com/ipa320/schunk_modular_robotics.git'

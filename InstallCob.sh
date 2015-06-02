@@ -1,9 +1,9 @@
 #!/bin/bash
 #### COMMON PARAMETERS
 usage=$(cat <<"EOF"
-USAGE:  ./InstallCob4.sh [-r] [-ip] [-m]\n
+USAGE:  ./InstallCob.sh [-r] [-ip] [-m]\n
 Where:\n
-  -r robot name (example cob4-1)\n
+  -r robot name (example cob3-1)\n
   -ip ip address\n
   -m installation mode (master or slave)\n
 EOF
@@ -180,8 +180,8 @@ function NFSSetup
 
 }
 
-#### FUNCTION COB4 SETUP
-function Cob4Setup
+#### FUNCTION COB SETUP
+function CobSetup
 {
   if [ "$HOSTNAME" != "$ROBOT-pc2" ]; then 
 	  echo "FATAL: CAN ONLY BE EXECUTED ON MASTER PC"
@@ -286,29 +286,30 @@ case "$choice" in
 esac
 
 read -p "Please select the installation type 
-1.Full installation (Basic installation + Setup NFS)
-2.Basic installation
-3.Setup NTP and NFS system
-4.Cob4 setup (Execute only on master pc and after a full installation)
+1.Basic installation
+2.Setup NTP and NFS system
+3.Full installation (Basic installation + Setup NFS)
+4.Cob setup (Execute only on master pc and after a full installation)
  " choice 
  
 if [[ "$choice" == 1 ]]
   then
        BasicInstallation
-       NFSSetup
+       
 fi
 
 if [[ "$choice" == 2 ]]
   then
-       BasicInstallation
+       NFSSetup
 fi
 
 if [[ "$choice" == 3 ]]
   then
+       BasicInstallation
        NFSSetup
 fi
 
 if [[ "$choice" == 4 ]]
   then
-       Cob4Setup
+       CobSetup
 fi

@@ -2,10 +2,8 @@
 
 #Phidgets
 SUBSYSTEM=="usb", ATTRS{idVendor}=="06c2", MODE="0666", GROUP="dialout"
-#Base
-KERNEL=="pcanusb*",ATTRS{irq}=="23",SYMLINK="pcanBase", MODE="0666"
-#Head
-KERNEL=="pcanusb*",ATTRS{irq}=="16",SYMLINK="pcanHead", MODE="0666"
+#Joystick
+SUBSYSTEM=="usb",ATTR{idVendor}=="046d",SYMLINK+="joypad"
 #LED
 SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001", ATTRS{serial}=="A800K9NH" , ATTRS{bcdDevice}=="0600",MODE="0666",SYMLINK+="ttyLed"
 

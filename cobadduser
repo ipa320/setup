@@ -22,6 +22,7 @@ if [ "$1" != "" ]; then
 	echo "setup bash environment"
 	sudo cp /u/robot/git/setup/cob-pcs/user.bashrc /u/$1/.bashrc
 	sudo sed -i "s/myrobot/$ROBOT/g" /u/$1/.bashrc
+	sudo sed -i "s/mydistro/$ROS_DISTRO/g" /u/$1/.bashrc
 
 	if [ ! -d /u/$1/.ssh ]; then
         	echo "create new ssh key"

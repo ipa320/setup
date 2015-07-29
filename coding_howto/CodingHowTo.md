@@ -4,9 +4,12 @@ This HowTo gives a short introduction into how Coding should be done in IPA320, 
 development within the [Robot Operating System ROS](http://wiki.ros.org/ROS/Introduction).
 Thus, it is more a colletion of links to other websites and guidelines than a definite HowTo.
 
+As the respective tutorials cover a broad spectrum of topics, it is important that you don't just follow them blindly,
+but try to understand what is behind the different commands.
 
 
 
+===============================
 ## ROS Basics
 Most of the development within the Servicerobotics Groups in IPA320 happens using the Robot Operating System ROS.
 Thus, understanding ROS is of utmost importance to understand how to install and use ROS.
@@ -76,7 +79,7 @@ Besides the basic Tutorials, there exist several Tutorials for specialized topic
 ### ROS Workspace Setup
 In general, a ROS workspace (for more information [click here](http://wiki.ros.org/catkin/workspaces)) looks as follows:
 ```
-workspace_folder/         -- WORKSPACE
+workspace_folder/         -- WORKSPACE ROOT
   src/                    -- SOURCE SPACE
     CMakeLists.txt        -- The 'toplevel' CMake file
     package_1/
@@ -145,19 +148,7 @@ to get a good answer.
 
 
 
-## Compiling ROS packages
-
-### Setting up your `CMakeLists.txt`
-
-### Setting up your `package.xml`
-
-### Checking your package configuration
-
-### Preparing your changes for a Pull Request
-
-
-
-
+===============================
 ## `Git` Basics
 At IPA320, and as a matter of fact for most ROS package out there, we use a 
 [VCS (Version Control System)](https://en.wikipedia.org/wiki/Revision_control) called
@@ -205,6 +196,7 @@ Looks bad, but covers the essentials.
 - [Good guide for understanding the theory behind git](http://think-like-a-git.net/).
 However some more examples could be helpful.
 
+
 ### `Git` Workflow
 The structure that we usually follow at IPA is shown in the following figure:
 
@@ -217,6 +209,7 @@ You can then issue a Pull Request to the main repository and update your changes
 
 You can obviously always pull from both, the main repository or your fork to get any changes from there into your current
 local copy.
+
 
 ### Issuing a Pull Request
 To issue a Pull Request, you need to have your changes on your Fork on GitHub, preferably on a feature branch.
@@ -241,13 +234,14 @@ If they find something they want to be changed, they will usually use the commen
 Fix the requested changes and update the PR by simply pushing again to the branch from which you set up the PR in the
 first place.
 
+
 ### `Git` Do's and Dont's
 **Do**:
 - commit often.
 - provide meaningful commit messages ('test' or 'debugging' is not a good commit message).
 - commit one set of (logically related) changes.
 I.e. if you fix two bugs, make to commits.
-- ask if you are not sure what 'git' will do or your repository is in a strange state.
+- ask your superviso/a colleague if you are not sure what `git` will do or your repository is in a strange state.
 - review what you will commit using `git status`
 - update your repositories regularly.
 
@@ -274,7 +268,143 @@ Answers almost all questions related to GitHub.
 
 
 
+===============================
+## Compiling your ROS workspace
+As described above, all ROS packages that you have will reside in the source space of your workspace.
+When you create a new package, it needs to go in the src folder or in a repository therein.
 
+The ROS buildtool `catkin` builds upon [`CMake`](http://www.cmake.org/) for setting up the compile flags and options.
+Thus, it extends the regular `CMake` syntax by specific `catkin` macros.
+
+### Different comile types
+To compile your workspace in the most basic form, go to the root of your workspace and call
+```bash
+catkin_make
+```
+This will do a Debug Build of your workspace.
+This also means, that there are no compiler optimizations turned on, which might speed up your code.
+
+To do a release build, you need to pass in the `CMAKE_BUILD_TYPE=Release` flag like so
+```bash
+catkin_make -DCMAKE_BUILD_TYPE=Release
+```
+Obviously, you can also add any other valid `CMAKE_BUILD_TYPE`s.
+
+
+There is another type of build, the so called _isolated build_.
+This has the advantage of being able to mix `caktin` and non-`catkin`, `CMake`-compliant packages in a single workspace.
+The build can be started using
+```bash
+catkin_make_isolated
+```
+For most repositories at IPA, this is not required.
+However, it might help to detect errors that are hidden when simply using `catkin_make`.
+
+
+The last type is the _install build_.
+This installs any compiled (and configured) executables as it would be done when you trigger a release and install
+it using `apt-get`.
+The install build requires to have a successfull regular or an isolated build.
+Then, you can execute it by calling either
+```bash
+catkin_make install
+```
+or
+```bash
+catkin_make_isolated --install
+```
+respectively.
+
+
+### Creating a ROS package
+To [create a new ROS package](http://wiki.ros.org/ROS/Tutorials/catkin/CreatingPackage), go the your source space
+(or into a repository therein) and call
+```bash
+catkin_create_package <PACKAGENAME>
+```
+This will create the basic package sceleton.
+If you already know that you will have some dependencies, you can pass them in already at this stage:
+```bash
+catkin_create_package <PACKAGENAME> <DEPENDENCIES>
+```
+for example:
+```bash
+catkin_create_package my_cpp_package roscpp
+```
+Dependencies and compiling is handled using two files, that are described in the following.
+
+#### The `CMakeLists.txt`
+The [`CMakeLists.txt`](http://wiki.ros.org/catkin/CMakeLists.txt) is the file where you specify what is to be compiled,
+which dependencies need to used in the build process and what files or executables should be installed.
+This file is basically a `CMake` file with some `catkin` specific extensions and `CMake Macros`.
+
+#### The `package.xml`
+The [`package.xml`](http://wiki.ros.org/catkin/package.xml) defines what is a ROS package.
+There, you also have to specify the dependencies that your package has.
+This file is used to resolve ROS internal as well as system dependencies (even cross-platform).
+
+#### Correctly configuring your package
+What needs to go into the `CMakeLists.txt` and into the `package.xml` is described in detail on the
+[`catkin` documentation](http://docs.ros.org/indigo/api/catkin/html/howto/format2/).
+Note that this is for the new format of `catkin` (Version 2).
+
+Most packages still have the 
+[legacy Version 1 format](http://docs.ros.org/indigo/api/catkin/html/howto/format1/index.html#how-to-do-common-tasks-1).
+But please use Version 2 for any new packages.
+There is also a 
+[Migration Guide](http://docs.ros.org/indigo/api/catkin/html/howto/format2/migrating_from_format_1.html#migrating-from-format1-to-format2)
+available.
+
+### Checking your package configuration
+There also exist tools to help you with the package configuration.
+One is called [`catkin_lint`](https://github.com/fkie/catkin_lint) and is statically analyzing your `CMakeLists.txt` and
+`package.xml` for common errors or unconfigured dependencies.
+If it is not installed (and you have sudo privileges), you can install it using
+```bash
+sudo apt-get install python-catkin-lint
+```
+Otherwise, you have to clone it into your repository as any other ROS package from https://github.com/fkie/catkin_lint.
+
+To check your package configuration, call
+```bash
+catkin_lint <PATH/TO/PACKAGE>
+```
+There are differnet levels of detected problems.
+Errors (need to be fixed), Warnings (should be fixed) and notices (would be nice to fix them, but not required at all).
+By default, you see only the errors.
+But you can turn on the other levels by passing in the `-W<x>` flag, where `x=1` for also showing warnings and `x=2`
+for also showing notices, e.g.
+```bash
+catkin_lint <PATH/TO/PACKAGE> -W2
+```
+
+
+### Preparing your changes for a Pull Request
+Before creating a Pull Request, your source code should pass the following checks:
+
+1. `catkin_lint <PACKAGE>` should not throw any errors (and as few warnings and notices as possibles).
+1. Make a clean build, i.e. remove any `build`, `devel` and `install` folders and do a `catkin_make`.
+1. Also perform a `catkin_make_isolated`.
+1. Check if everything installs using `catkin_make install` or `caktin_make_isolated --install`.
+1. Fix any errors that occur here.
+1. Provide a `README.md` in your package where you describe:
+    - the purpose of the node/package,
+    - its usage, as well as any
+    - subscribed and published Topics,
+    - advertised or used Services,
+    - ActionClients/Servers, and
+    - a list of the respective parameters with
+        - a description of their purpose
+        - type and
+        - default value.
+
+If you adapt a package, you should, obviously, adapt any existing `README.md` accordingly.
+
+Once you've checked the above, you are ready to create the PR.
+
+
+
+===============================
 ## Further Reading within IPA320
 There also exist some additional ReadMe's and manuals that give introductions and provide guidelines
 how to work at IPA and with the Care-O-bot and rob@work.
@@ -284,7 +414,7 @@ You can find those PDFs and the source files hosted on [GitHub](https://github.c
 
 
 
-
+===============================
 ## HowTo-HowTo
 This document is written using [Github Flavored markdown](https://help.github.com/articles/github-flavored-markdown/).
 If you want to check what the document looks like without uploading it to GitHub, you can use

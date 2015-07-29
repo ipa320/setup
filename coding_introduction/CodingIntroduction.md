@@ -1,18 +1,18 @@
-# IPA320 Coding HowTo
+# IPA320 Coding Introduction
 
-This HowTo gives a short introduction into how Coding should be done in IPA320, especially with a focus on 
+This document gives a short introduction into how Coding should be done in IPA320, especially with a focus on 
 development within the [Robot Operating System ROS](http://wiki.ros.org/ROS/Introduction).
-Thus, it is more a colletion of links to other websites and guidelines than a definite HowTo.
+Thus, it is more a colletion of links to other websites and guidelines than a HowTo.
 
 As the respective tutorials cover a broad spectrum of topics, it is important that you don't just follow them blindly,
-but try to understand what is behind the different commands.
+but try to understand what is behind the different concepts and commands.
 
 
 
 ===============================
 ## ROS Basics
 Most of the development within the Servicerobotics Groups in IPA320 happens using the Robot Operating System ROS.
-Thus, understanding ROS is of utmost importance to understand how to install and use ROS.
+Thus, it is of utmost importance to understand how to install and use ROS and develop algorithms in ROS.
 There exists a lot of documentation on the [ROS wiki](http://wiki.ros.org) that gives a thorough
 [introduction](http://wiki.ros.org/ROS/Introduction) and explains the concepts behin ROS.
 For all people new to ROS, this is a good place to start.
@@ -37,8 +37,8 @@ under http://wiki.ros.org/ROSDISTRO/Installation).
 
 
 ### ROS terminology
-In the following, some often occuring phrases are shortly described:
-- **ROS package**: A ROS package contains the source code, configuration files and or launch files, encapsulated as
+In the following, some often occuring terms are shortly described:
+- **ROS package**: A ROS package contains the source code, configuration files and/or launch files, encapsulated as
 a logically distinct entity.
 Thus, it can contain an algorithm for motion planning, a configuration of a robot, or tools for starting up a robot.
 - **Node**: A node is an executable ROS programm.
@@ -47,18 +47,18 @@ A ROS node can **subscribe** to a topic to get the messages sent on it or **publ
 ROS topics can be **remapped** using launch files, i.e. the name of them can be changed.
 - **Service**: A ROS service is a one-to-one communication channel between two ROS nodes, providing a
 Request-Response pattern.
-- **Action**: A ROS action is similar to a service, except that you it includes a Feedback channel.
+- **Action**: A ROS action is similar to a service, except that it includes a Feedback channel.
 Thus, you have a Goal-Feedback-Result pattern.
 - **`catkin`**: catkin is the build tool used within ROS.
 It is described in more detail below.
-`catkin` replaced `rosbuild` as build tool.
+With ROS Groovy, `catkin` replaced `rosbuild` as build tool.
 - **Stack**: A ROS stack is the old notion of logically connected packages, like for navigation.
 Earlier, a stack has usually been the same as a repository.
 Today, the notion of a stack has been replaced by the notion of `meta-packages`.
 - **Launch File**: A Launch File is a file for starting one or more ROS nodes.
 It has an XML-based syntax.
 - **Configuration or YAML File**: YAML files are used for configuring ROS nodes using parameters that are read from the
-ROS nodes
+so called [Parameter Server](http://wiki.ros.org/Parameter%20Server) by ROS nodes
 - **`roscore` or `rosmaster`**: The main ROS program, coordinating how nodes communicate.
 You can start it using the `roscore` command.
 It is also started automatically once you start a launchfile.
@@ -69,7 +69,8 @@ After having read through the [ROS introduction](http://wiki.ros.org/ROS/Introdu
 you should start working through the [basic ROS Tutorials](http://wiki.ros.org/ROS/Tutorials).
 There, the concepts described before are shown in more detail.
 
-Besides the basic Tutorials, there exist several Tutorials for specialized topics.
+Besides the basic Tutorials, there exist several Tutorials for specialized topics, which are listed here for reference
+(Note, this is an incomplete list):
 - [Care-o-Bot](http://wiki.ros.org/Robots/Care-O-bot/Tutorials)
 - [Navigation](http://wiki.ros.org/navigation/Tutorials)
 - [MoveIt](http://moveit.ros.org/documentation/tutorials/)
@@ -129,18 +130,18 @@ If you create a new package, please try to adhere to those guidelines as much as
 However, if you edit an existing package, **stick to the coding style therein**!
 This especially holds for indentation, as having this unified within one file greatly improves readability.
 
-All available editors allow configuration of indentation setinngs, and most even support automatic detection on opening
-a new file.
+All available editors allow configuration of indentation setinngs, and most even support automatic detection of the
+current intendation scheme on opening an existing file.
 
 
 ### Further Reading on ROS
 For ROS, there is a lot of documentation available on the net (even though some is outdated).
-First, always check the [ROS wiki](http://wiki.ros.org), if you have questions about ROS.
-Check out the ROS wiki pages for the respective packages that you are using.
-**Note** that all private ROS repositories cannot be found on the ROS wiki.
+First, always check the [ROS wiki](http://wiki.ros.org) (or the respective package specific subpages),
+if you have questions about ROS.
+**Note** that all private ROS repositories from IPA320 cannot be found on the ROS wiki.
 
 A second source of information is the [ROS answers](http://answers.ros.org) homepage.
-A lot of questions have been answered there.
+A lot of questions have been answered there already.
 If you register, you can also ask (and obviously also answer) questions to the ROS community.
 However, try to be as clear as possible in your question (best also give your system configuration and ROS distribution)
 to get a good answer.
@@ -150,7 +151,7 @@ to get a good answer.
 
 ===============================
 ## `Git` Basics
-At IPA320, and as a matter of fact for most ROS package out there, we use a 
+At IPA320, and as a matter of fact for most ROS packages out there, we use a 
 [VCS (Version Control System)](https://en.wikipedia.org/wiki/Revision_control) called
 [**`Git`**](https://en.wikipedia.org/wiki/Git_%28software%29).
 `Git` is a so called Distributed VCS, as it allows you to always check out the full history of the Source Code
@@ -207,12 +208,16 @@ Clone this repository to your local computer and do some work there.
 Commit your changes and push them to your fork.
 You can then issue a Pull Request to the main repository and update your changes.
 
-You can obviously always pull from both, the main repository or your fork to get any changes from there into your current
-local copy.
+You can obviously always pull from both, the main repository or your fork to get any changes from there into your
+current local copy.
+
+For this, you obviously need an account at GitHub.
+Accounts at GitHub are free, choose a user name (follow the pattern `ipa-<YOURSHORTNAME>`) and register there.
+Then, the GitHub Admins at IPA320 can add you to our organisation.
 
 
 ### Issuing a Pull Request
-To issue a Pull Request, you need to have your changes on your Fork on GitHub, preferably on a feature branch.
+To issue a Pull Request, you need to have pushed your changes to your Fork on GitHub, preferably on a feature branch.
 Then, go to the repository where you want your changes to go.
 Usually, this is 
 ```
@@ -225,6 +230,7 @@ and then on `New Pull Request` in the top right corner.
 Then you can choose from which repository (you might have to click `compare across forks`) and which branch you want to
 have the Pull Request.
 GitHub now provides you with an overview of the commits you have made and indicates, whether this PR can be merged.
+It also shows all changes you have made in the respective files.
 ![Git Repository Structure](figures/PR_compare.png)
 Thus, you can review your changes again, give the PR a meaningful name and add an explanation about what has changed.
 Then click on `Create Pull Request`.
@@ -236,25 +242,28 @@ first place.
 
 
 ### `Git` Do's and Dont's
+In the following are some Do's and Dont's that will make life easier for everyone, if you follow them.
+
 **Do**:
 - commit often.
 - provide meaningful commit messages ('test' or 'debugging' is not a good commit message).
 - commit one set of (logically related) changes.
 I.e. if you fix two bugs, make to commits.
-- ask your superviso/a colleague if you are not sure what `git` will do or your repository is in a strange state.
-- review what you will commit using `git status`
+- review what you will commit using `git status` and `git diff`/`git difftool` before actually commiting.
 - update your repositories regularly.
+- last but not least:
+ask your supervisor/a colleague if you are not sure what `git` will do or your repository is in a strange state.
 
 **Don't**:
 - commit a state that does not compile.
-- add any files with filemode 755 (i.e. executable files) except for python executables (`.py` containing the `__main__`
-function) and `dynamic_reconfigure` configurations (usually located in `<PACKAGE>/cfg/<NAME>.cfg>`).
-Regular files have filemode 644.
 - commit any temporary files.
 - commit any autogenerated files (except for where they are created from a template, e.g. using 
 [BRIDE](http://wiki.ros.org/bride)).
 - commit any binaries.
 - commit large whitespace changes intermixed with changes to the source code.
+- commit any files with filemode 755 (i.e. executable files) except for python executables (`.py` containing the `__main__`
+function) and `dynamic_reconfigure` configurations (usually located in `<PACKAGE>/cfg/<NAME>.cfg>`).
+Regular files have filemode 644.
 - create unnecessary merge commits by pulling in changes.
 
 
@@ -271,12 +280,14 @@ Answers almost all questions related to GitHub.
 ===============================
 ## Compiling your ROS workspace
 As described above, all ROS packages that you have will reside in the source space of your workspace.
-When you create a new package, it needs to go in the src folder or in a repository therein.
+When you create a new package, it needs to go in the `src` folder or in a repository therein.
 
-The ROS buildtool `catkin` builds upon [`CMake`](http://www.cmake.org/) for setting up the compile flags and options.
+The ROS buildtool [`catkin`](http://docs.ros.org/api/catkin/html/) builds upon [`CMake`](http://www.cmake.org/)
+for setting up the compile flags and options.
 Thus, it extends the regular `CMake` syntax by specific `catkin` macros.
 
-### Different comile types
+
+### Different compile types
 To compile your workspace in the most basic form, go to the root of your workspace and call
 ```bash
 catkin_make
@@ -297,14 +308,14 @@ The build can be started using
 ```bash
 catkin_make_isolated
 ```
-For most repositories at IPA, this is not required.
+For most (or all?) repositories at IPA, this is not required.
 However, it might help to detect errors that are hidden when simply using `catkin_make`.
 
 
 The last type is the _install build_.
 This installs any compiled (and configured) executables as it would be done when you trigger a release and install
 it using `apt-get`.
-The install build requires to have a successfull regular or an isolated build.
+The install build requires to have a successfull regular or isolated build.
 Then, you can execute it by calling either
 ```bash
 catkin_make install
@@ -317,7 +328,7 @@ respectively.
 
 
 ### Creating a ROS package
-To [create a new ROS package](http://wiki.ros.org/ROS/Tutorials/catkin/CreatingPackage), go the your source space
+To [create a new ROS package](http://wiki.ros.org/ROS/Tutorials/catkin/CreatingPackage), go to your source space
 (or into a repository therein) and call
 ```bash
 catkin_create_package <PACKAGENAME>
@@ -335,7 +346,7 @@ Dependencies and compiling is handled using two files, that are described in the
 
 #### The `CMakeLists.txt`
 The [`CMakeLists.txt`](http://wiki.ros.org/catkin/CMakeLists.txt) is the file where you specify what is to be compiled,
-which dependencies need to used in the build process and what files or executables should be installed.
+which dependencies need to be used in the build process and what files or executables should be installed.
 This file is basically a `CMake` file with some `catkin` specific extensions and `CMake Macros`.
 
 #### The `package.xml`
@@ -348,7 +359,7 @@ What needs to go into the `CMakeLists.txt` and into the `package.xml` is describ
 [`catkin` documentation](http://docs.ros.org/indigo/api/catkin/html/howto/format2/).
 Note that this is for the new format of `catkin` (Version 2).
 
-Most packages still have the 
+Most packages at IPA320 still follow the 
 [legacy Version 1 format](http://docs.ros.org/indigo/api/catkin/html/howto/format1/index.html#how-to-do-common-tasks-1).
 But please use Version 2 for any new packages.
 There is also a 
@@ -386,7 +397,7 @@ Before creating a Pull Request, your source code should pass the following check
 1. Make a clean build, i.e. remove any `build`, `devel` and `install` folders and do a `catkin_make`.
 1. Also perform a `catkin_make_isolated`.
 1. Check if everything installs using `catkin_make install` or `caktin_make_isolated --install`.
-1. Fix any errors that occur here.
+1. Fix any errors that occur in this process.
 1. Provide a `README.md` in your package where you describe:
     - the purpose of the node/package,
     - its usage, as well as any

@@ -133,6 +133,13 @@ This especially holds for indentation, as having this unified within one file gr
 All available editors allow configuration of indentation setinngs, and most even support automatic detection of the
 current intendation scheme on opening an existing file.
 
+If you want to follow this from the start (strictly), there is a [linter](https://en.wikipedia.org/wiki/Lint_(software))
+for ROS called [`roslint` (see here for installation and usage instructions)](http://wiki.ros.org/roslint)
+that can be included in the `CMakeLists.txt`.
+But I advise you to do this from the start and check it continuously, otherwise you will most probably get many errors.
+(In a small package, we had about 130 errors.
+Using the automatic fix propose did fix approximatly 60%).
+
 
 ### Further Reading on ROS
 For ROS, there is a lot of documentation available on the net (even though some is outdated).
@@ -390,6 +397,11 @@ for also showing notices, e.g.
 catkin_lint <PATH/TO/PACKAGE> -W2
 ```
 
+There is another tool called `roscompile`, which should do many of this stuff automatically.
+However, I haven't tested it yet properly, and it is not a relased package.
+So you would have to clone it from [here](https://github.com/DLu/roscompile).
+One thing I noticed on a quick check is that it has problems with special characters like Umlauts.
+
 
 ### Preparing your changes for a Pull Request
 Before creating a Pull Request, your source code should pass the following checks:
@@ -409,8 +421,11 @@ Before creating a Pull Request, your source code should pass the following check
         - a description of their purpose
         - type and
         - default value.
+1. For the navigation repositories: please also add a demo config file to `ipa_navigation_config` where you describe
+all parameters and set their defaults.
+The same holds for a demo launch file (for this node only) in `ipa_navigation_bringup`.
 
-If you adapt a package, you should, obviously, adapt any existing `README.md` accordingly.
+If you adapt a package, you should, obviously, adapt any existing `README.md`, config or launch files accordingly.
 
 Once you've checked the above, you are ready to create the PR.
 

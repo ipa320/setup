@@ -71,7 +71,7 @@ There, the concepts described before are shown in more detail.
 
 Besides the basic Tutorials, there exist several Tutorials for specialized topics, which are listed here for reference
 (Note, this is an incomplete list):
-- [Care-o-Bot](http://wiki.ros.org/Robots/Care-O-bot/Tutorials)
+- [Care-O-bot](http://wiki.ros.org/Robots/Care-O-bot/Tutorials)
 - [Navigation](http://wiki.ros.org/navigation/Tutorials)
 - [MoveIt](http://moveit.ros.org/documentation/tutorials/)
 - [the ROS buildsystem `catkin`](http://wiki.ros.org/catkin/Tutorials)
@@ -420,7 +420,7 @@ Once you've checked the above, you are ready to create the PR.
 There also exist some additional ReadMe's and manuals that give introductions and provide guidelines
 how to work at IPA and with the Care-O-bot and rob@work.
 Check out the [IPA Manual](https://github.com/ipa320/setup/raw/master/manual_ipa/IPA_manual.pdf) and the 
-[Care-o-bot Manual](https://github.com/ipa320/setup/raw/master/manual_cob3Indigo/Care-O-bot_manual.pdf).
+[Care-O-bot Manual](https://github.com/ipa320/setup/raw/master/manual_cob3Indigo/Care-O-bot_manual.pdf).
 You can find those PDFs and the source files hosted on [GitHub](https://github.com/ipa320/setup).
 
 

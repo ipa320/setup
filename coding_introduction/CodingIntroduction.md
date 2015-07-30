@@ -250,6 +250,7 @@ In the following are some Do's and Dont's that will make life easier for everyon
 - commit one set of (logically related) changes.
 I.e. if you fix two bugs, make to commits.
 - review what you will commit using `git status` and `git diff`/`git difftool` before actually commiting.
+- before you commit, check for simple whitespace errors using `git diff --check`.
 - update your repositories regularly.
 - last but not least:
 ask your supervisor/a colleague if you are not sure what `git` will do or your repository is in a strange state.

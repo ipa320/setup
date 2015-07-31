@@ -153,6 +153,10 @@ If you register, you can also ask (and obviously also answer) questions to the R
 However, try to be as clear as possible in your question (best also give your system configuration and ROS distribution)
 to get a good answer.
 
+Also, there is an
+[official ROS Indigo Cheat Sheet](https://github.com/ros/cheatsheet/releases/download/0.0.1/ROScheatsheet_catkin.pdf)
+available which shortly introduces the most basic/common commands for using ROS.
+
 
 
 
@@ -449,13 +453,13 @@ If you want to check what the document looks like without uploading it to GitHub
 
 Install it using
 ```bash
-pip install grip
+sudo pip install grip
 ```
-Then call
+Then, move to the `setup/coding_introduction` folder and call
 ```bash
-grip CodingHowTo.md
+grip CodingIntroduction.md
 ```
-launch your browser and connect to `http://localhost:6149`.
+Launch your browser and connect to `http://localhost:6419`.
 
 **Note** that you still require an internet connection for this to work.
 

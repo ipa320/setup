@@ -1,7 +1,7 @@
-# IPA320 Coding Introduction
+# ipa320 Coding Introduction
 
-This document gives a short introduction into how Coding should be done in IPA320, especially with a focus on 
-development within the [Robot Operating System ROS](http://wiki.ros.org/ROS/Introduction).
+This document gives a short introduction into how Coding should be done in [@ipa320](https://github.com/ipa320),
+especially with a focus on development within the [Robot Operating System ROS](http://www.ros.org/).
 Thus, it is more a colletion of links to other websites and guidelines than a HowTo.
 
 As the respective tutorials cover a broad spectrum of topics, it is important that you don't just follow them blindly,
@@ -11,7 +11,8 @@ but try to understand what is behind the different concepts and commands.
 
 ===============================
 ## ROS Basics
-Most of the development within the Servicerobotics Groups in IPA320 happens using the Robot Operating System ROS.
+Most of the development within the Servicerobotics Groups in [@ipa320](https://github.com/ipa320) happens using the
+Robot Operating System ROS.
 Thus, it is of utmost importance to understand how to install and use ROS and develop algorithms in ROS.
 There exists a lot of documentation on the [ROS wiki](http://wiki.ros.org) that gives a thorough
 [introduction](http://wiki.ros.org/ROS/Introduction) and explains the concepts behin ROS.
@@ -19,10 +20,10 @@ For all people new to ROS, this is a good place to start.
 
 
 ### ROS distributions
-Similar to Ubuntu, ROS is developed in so called distributions.
+Similar to Ubuntu, ROS is developed in so called [distributions](http://wiki.ros.org/Distributions).
 At the time of writing this, the most recent distribution is [ROS Jade](http://wiki.ros.org/jade).
-However, most software at IPA320 is running using [ROS Indigo](http://wiki.ros.org/indigo), which is designed to be a 
-ROS LTS (long term stable) version.
+However, most software at [@ipa320](https://github.com/ipa320) is running using
+[ROS Indigo](http://wiki.ros.org/indigo), which is designed to be a ROS LTS (long term stable) version.
 ROS Indigo targets Ubuntu 14.04 LTS, whereas ROS Jade mainly targets Ubuntu 15.04, but should support 14.04 as well.
 
 **For now, please use ROS Indigo.**
@@ -33,7 +34,7 @@ If you are working in the IPA Apartment, you have a preinstalled PC, where ROS i
 Otherwise, you might have to install ROS yourself.
 You can find the respective installation instructions on the ROS wiki for
 [Indigo](http://wiki.ros.org/indigo/Installation) and [Jade](http://wiki.ros.org/jade/Installation) (or more general
-under http://wiki.ros.org/ROSDISTRO/Installation).
+under http://wiki.ros.org/ROS/Installation for the installation page of the latest distribution).
 
 
 ### ROS terminology
@@ -110,8 +111,8 @@ workspace_folder/         -- WORKSPACE ROOT
     ...
 ```
 
-In short, the `source` space contains your [ROS packages](http://wiki.ros.org/Packages) which might be organised in a Git
-Repository (see below for more information on Git).
+In short, the `source` space contains your [ROS packages](http://wiki.ros.org/Packages) which might be organised in a
+Git Repository (see below for more information on Git).
 The `build` space contains cache information when you build your workspace.
 The `devel` workspace contains all compiled executables and libraries so that ROS can use them.
 This is useful for development and testing.
@@ -138,14 +139,15 @@ for ROS called [`roslint` (see here for installation and usage instructions)](ht
 that can be included in the `CMakeLists.txt`.
 But I advise you to do this from the start and check it continuously, otherwise you will most probably get many errors.
 (In a small package, we had about 130 errors.
-Using the automatic fix propose did fix approximatly 60%).
+Using the automatic fix proposed on the instructions page did fix approximatly 60%).
 
 
 ### Further Reading on ROS
 For ROS, there is a lot of documentation available on the net (even though some is outdated).
 First, always check the [ROS wiki](http://wiki.ros.org) (or the respective package specific subpages),
 if you have questions about ROS.
-**Note** that all private ROS repositories from IPA320 cannot be found on the ROS wiki.
+**Note** that all private ROS repositories from [@ipa320](https://github.com/ipa320) cannot be found on the ROS wiki
+(as well as, sadly, some of the public ones).
 
 A second source of information is the [ROS answers](http://answers.ros.org) homepage.
 A lot of questions have been answered there already.
@@ -162,7 +164,7 @@ available which shortly introduces the most basic/common commands for using ROS.
 
 ===============================
 ## `Git` Basics
-At IPA320, and as a matter of fact for most ROS packages out there, we use a 
+At [@ipa320](https://github.com/ipa320), and as a matter of fact for most ROS packages out there, we use a 
 [VCS (Version Control System)](https://en.wikipedia.org/wiki/Revision_control) called
 [**`Git`**](https://en.wikipedia.org/wiki/Git_%28software%29).
 `Git` is a so called Distributed VCS, as it allows you to always check out the full history of the Source Code
@@ -171,7 +173,7 @@ This makes `Git` a very powerful tool and it is ideally suited to be used in a d
 working on the same repository.
 
 Our repositories are hosted at [`GitHub`](https://github.com) in an organisation called
-[IPA320](https://github.com/ipa320).
+[@ipa320](https://github.com/ipa320).
 Many repositories, especially for the Care-O-bot, are open source, but some are also not publicly available.
 There you can always get the latest state of development.
 
@@ -214,7 +216,7 @@ The structure that we usually follow at IPA is shown in the following figure:
 
 ![Git Repository Structure](figures/GitHub_Repos.png)
 
-Create a fork of the main ipa320 repository you want to work on.
+Create a fork of the main [@ipa320](https://github.com/ipa320) repository you want to work on.
 Clone this repository to your local computer and do some work there.
 Commit your changes and push them to your fork.
 You can then issue a Pull Request to the main repository and update your changes.
@@ -224,7 +226,7 @@ current local copy.
 
 For this, you obviously need an account at GitHub.
 Accounts at GitHub are free, choose a user name (follow the pattern `ipa-<YOURSHORTNAME>`) and register there.
-Then, the GitHub Admins at IPA320 can add you to our organisation.
+Then, the GitHub Admins of [@ipa320](https://github.com/ipa320) can add you to our organisation.
 
 
 ### Issuing a Pull Request
@@ -273,8 +275,8 @@ ask your supervisor/a colleague if you are not sure what `git` will do or your r
 [BRIDE](http://wiki.ros.org/bride)).
 - commit any binaries.
 - commit large whitespace changes intermixed with changes to the source code.
-- commit any files with filemode 755 (i.e. executable files) except for python executables (`.py` containing the `__main__`
-function) and `dynamic_reconfigure` configurations (usually located in `<PACKAGE>/cfg/<NAME>.cfg>`).
+- commit any files with filemode 755 (i.e. executable files) except for python executables (`.py` containing the
+`__main__` function) and `dynamic_reconfigure` configurations (usually located in `<PACKAGE>/cfg/<NAME>.cfg>`).
 Regular files have filemode 644.
 - create unnecessary merge commits by pulling in changes.
 
@@ -360,18 +362,20 @@ Dependencies and compiling is handled using two files, that are described in the
 The [`CMakeLists.txt`](http://wiki.ros.org/catkin/CMakeLists.txt) is the file where you specify what is to be compiled,
 which dependencies need to be used in the build process and what files or executables should be installed.
 This file is basically a `CMake` file with some `catkin` specific extensions and `CMake Macros`.
+See [this link](http://wiki.ros.org/catkin/CMakeLists.txt) for a general introduction
 
 #### The `package.xml`
 The [`package.xml`](http://wiki.ros.org/catkin/package.xml) defines what is a ROS package.
 There, you also have to specify the dependencies that your package has.
 This file is used to resolve ROS internal as well as system dependencies (even cross-platform).
+See [this link](http://wiki.ros.org/catkin/package.xml) for a general introduction.
 
 #### Correctly configuring your package
 What needs to go into the `CMakeLists.txt` and into the `package.xml` is described in detail on the
 [`catkin` documentation](http://docs.ros.org/indigo/api/catkin/html/howto/format2/).
 Note that this is for the new format of `catkin` (Version 2).
 
-Most packages at IPA320 still follow the 
+Most packages at [@ipa320](https://github.com/ipa320) still follow the 
 [legacy Version 1 format](http://docs.ros.org/indigo/api/catkin/html/howto/format1/index.html#how-to-do-common-tasks-1).
 But please use Version 2 for any new packages.
 There is also a 
@@ -436,7 +440,7 @@ Once you've checked the above, you are ready to create the PR.
 
 
 ===============================
-## Further Reading within IPA320
+## Further Reading within [@ipa320](https://github.com/ipa320)
 There also exist some additional ReadMe's and manuals that give introductions and provide guidelines
 how to work at IPA and with the Care-O-bot and rob@work.
 Check out the [IPA Manual](https://github.com/ipa320/setup/raw/master/manual_ipa/IPA_manual.pdf) and the 

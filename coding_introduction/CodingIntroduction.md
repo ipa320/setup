@@ -263,10 +263,11 @@ In the following are some Do's and Dont's that will make life easier for everyon
 - commit one set of (logically related) changes.
 I.e. if you fix two bugs, make to commits.
 - review what you will commit using `git status` and `git diff`/`git difftool` before actually commiting.
-- before you commit, check for simple whitespace errors using `git diff --check`.
+- check for simple whitespace errors using `git diff --check` **before you commit**.
 - update your repositories regularly.
 - last but not least:
 ask your supervisor/a colleague if you are not sure what `git` will do or your repository is in a strange state.
+Do **not** simply commit all changed files!
 
 **Don't**:
 - commit a state that does not compile.
@@ -414,6 +415,8 @@ One thing I noticed on a quick check is that it has problems with special charac
 ### Preparing your changes for a Pull Request
 Before creating a Pull Request, your source code should pass the following checks:
 
+1. Generally, each commit should follow the guidelines shown in the Section on Git Do's and Dont's.
+This also means checking for for whitespace errors using `git diff --check`.
 1. `catkin_lint <PACKAGE>` should not throw any errors (and as few warnings and notices as possibles).
 1. Make a clean build, i.e. remove any `build`, `devel` and `install` folders and do a `catkin_make`.
 1. Also perform a `catkin_make_isolated`.

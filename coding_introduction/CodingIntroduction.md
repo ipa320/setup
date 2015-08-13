@@ -62,7 +62,7 @@ Request-Response pattern.
 - **Action**: A ROS action is similar to a service, except that it includes a Feedback channel.
 Thus, you have a Goal-Feedback-Result pattern.
 - **`catkin`**: catkin is the build tool used within ROS.
-It is described in more detail below.
+It is described in more detail [below](#compiling-your-ros-workspace).
 With ROS Groovy, `catkin` replaced `rosbuild` as build tool.
 - **Stack**: A ROS stack is the old notion of logically connected packages, like for navigation.
 Earlier, a stack has usually been the same as a repository.
@@ -82,11 +82,16 @@ you should start working through the [basic ROS Tutorials](http://wiki.ros.org/R
 There, the concepts described before are shown in more detail.
 
 Besides the basic Tutorials, there exist several Tutorials for specialized topics, which are listed here for reference
-(Note, this is an incomplete list):
-- [Care-O-bot](http://wiki.ros.org/Robots/Care-O-bot/Tutorials)
-- [Navigation](http://wiki.ros.org/navigation/Tutorials)
-- [MoveIt](http://moveit.ros.org/documentation/tutorials/)
-- [the ROS buildsystem `catkin`](http://wiki.ros.org/catkin/Tutorials)
+(Note, this is an incomplete list, first link to the topic, second to the tutorials):
+- [Actions with `actionlib`](http://wiki.ros.org/actionlib) - [Tutorials](http://wiki.ros.org/actionlib/Tutorials)
+- [Buildsystem `catkin`](http://wiki.ros.org/catkin) - [Tutorials](http://wiki.ros.org/catkin/Tutorials)
+- [Care-O-bot](http://wiki.ros.org/Robots/Care-O-bot) - [Tutorials](http://wiki.ros.org/Robots/Care-O-bot/Tutorials)
+- [GUI development with `rqt`](http://wiki.ros.org/rqt) - [Tutorials](http://wiki.ros.org/rqt/Tutorials)
+- [Navigation](http://wiki.ros.org/navigation) - [Tutorials](http://wiki.ros.org/navigation/Tutorials)
+- [Manipulation with `MoveIt`](http://moveit.ros.org) - [Tutorials](http://moveit.ros.org/documentation/tutorials/)
+- [Simulation with `Gazebo`](http://gazebosim.org) - [Tutorials](http://gazebosim.org/tutorials?cat=connect_ros)
+- [Transformation library `tf`](http://wiki.ros.org) - [Tutorials](http://wiki.ros.org/tf/Tutorials)
+- [Visualization with `rviz`](http://wiki.ros.org/rviz) - [Tutorials](http://wiki.ros.org/rviz/Tutorials)
 
 
 ### ROS Workspace Setup
@@ -123,7 +128,7 @@ workspace_folder/         -- WORKSPACE ROOT
 ```
 
 In short, the `source` space contains your [ROS packages](http://wiki.ros.org/Packages) which might be organised in a
-Git Repository (see below for more information on Git).
+Git Repository (see [below for more information on Git](#git-basics)).
 The `build` space contains cache information when you build your workspace.
 The `devel` workspace contains all compiled executables and libraries so that ROS can use them.
 This is useful for development and testing.
@@ -131,6 +136,12 @@ The ROS packages can also be installed, this is what the `install` space is for.
 
 Check out the [Tutorial on creating a workspace](http://wiki.ros.org/catkin/Tutorials/create_a_workspace) for how to set
 it up.
+
+Once you have created a workspace, you need to build/compile it.
+Check out [Compiling your ROS workspace](#compiling-your-ros-workspace) below.
+
+There is also a tool called [`rosinstall`](http://docs.ros.org/independent/api/rosinstall/html/) which helps in setting
+up a workspace where you need to have several repositories.
 
 
 ### ROS Coding Styles
@@ -144,7 +155,8 @@ This especially holds for indentation, as having this unified within one file gr
 
 All available editors allow configuration of indentation settings, and most even support automatic detection of the
 current intendation scheme on opening an existing file.
-Make sure to configure this in the editor's preferences section.
+Make sure to configure this in the editor's preferences section (how to configure some of the more popular IDE's for ROS
+can be found [here](http://wiki.ros.org/IDEs)).
 
 If you want to follow this from the start (strictly), there is a [linter](https://en.wikipedia.org/wiki/Lint_(software))
 for ROS called [`roslint` (see here for installation and usage instructions)](http://wiki.ros.org/roslint)
@@ -196,7 +208,7 @@ In the following, some often occuring phrases are shortly described:
 - **Fork**: A fork is a copy of a repository (on GitHub).
 This can be used to save changes without having to save them on the main repository (where you usually don't have write
 access).
-Thus, this is the way to get your changes into the main repository, as described below.
+Thus, this is the way to get your changes into the main repository, as described [below](#git-workflow).
 - **Clone**: Cloning means creating a local repository containing the revisions from another repository. 
 - **Commit**: To commit is to write the changes made in the working copy back to the repository.
 - **Merge**: A merge is an operation in which two sets of changes are applied to a file or set of files.
@@ -237,7 +249,8 @@ You can obviously always pull from both, the main repository or your fork to get
 current local copy.
 
 For this, you obviously need an account at GitHub.
-Accounts at GitHub are free, choose a user name (follow the pattern `ipa-<YOURSHORTNAME>`) and register there.
+Accounts at GitHub are free, choose a user name (follow the pattern `ipa-<xyz>-<ab>`, where `<xyz>` is your supervisor
+and `<ab>` are your initials (obviously, there might be exeptions)) and register there.
 Then, the GitHub Admins of [@ipa320](https://github.com/ipa320) can add you to our organisation.
 
 
@@ -281,9 +294,9 @@ I.e. if you fix two bugs, make to commits.
 ask your supervisor/a colleague if you are not sure what `git` will do or your repository is in a strange state.
 Do **not** simply commit all changed files!
 
-**Don't**:
+**Do Not**:
 - commit a state that does not compile.
-- commit any temporary files.
+- commit any temporary files (e.g. `*.orig`, `*.*~`, `*.pyc`).
 - commit any autogenerated files (except for where they are created from a template, e.g. using 
 [BRIDE](http://wiki.ros.org/bride)).
 - commit any binaries.
@@ -292,6 +305,7 @@ Do **not** simply commit all changed files!
 `__main__` function) and `dynamic_reconfigure` configurations (usually located in `<PACKAGE>/cfg/<NAME>.cfg>`).
 Regular files have filemode 644.
 - create unnecessary merge commits by pulling in changes.
+- use `git add *`, **NEVER**.
 
 
 ### Further Reading on `Git`
@@ -353,6 +367,13 @@ catkin_make_isolated --install
 ```
 respectively.
 
+
+### Additional Tools
+There exist some additional tools, which can make compiling easier.
+- The package `catkin tools` provides command line tools for working with the catkin meta-buildsystem and workspaces.
+See the [documentation here](https://catkin-tools.readthedocs.org/en/latest/) for reference.
+- `rosdep` helps with installing dependencies to packages in your workspace, that you haven't installed yet.
+Again, see [the documentation](http://docs.ros.org/independent/api/rosdep/html/) for reference.
 
 ### Creating a ROS package
 To [create a new ROS package](http://wiki.ros.org/ROS/Tutorials/catkin/CreatingPackage), go to your source space
@@ -417,6 +438,7 @@ for also showing notices, e.g.
 ```bash
 catkin_lint <PATH/TO/PACKAGE> -W2
 ```
+`catkin_lint` provides the `--explain` argument, which gives hints on how to resolve the problems.
 
 There is another tool called `roscompile`, which should do many of this stuff automatically.
 However, I haven't tested it yet properly, and it is not a relased package.
@@ -430,7 +452,9 @@ Before creating a Pull Request, your source code should pass the following check
 1. Generally, each commit should follow the guidelines shown in the Section on Git Do's and Dont's.
 This also means checking for for whitespace errors using `git diff --check`.
 1. `catkin_lint <PACKAGE>` should not throw any errors (and as few warnings and notices as possibles).
-1. Make a clean build, i.e. remove any `build`, `devel` and `install` folders and do a `catkin_make`.
+1. Make a clean build, i.e. remove any `build`, `devel` and `install` folders and do a `catkin_make -j1`.
+(This enforces linear build and thus helps tracking down dependency problems.
+As it is slow, better don't use it for regular builds.)
 1. Also perform a `catkin_make_isolated`.
 1. Check if everything installs using `catkin_make install` or `caktin_make_isolated --install`.
 1. Fix any errors that occur in this process.

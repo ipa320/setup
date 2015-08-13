@@ -7,7 +7,18 @@ Thus, it is more a colletion of links to other websites and guidelines than a Ho
 As the respective tutorials cover a broad spectrum of topics, it is important that you don't just follow them blindly,
 but try to understand what is behind the different concepts and commands.
 
+===============================
+## Linux/Ubuntu Basics
+ROS is based on [Ubuntu](http://www.ubuntu.com), which is a Linux Distribution.
+You should be familiar with the basic command line tools to use the terminal in Ubuntu.
+If you are not, the ROS wiki states that:
+> If you are new to Linux: You may find it helpful to first do a quick tutorial on common command line tools for linux.
+> A good one is [here](http://www.ee.surrey.ac.uk/Teaching/Unix/).
 
+There also is a myriad of CheatSheets out there, that help you keep track of the different commands (see
+[this](http://cli.learncodethehardway.org/bash_cheat_sheet.pdf),
+[this](http://files.fosswire.com/2007/08/fwunixref.pdf) or
+[that](http://www.digilife.be/quickreferences/QRC/The%20One%20Page%20Linux%20Manual.pdf), to just name a few).
 
 ===============================
 ## ROS Basics
@@ -131,8 +142,9 @@ If you create a new package, please try to adhere to those guidelines as much as
 However, if you edit an existing package, **stick to the coding style therein**!
 This especially holds for indentation, as having this unified within one file greatly improves readability.
 
-All available editors allow configuration of indentation setinngs, and most even support automatic detection of the
+All available editors allow configuration of indentation settings, and most even support automatic detection of the
 current intendation scheme on opening an existing file.
+Make sure to configure this in the editor's preferences section.
 
 If you want to follow this from the start (strictly), there is a [linter](https://en.wikipedia.org/wiki/Lint_(software))
 for ROS called [`roslint` (see here for installation and usage instructions)](http://wiki.ros.org/roslint)

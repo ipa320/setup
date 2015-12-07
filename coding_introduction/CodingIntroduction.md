@@ -477,6 +477,15 @@ If you adapt a package, you should, obviously, adapt any existing `README.md`, c
 Once you've checked the above, you are ready to create the PR.
 
 
+===============================
+## Mounting Saturn server on Ubuntu
+1. Open filemanager (nautilus)
+2. Press Ctrl+L
+3. Enter "smb://"ipa_user"@saturn20.ipa.fhg.de/ipa_320/323/03_Studenten" and replace "ipa_user" with your IPA user (e.g. abc-xy)
+4. Enter your password
+5. Optional: right click on the new entry under Network, "Add Bookmark"
+
+
 
 ===============================
 ## Further Reading within [@ipa320](https://github.com/ipa320)

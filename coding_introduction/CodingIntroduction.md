@@ -416,6 +416,36 @@ There is also a
 [Migration Guide](http://docs.ros.org/indigo/api/catkin/html/howto/format2/migrating_from_format_1.html#migrating-from-format1-to-format2)
 available.
 
+#### Best Practices: Package Configuration
+The following describes some best practices for configuring your packages.
+- `package.xml`
+    - use package format [version 2](http://docs.ros.org/indigo/api/catkin/html/howto/format2/)
+    - add the dependency tags in the following order
+        1. `<buildtool_depend>catkin</buildtool_depend>`
+        1. if you build any messages, services or actions in your package:
+           ```
+           <build_depend>message_generation</build_depend>
+           <exec_depend>message_runtime</exec_depend>
+           ```
+        1. `<depend>`
+        1. `<exec_depend>`
+    - sort all dependencies therein alphabetically
+    - fill the header with meaningfull details, i.e. provide a good description, license (usually LGPL), links to bug-
+      trackers and wiki packages (if any), as well as author information (i.e. your name and email address) and
+      maintainer information (this should probably be your supervisor, talk to him about this)
+    - remove the unnecessary comments, as they are just cluttering the package xml
+- `CMakeLists.txt`
+    - sort all dependencies, filenames, etc. alphabetically (e.g. in the `find_package` calls)
+    - use line breaks and proper indentation for better readability
+    - have the respective `add_executable`/`add_library`, `add_dependencies` and `target_link_libraries` for single
+      targets directly after each other
+    - use the `add_dependencies` call to make sure to build any dependencies (e.g. messages) prior to your package
+        - if you depend on messages in another package, add `add_dependencies(<TARGET> ${catkin_EXPORTED_TARGETS})`
+        - if you build messages/... in your package, (additionally) add
+          `add_dependencies(<TARGET> ${${PROJECT_NAME}_EXPORTED_TARGETS}}`
+    - again, remove the unnecessary comments
+    - make sure to also add the respective install tags (if unsure, ask your supervisor how to do this)
+
 ### Checking your package configuration
 There also exist tools to help you with the package configuration.
 One is called [`catkin_lint`](https://github.com/fkie/catkin_lint) and is statically analyzing your `CMakeLists.txt` and

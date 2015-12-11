@@ -8,6 +8,42 @@ As the respective tutorials cover a broad spectrum of topics, it is important th
 but try to understand what is behind the different concepts and commands.
 
 ===============================
+## tl;dr
+(Too long; didn't read)
+
+For all of you for which the full document is too long, here are the most important excerpts.
+The rest of you, please start reading with the next paragraph.
+
+This section is (maybe) enough for you, if
+- you already know how to use Linux! (If not, read [this section](#linux-ubuntu-basics)).
+- you already know ROS! (If not, read [this section](#ros-basics)).
+- you already know how to use Git! (If not, read [this section](#git-basics)).
+
+Or if you are very impatient ;-)
+
+Please consider the following points:
+- use ROS **Indigo**.
+- try following the ROS Coding Styles ([`C++`](http://wiki.ros.org/CppStyleGuide),
+  [`python`](http://wiki.ros.org/PyStyleGuide)), in new packages, or stick to the Coding Style applied to the package
+  that you are editing.
+- your GitHub Username should be **`ipa-<abc>-<xy>`**.
+- follow the [Git Do's and Dont's](#git-dos-and-donts) (commit often, make small commits, provide meaningful commit
+  messages, review your changes before commiting, do not commit temporary/auto-generated/binary files, ...)
+- set-up your `package.xml` and `CMakeLists.txt` correctly and follow the
+  [best practices](#package-configuration-best-practices)
+- properly [prepare you changes for a Pull Request](#preparing-your-changes-for-a-pull-request) (build with
+  `catkin_make -j1`/`catkin_make install`/`catkin_make_isolated` in a clean workspace, add a `Readme.md` and examplary
+  launch and config files, provide a description of your PR and follow up on the comments)
+
+
+
+
+===============================
+## Table of Contents
+**ToDo: Check links above!**
+**ToDo: Check if it is somehow possible to add an automatic ToC!**
+
+===============================
 ## Linux/Ubuntu Basics
 ROS is based on [Ubuntu](http://www.ubuntu.com), which is a Linux Distribution.
 You should be familiar with the basic command line tools to use the terminal in Ubuntu.
@@ -250,7 +286,7 @@ current local copy.
 
 For this, you obviously need an account at GitHub.
 Accounts at GitHub are free, choose a user name (follow the pattern `ipa-<xyz>-<ab>`, where `<xyz>` is your supervisor
-and `<ab>` are your initials (obviously, there might be exeptions)) and register there.
+and `<ab>` are your initials (obviously, there might be exceptions)) and register there.
 Then, the GitHub Admins of [@ipa320](https://github.com/ipa320) can add you to our organisation.
 
 
@@ -286,7 +322,7 @@ In the following are some Do's and Dont's that will make life easier for everyon
 - commit often.
 - provide meaningful commit messages ('test' or 'debugging' is not a good commit message).
 - commit one set of (logically related) changes.
-I.e. if you fix two bugs, make to commits.
+I.e. if you fix two bugs, make two commits.
 - review what you will commit using `git status` and `git diff`/`git difftool` before actually commiting.
 - check for simple whitespace errors using `git diff --check` **before you commit**.
 - update your repositories regularly.

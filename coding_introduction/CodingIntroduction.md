@@ -481,7 +481,11 @@ Once you've checked the above, you are ready to create the PR.
 ## Mounting Saturn server on Ubuntu
 1. Open filemanager (nautilus)
 2. Press Ctrl+L
-3. Enter "smb://"ipa_user"@saturn20.ipa.fhg.de/ipa_320/323/03_Studenten" and replace "ipa_user" with your IPA user (e.g. abc-xy)
+3. Enter `smb://<USER>@saturn20.ipa.fhg.de/<PATH>` and replace `<USR>` with your IPA username (e.g. abc-xy).
+   The `<PATH>` is the fully qualified path to a folder where you have access to, e.g. `ipa_320/323/03_Studenten` (for
+   students of the group 323) or your private section on `saturn` which is the same as your IPA username, i.e. `<USER>`.
+   Note, that this private section cannot be accessed by anyone else, so don't store any important data from your
+   work there!
 4. Enter your password
 5. Optional: right click on the new entry under Network, "Add Bookmark"
 

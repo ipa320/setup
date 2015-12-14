@@ -34,12 +34,40 @@ Please consider the following points:
   `catkin_make -j1`/`catkin_make install`/`catkin_make_isolated` in a clean workspace, add a `Readme.md` and examplary
   launch and config files, provide a description of your PR and follow up on the comments)
 
-
-
-
-===============================
 ## Table of Contents
-**ToDo: Check if it is somehow possible to add an automatic ToC!**
+* [tl;dr](#tldr)
+* [Table of Contents](#table-of-contents)
+* [Linux/Ubuntu Basics](#linuxubuntu-basics)
+* [ROS Basics](#ros-basics)
+  * [ROS distributions](#ros-distributions)
+  * [ROS Installation](#ros-installation)
+  * [ROS terminology](#ros-terminology)
+  * [ROS Tutorials](#ros-tutorials)
+  * [ROS Workspace Setup](#ros-workspace-setup)
+  * [ROS Coding Styles](#ros-coding-styles)
+  * [Further Reading on ROS](#further-reading-on-ros)
+* [Git Basics](#git-basics)
+  * [Git terminology](#git-terminology)
+  * [Git Tutorials and Guides](#git-tutorials-and-guides)
+  * [Git Workflow](#git-workflow)
+  * [Issuing a Pull Request](#issuing-a-pull-request)
+  * [Git Do's and Dont's](#git-dos-and-donts)
+  * [Further Reading on Git ](#further-reading-on-git)
+* [Compiling your ROS workspace](#compiling-your-ros-workspace)
+  * [Different compile types](#different-compile-types)
+  * [Additional Tools](#additional-tools)
+  * [Creating a ROS package](#creating-a-ros-package)
+    * [The CMakeLists.txt ](#the-cmakeliststxt)
+    * [The package.xml ](#the-packagexml)
+    * [Correctly configuring your package](#correctly-configuring-your-package)
+    * [Best Practices: Package Configuration](#best-practices-package-configuration)
+  * [Checking your package configuration](#checking-your-package-configuration)
+  * [Preparing your changes for a Pull Request](#preparing-your-changes-for-a-pull-request)
+* [Mounting Saturn server on Ubuntu](#mounting-saturn-server-on-ubuntu)
+* [Further Reading within <a href="https://github.com/ipa320">@ipa320</a> ](#further-reading-within-ipa320)
+* [HowTo-HowTo](#howto-howto)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 ===============================
 ## Linux/Ubuntu Basics
@@ -585,3 +613,14 @@ Launch your browser and connect to `http://localhost:6419`.
 
 Any (drawn) figures are created using the online tool at https://www.draw.io/.
 The source of those files resides in the `figures/src` subdirectory.
+
+The [ToC](#table-of-contents) is created using a script called
+[gh-md-toc](https://github.com/ekalinin/github-markdown-toc).
+Still, you have to manually create and copy-paste the ToC in here (I also removed the top-level heading entry).
+To use this, follow those steps:
+```bash
+wget https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc
+chmod a+x gh-md-toc
+./gh-md-toc <PATH/TO/MARKDOWNFILE>
+```
+and copy the ToC therein.

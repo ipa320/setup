@@ -7,7 +7,6 @@ Thus, it is more a colletion of links to other websites and guidelines than a Ho
 As the respective tutorials cover a broad spectrum of topics, it is important that you don't just follow them blindly,
 but try to understand what is behind the different concepts and commands.
 
-===============================
 ## tl;dr
 (Too long; didn't read)
 
@@ -15,9 +14,9 @@ For all of you for which the full document is too long, here are the most import
 The rest of you, please start reading with the next paragraph.
 
 This section is (maybe) enough for you, if
-- you already know how to use Linux! (If not, read [this section](#linux-ubuntu-basics)).
+- you already know how to use Linux! (If not, read [this section](#linuxubuntu-basics)).
 - you already know ROS! (If not, read [this section](#ros-basics)).
-- you already know how to use Git! (If not, read [this section](#git-basics)).
+- and you already know how to use Git! (If not, read [this section](#git-basics)).
 
 Or if you are very impatient ;-)
 
@@ -30,7 +29,7 @@ Please consider the following points:
 - follow the [Git Do's and Dont's](#git-dos-and-donts) (commit often, make small commits, provide meaningful commit
   messages, review your changes before commiting, do not commit temporary/auto-generated/binary files, ...)
 - set-up your `package.xml` and `CMakeLists.txt` correctly and follow the
-  [best practices](#package-configuration-best-practices)
+  [best practices](#best-practices-package-configuration)
 - properly [prepare you changes for a Pull Request](#preparing-your-changes-for-a-pull-request) (build with
   `catkin_make -j1`/`catkin_make install`/`catkin_make_isolated` in a clean workspace, add a `Readme.md` and examplary
   launch and config files, provide a description of your PR and follow up on the comments)
@@ -40,7 +39,6 @@ Please consider the following points:
 
 ===============================
 ## Table of Contents
-**ToDo: Check links above!**
 **ToDo: Check if it is somehow possible to add an automatic ToC!**
 
 ===============================
@@ -473,8 +471,8 @@ The following describes some best practices for configuring your packages.
 - `CMakeLists.txt`
     - sort all dependencies, filenames, etc. alphabetically (e.g. in the `find_package` calls)
     - use line breaks and proper indentation for better readability
-    - have the respective `add_executable`/`add_library`, `add_dependencies` and `target_link_libraries` for single
-      targets directly after each other
+    - have the respective `add_executable`/`add_library`, `add_dependencies` and `target_link_libraries` calls for each
+      single target directly after each other
     - use the `add_dependencies` call to make sure to build any dependencies (e.g. messages) prior to your package
         - if you depend on messages in another package, add `add_dependencies(<TARGET> ${catkin_EXPORTED_TARGETS})`
         - if you build messages/... in your package, (additionally) add

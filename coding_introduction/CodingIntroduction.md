@@ -33,6 +33,7 @@ Please consider the following points:
 - properly [prepare you changes for a Pull Request](#preparing-your-changes-for-a-pull-request) (build with
   `catkin_make -j1`/`catkin_make install`/`catkin_make_isolated` in a clean workspace, add a `Readme.md` and examplary
   launch and config files, provide a description of your PR and follow up on the comments)
+- and follow the [best practices for Pull Requests](#best-practices-pull-requests)
 
 ## Table of Contents
 * [tl;dr](#tldr)
@@ -52,6 +53,7 @@ Please consider the following points:
   * [Git Workflow](#git-workflow)
   * [Issuing a Pull Request](#issuing-a-pull-request)
   * [Git Do's and Dont's](#git-dos-and-donts)
+  * [Best Practices: Pull Requests](#best-practices-pull-requests)
   * [Further Reading on Git ](#further-reading-on-git)
 * [Compiling your ROS workspace](#compiling-your-ros-workspace)
   * [Different compile types](#different-compile-types)
@@ -68,6 +70,7 @@ Please consider the following points:
 * [HowTo-HowTo](#howto-howto)
 
 Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+
 
 ===============================
 ## Linux/Ubuntu Basics

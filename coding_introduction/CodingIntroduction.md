@@ -370,6 +370,33 @@ Regular files have filemode 644.
 - use `git add *`, **NEVER**.
 
 
+### Best Practices: Pull Requests
+For Pull Requests, there are two kind of best practices, related to the Pull Request itself, and to the Pull Request
+Review, that we established in [@ipa320](https://github.com/ipa320).
+
+- Pull Request
+  - keep the PR small (<100 changed files, <1000 changed lines of code)
+  - have only one feature in a PR (best use feature branches to seperate features)
+  - give the PR a meaningful name
+  - describe what the PR does in the PR description; this helps in understanding what changed and why
+  - the PR should obviously compile without problems and conform to
+    [this](#preparing-your-changes-for-a-pull-request) guidelines
+  - remember to follow-up on the comments from the Pull Request Review!
+- Pull Request Review
+  - when you do a **Formal Review (FR)** check:
+    - file names
+    - changed files
+    - file sizes
+    - for a new package: whether it is in the correct repo and if the package has the correct name
+  - when you do a **Critical Review (CR)**, you are checking the code line by line:
+    - if you find anything that is not correct or seems odd in the source code
+    - if the package configuration is correct
+    - if the formatting is okay
+    - if it contains consistent configuration changes for **all** supported robots
+    - if there are any (possible) implications on other robots, packages or repositories
+  - when you do tests, specify if you have "tested in simulation" or "tested on CoB/r@w"
+
+
 ### Further Reading on `Git`
 You can find additional information about git in the following resources.
 - [The main git resource page](http://git-scm.com/).
@@ -566,7 +593,8 @@ The same holds for a demo launch file (for this node only) in `ipa_navigation_br
 
 If you adapt a package, you should, obviously, adapt any existing `README.md`, config or launch files accordingly.
 
-Once you've checked the above, you are ready to create the PR.
+Once you've checked the above, you are ready to create the PR (check the
+[Best Practices](#best-practices-pull-requests)).
 
 
 ===============================

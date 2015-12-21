@@ -369,7 +369,8 @@ Do **not** simply commit all changed files!
 - commit any files with filemode 755 (i.e. executable files) except for python executables (`.py` containing the
 `__main__` function) and `dynamic_reconfigure` configurations (usually located in `<PACKAGE>/cfg/<NAME>.cfg>`).
 Regular files have filemode 644.
-- create unnecessary merge commits by pulling in changes.
+- create unnecessary merge commits by pulling in changes into frequently into your working branch.
+- provide a commit message, if you locally resolve a merge conflict. Do a simple `git commit`!
 - use `git add *`, **NEVER**.
 
 

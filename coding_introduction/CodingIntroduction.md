@@ -7,6 +7,71 @@ Thus, it is more a colletion of links to other websites and guidelines than a Ho
 As the respective tutorials cover a broad spectrum of topics, it is important that you don't just follow them blindly,
 but try to understand what is behind the different concepts and commands.
 
+## tl;dr
+(Too long; didn't read)
+
+For all of you for which the full document is too long, here are the most important excerpts.
+The rest of you, please start reading with the next paragraph.
+
+This section is (maybe) enough for you, if
+- you already know how to use Linux! (If not, read [this section](#linuxubuntu-basics)).
+- you already know ROS! (If not, read [this section](#ros-basics)).
+- and you already know how to use Git! (If not, read [this section](#git-basics)).
+
+Or if you are very impatient ;-)
+
+Please consider the following points:
+- use ROS **Indigo**.
+- try following the ROS Coding Styles ([`C++`](http://wiki.ros.org/CppStyleGuide),
+  [`python`](http://wiki.ros.org/PyStyleGuide)), in new packages, or stick to the Coding Style applied to the package
+  that you are editing.
+- your GitHub Username should be **`ipa-<abc>-<xy>`**.
+- follow the [Git Do's and Dont's](#git-dos-and-donts) (commit often, make small commits, provide meaningful commit
+  messages, review your changes before commiting, do not commit temporary/auto-generated/binary files, ...)
+- set-up your `package.xml` and `CMakeLists.txt` correctly and follow the
+  [best practices](#best-practices-package-configuration)
+- properly [prepare you changes for a Pull Request](#preparing-your-changes-for-a-pull-request) (build with
+  `catkin_make -j1`/`catkin_make install`/`catkin_make_isolated` in a clean workspace, add a `Readme.md` and examplary
+  launch and config files, provide a description of your PR and follow up on the comments)
+- and follow the [best practices for Pull Requests](#best-practices-pull-requests)
+
+## Table of Contents
+* [tl;dr](#tldr)
+* [Table of Contents](#table-of-contents)
+* [Linux/Ubuntu Basics](#linuxubuntu-basics)
+* [ROS Basics](#ros-basics)
+  * [ROS distributions](#ros-distributions)
+  * [ROS Installation](#ros-installation)
+  * [ROS terminology](#ros-terminology)
+  * [ROS Tutorials](#ros-tutorials)
+  * [ROS Workspace Setup](#ros-workspace-setup)
+  * [ROS Coding Styles](#ros-coding-styles)
+  * [Further Reading on ROS](#further-reading-on-ros)
+* [Git Basics](#git-basics)
+  * [Git terminology](#git-terminology)
+  * [Git Tutorials and Guides](#git-tutorials-and-guides)
+  * [Git Workflow](#git-workflow)
+  * [Issuing a Pull Request](#issuing-a-pull-request)
+  * [Best Practices: Pull Requests](#best-practices-pull-requests)
+  * [Git Do's and Dont's](#git-dos-and-donts)
+  * [Further Reading on Git ](#further-reading-on-git)
+* [Compiling your ROS workspace](#compiling-your-ros-workspace)
+  * [Different compile types](#different-compile-types)
+  * [Additional Tools](#additional-tools)
+  * [Creating a ROS package](#creating-a-ros-package)
+    * [The CMakeLists.txt ](#the-cmakeliststxt)
+    * [The package.xml ](#the-packagexml)
+    * [Correctly configuring your package](#correctly-configuring-your-package)
+    * [Best Practices: Package Configuration](#best-practices-package-configuration)
+  * [Checking your package configuration](#checking-your-package-configuration)
+  * [Preparing your changes for a Pull Request](#preparing-your-changes-for-a-pull-request)
+* [Mounting Saturn server on Ubuntu](#mounting-saturn-server-on-ubuntu)
+* [Further Reading within <a href="https://github.com/ipa320">@ipa320</a> ](#further-reading-within-ipa320)
+* [HowTo-HowTo](#howto-howto)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+
+
 ===============================
 ## Linux/Ubuntu Basics
 ROS is based on [Ubuntu](http://www.ubuntu.com), which is a Linux Distribution.
@@ -250,7 +315,7 @@ current local copy.
 
 For this, you obviously need an account at GitHub.
 Accounts at GitHub are free, choose a user name (follow the pattern `ipa-<xyz>-<ab>`, where `<xyz>` is your supervisor
-and `<ab>` are your initials (obviously, there might be exeptions)) and register there.
+and `<ab>` are your initials (obviously, there might be exceptions)) and register there.
 Then, the GitHub Admins of [@ipa320](https://github.com/ipa320) can add you to our organisation.
 
 
@@ -279,6 +344,33 @@ Fix the requested changes and update the PR by simply pushing again to the branc
 first place.
 
 
+### Best Practices: Pull Requests
+For Pull Requests, there are two kind of best practices, related to the Pull Request itself, and to the Pull Request
+Review, that we established in [@ipa320](https://github.com/ipa320).
+
+- Pull Request
+  - try to keep the PR small (<10 changed files, <300 changed lines of code), wherever possible
+  - have only one feature in a PR (best use feature branches to seperate features)
+  - give the PR a meaningful name
+  - describe what the PR does in the PR description; this helps in understanding what changed and why
+  - the PR should obviously compile without problems and conform to
+    [this](#preparing-your-changes-for-a-pull-request) guidelines
+  - remember to follow-up on the comments from the Pull Request Review!
+- Pull Request Review
+  - when you do a **Formal Review (FR)** check:
+    - file names
+    - changed files
+    - file sizes
+    - for a new package: whether it is in the correct repo and if the package has the correct name
+  - when you do a **Critical Review (CR)**, you are checking the code line by line:
+    - if you find anything that is not correct or seems odd in the source code
+    - if the package configuration is correct
+    - if the formatting is okay
+    - if it contains consistent configuration changes for **all** supported robots
+    - if there are any (possible) implications on other robots, packages or repositories
+  - when you do tests, specify if you have "tested in simulation" or "tested on CoB/r@w"
+
+
 ### `Git` Do's and Dont's
 In the following are some Do's and Dont's that will make life easier for everyone, if you follow them.
 
@@ -286,7 +378,7 @@ In the following are some Do's and Dont's that will make life easier for everyon
 - commit often.
 - provide meaningful commit messages ('test' or 'debugging' is not a good commit message).
 - commit one set of (logically related) changes.
-I.e. if you fix two bugs, make to commits.
+I.e. if you fix two bugs, make two commits.
 - review what you will commit using `git status` and `git diff`/`git difftool` before actually commiting.
 - check for simple whitespace errors using `git diff --check` **before you commit**.
 - update your repositories regularly.
@@ -304,7 +396,8 @@ Do **not** simply commit all changed files!
 - commit any files with filemode 755 (i.e. executable files) except for python executables (`.py` containing the
 `__main__` function) and `dynamic_reconfigure` configurations (usually located in `<PACKAGE>/cfg/<NAME>.cfg>`).
 Regular files have filemode 644.
-- create unnecessary merge commits by pulling in changes.
+- create unnecessary merge commits by pulling in changes into frequently into your working branch.
+- provide a commit message, if you locally resolve a merge conflict. Do a simple `git commit`!
 - use `git add *`, **NEVER**.
 
 
@@ -416,6 +509,36 @@ There is also a
 [Migration Guide](http://docs.ros.org/indigo/api/catkin/html/howto/format2/migrating_from_format_1.html#migrating-from-format1-to-format2)
 available.
 
+#### Best Practices: Package Configuration
+The following describes some best practices for configuring your packages.
+- `package.xml`
+    - use package format [version 2](http://docs.ros.org/indigo/api/catkin/html/howto/format2/)
+    - add the dependency tags in the following order
+        1. `<buildtool_depend>catkin</buildtool_depend>`
+        1. if you build any messages, services or actions in your package:
+           ```
+           <build_depend>message_generation</build_depend>
+           <exec_depend>message_runtime</exec_depend>
+           ```
+        1. `<depend>`
+        1. `<exec_depend>`
+    - sort all dependencies therein alphabetically
+    - fill the header with meaningfull details, i.e. provide a good description, license (usually LGPL), links to bug-
+      trackers and wiki packages (if any), as well as author information (i.e. your name and email address) and
+      maintainer information (this should probably be your supervisor, talk to him about this)
+    - remove the unnecessary comments, as they are just cluttering the package xml
+- `CMakeLists.txt`
+    - sort all dependencies, filenames, etc. alphabetically (e.g. in the `find_package` calls)
+    - use line breaks and proper indentation for better readability
+    - have the respective `add_executable`/`add_library`, `add_dependencies` and `target_link_libraries` calls for each
+      single target directly after each other
+    - use the `add_dependencies` call to make sure to build any dependencies (e.g. messages) prior to your package
+        - if you depend on messages in another package, add `add_dependencies(<TARGET> ${catkin_EXPORTED_TARGETS})`
+        - if you build messages/... in your package, (additionally) add
+          `add_dependencies(<TARGET> ${${PROJECT_NAME}_EXPORTED_TARGETS}}`
+    - again, remove the unnecessary comments
+    - make sure to also add the respective install tags (if unsure, ask your supervisor how to do this)
+
 ### Checking your package configuration
 There also exist tools to help you with the package configuration.
 One is called [`catkin_lint`](https://github.com/fkie/catkin_lint) and is statically analyzing your `CMakeLists.txt` and
@@ -474,14 +597,19 @@ The same holds for a demo launch file (for this node only) in `ipa_navigation_br
 
 If you adapt a package, you should, obviously, adapt any existing `README.md`, config or launch files accordingly.
 
-Once you've checked the above, you are ready to create the PR.
+Once you've checked the above, you are ready to create the PR (check the
+[Best Practices](#best-practices-pull-requests)).
 
 
 ===============================
 ## Mounting Saturn server on Ubuntu
 1. Open filemanager (nautilus)
 2. Press Ctrl+L
-3. Enter "smb://"ipa_user"@saturn20.ipa.fhg.de/ipa_320/323/03_Studenten" and replace "ipa_user" with your IPA user (e.g. abc-xy)
+3. Enter `smb://<USER>@saturn20.ipa.fhg.de/<PATH>` and replace `<USR>` with your IPA username (e.g. abc-xy).
+   The `<PATH>` is the fully qualified path to a folder where you have access to, e.g. `ipa_320/323/03_Studenten` (for
+   students of the group 323) or your private section on `saturn` which is the same as your IPA username, i.e. `<USER>`.
+   Note, that this private section cannot be accessed by anyone else, so don't store any important data from your
+   work there!
 4. Enter your password
 5. Optional: right click on the new entry under Network, "Add Bookmark"
 
@@ -517,3 +645,14 @@ Launch your browser and connect to `http://localhost:6419`.
 
 Any (drawn) figures are created using the online tool at https://www.draw.io/.
 The source of those files resides in the `figures/src` subdirectory.
+
+The [ToC](#table-of-contents) is created using a script called
+[gh-md-toc](https://github.com/ekalinin/github-markdown-toc).
+Still, you have to manually create and copy-paste the ToC in here (I also removed the top-level heading entry).
+To use this, follow those steps:
+```bash
+wget https://raw.githubusercontent.com/ekalinin/github-markdown-toc/master/gh-md-toc
+chmod a+x gh-md-toc
+./gh-md-toc <PATH/TO/MARKDOWNFILE>
+```
+and copy the ToC therein.

@@ -526,7 +526,7 @@ The following describes some best practices for configuring your packages.
     - fill the header with meaningfull details, i.e. provide a good description, license (usually LGPL), links to bug-
       trackers and wiki packages (if any), as well as author information (i.e. your name and email address) and
       maintainer information (this should probably be your supervisor, talk to him about this)
-    - remove the unnecessary comments, as they are just cluttering the package xml
+    - remove the unnecessary comments, as they are just cluttering the `package.xml`
 - `CMakeLists.txt`
     - sort all dependencies, filenames, etc. alphabetically (e.g. in the `find_package` calls)
     - use line breaks and proper indentation for better readability
@@ -534,8 +534,34 @@ The following describes some best practices for configuring your packages.
       single target directly after each other
     - use the `add_dependencies` call to make sure to build any dependencies (e.g. messages) prior to your package
         - if you depend on messages in another package, add `add_dependencies(<TARGET> ${catkin_EXPORTED_TARGETS})`
-        - if you build messages/... in your package, (additionally) add
-          `add_dependencies(<TARGET> ${${PROJECT_NAME}_EXPORTED_TARGETS}}`
+        - if you build messages/... in your package, extend this to
+          `add_dependencies(<TARGET> ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})`
+    - if you need special build flags (e.g. compiler options or preprocessor definitions), there exist some special
+      `CMake` commands that you should use.
+
+      **Note**, that they are only available from `CMake 2.8.12` onwards, which is available for Ubuntu 14.04.
+
+      **Don't** change the `CMAKE_CXX_FLAGS` etc!
+        - if you use any of the following commands, adapt the first line in the `CMakeLists.txt` to
+          `cmake_minimum_required(VERSION 2.8.12)`
+        - if you need to add preprocessor definitions, use the
+          [`add_definitions()`](https://cmake.org/cmake/help/v2.8.12/cmake.html#command:add_definitions) or
+          [`target_compile_definitions()`](https://cmake.org/cmake/help/v2.8.12/cmake.html#command:target_compile_options)
+          respectively.
+          `add_definitions()` works on the directory, `target_compile_definitions()` on a per target basis and thus
+          should be preferred. E.g.
+
+          ```CMake
+          add_definitions( -DMY_COMPILE_DEFINITION=1 )
+          target_compile_definitions(<TARGET> PRIVATE MY_COMPILE_DEFINITION=1)
+          ```
+        - if you need special compiler options, use the
+          [`target_compile_options()`](https://cmake.org/cmake/help/v2.8.12/cmake.html#command:target_compile_options)
+          call, e.g.
+
+          ```CMake
+          target_compile_options(<TARGET> PRIVATE -std=c++11 -O3)
+          ```
     - again, remove the unnecessary comments
     - make sure to also add the respective install tags (if unsure, ask your supervisor how to do this)
 

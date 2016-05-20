@@ -556,12 +556,15 @@ The following describes some best practices for configuring your packages.
           target_compile_definitions(<TARGET> PRIVATE MY_COMPILE_DEFINITION=1)
           ```
         - if you need special compiler options, use the
+          [`add_compile_options()`](https://cmake.org/cmake/help/v2.8.12/cmake.html#command:add_compile_options) or
           [`target_compile_options()`](https://cmake.org/cmake/help/v2.8.12/cmake.html#command:target_compile_options)
           call, e.g.
 
           ```CMake
+          add_compile_options( -std=c++11 -O3 )
           target_compile_options(<TARGET> PRIVATE -std=c++11 -O3)
           ```
+          working again on the directory or target level.
     - again, remove the unnecessary comments
     - make sure to also add the respective install tags (if unsure, ask your supervisor how to do this)
 

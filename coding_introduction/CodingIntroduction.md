@@ -565,6 +565,35 @@ The following describes some best practices for configuring your packages.
           target_compile_options(<TARGET> PRIVATE -std=c++11 -O3)
           ```
           working again on the directory or target level.
+          
+        - If you want to use parallelization with **OpenMP**, here is an example for including OpenMP in your CMakeLists.txt:
+          ```CMake
+          # let cmake find OpenMP and set some variables
+          find_package(OpenMP REQUIRED)
+          if(OPENMP_FOUND)
+            message(STATUS "OPENMP FOUND")
+            set(OpenMP_FLAGS ${OpenMP_CXX_FLAGS})  # or if you use C: ${OpenMP_C_FLAGS}
+            set(OpenMP_LIBS gomp)
+          endif()
+          ...
+          # the entry in catkin_package could be optional (I am not fully sure about this)
+          catkin_package(
+            DEPENDS
+              OpenMP
+          )
+          ...
+          # exemplary executable foo using OpenMP
+          add_executable(foo
+            ros/src/foo_node.cpp
+          )
+          target_compile_options(foo PRIVATE ${OpenMP_FLAGS})
+          add_dependencies(foo ${catkin_EXPORTED_TARGETS})
+          target_link_libraries(foo
+            ${catkin_LIBRARIES}
+            ${OpenMP_LIBS}
+          )
+          ```
+          Do not forget to compile your projects that use OpenMP with the Release option `catkin_make -DCMAKE_BUILD_TYPE=Release` in order to benefit from parallelization.
     - again, remove the unnecessary comments
     - make sure to also add the respective install tags (if unsure, ask your supervisor how to do this)
 

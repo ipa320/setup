@@ -7,7 +7,7 @@
  *   Fraunhofer Institute for Manufacturing Engineering
  *   and Automation (IPA) \n
  *
- *   All rightes reserved. \n\n
+ *   All rights reserved. \n\n
  *
  *****************************************************************
  *

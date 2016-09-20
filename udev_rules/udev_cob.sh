@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #################################################################
 ##\file
 #
@@ -29,7 +29,7 @@
 # copy this executable into /etc/init.d 
 # chmod +x udev_cob.sh
 # sudo cp udev_cob.sh /etc/init.d/
-# sudo update-rc.d udev_desire.sh defaults
+# sudo update-rc.d udev_cob.sh defaults
 #
 #################################################################
 #

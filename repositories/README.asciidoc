@@ -16,8 +16,7 @@ cd ~/catkin_ws/src && catkin_init_workspace
 cd ~/catkin_ws/src && wstool init
 ----
 
-3. Get sources from ipa320
-(Make sure you add the ssh-key of your machine to your github accound)
+3. Get sources from github (ipa320 organization)
 ----
 cd ~/catkin_ws/src && wstool merge -y https://raw.githubusercontent.com/ipa320/setup/master/repositories/cob_indigo_bringup.rosinstall
 cd ~/catkin_ws/src &&  wstool update

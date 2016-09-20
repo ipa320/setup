@@ -1,0 +1,34 @@
+#!/bin/bash
+if [ "$HOSTNAME" != "cob-stud-1" ]; then 
+	echo "FATAL: CAN ONLY BE EXECUTED ON cob-stud-1"
+	exit
+fi
+client_list="
+cob-stud-1
+cob-stud-2
+cob-stud-3
+cob-stud-5
+cob-stud-6
+cob-stud-7
+cob-stud-101
+cob-stud-102
+cob-stud-103
+cob-stud-104"
+
+echo "Executing adduser"
+sudo /usr/sbin/adduser $1 
+sudo adduser $1 dialout 
+sudo adduser $1 cdrom 
+sudo adduser $1 floppy 
+sudo adduser $1 audio
+sudo adduser $1 video
+sudo adduser $1 plugdev
+sudo adduser $1 users 
+
+
+for client in $client_list; do
+	echo "Syncing passwd file to other cob-pcs"
+	sudo rsync -e ssh -avz /etc/passwd /etc/shadow /etc/group root@$client:/etc/
+done
+
+echo "done adding user"

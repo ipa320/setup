@@ -55,6 +55,7 @@ Please consider the following points:
   * [Best Practices: Pull Requests](#best-practices-pull-requests)
   * [Git Do's and Dont's](#git-dos-and-donts)
   * [Further Reading on Git ](#further-reading-on-git)
+  * [Upload SSH Key to GitHub](#upload-ssh-key-to-github)
 * [Compiling your ROS workspace](#compiling-your-ros-workspace)
   * [Different compile types](#different-compile-types)
   * [Additional Tools](#additional-tools)
@@ -410,6 +411,17 @@ Answers almost all questions related to GitHub.
 - There is also a freely available [Book on Git](https://git-scm.com/book/en/v2).
 
 
+### Upload SSH Key to `GitHub` 
+Create a new ssh key by calling 
+```bash
+ssh-keygen
+```
+
+Display the public key
+```bash
+cat .ssh/id_rsa.pub
+```
+and copy it. Open the Settings in GitHub and go to the tag SSH and GPG keys under Personal settings. Click on `New SSH key` and paste the key into the respective field. Finally, specify a title and press `Add SSH key` to commit the changes.
 
 ===============================
 ## Compiling your ROS workspace

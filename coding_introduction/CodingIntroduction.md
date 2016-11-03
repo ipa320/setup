@@ -421,7 +421,10 @@ Display the public key
 ```bash
 cat .ssh/id_rsa.pub
 ```
-and copy it. Open the Settings in GitHub and go to the tag SSH and GPG keys under Personal settings. Click on `New SSH key` and paste the key into the respective field. Finally, specify a title and press `Add SSH key` to commit the changes.
+and copy it. 
+Open the Settings in GitHub and go to the tag `SSH and GPG keys` under Personal settings. 
+Click on `New SSH key` and paste the key into the respective field. 
+Finally, specify a title and press `Add SSH key` to commit the changes.
 
 ===============================
 ## Compiling your ROS workspace

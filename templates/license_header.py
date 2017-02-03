@@ -1,25 +1,24 @@
 #!/usr/bin/env python
 #################################################################
-##\file
+# \file
+#   TODO FILENAME
 #
 # \note
 #   Copyright (c) TODO FILL IN YEAR HERE \n
-#   Fraunhofer Institute for Manufacturing Engineering
-#   and Automation (IPA) \n\n
+#   Fraunhofer Institute for Manufacturing Engineering and Automation (IPA)
 #
 #################################################################
 #
-# \note
-#   Repository name: TODO FILL IN REPOSITORY NAME HERE
 # \note
 #   ROS package name: TODO FILL IN PACKAGE NAME HERE
 #
 # \author
 #   Author: TODO FILL IN AUTHOR NAME HERE
 # \author
-#   Supervised by: TODO FILL IN CO-AUTHOR NAME(S) HERE
+#   Supervised by: TODO FILL IN SUPERVISOR NAME HERE
 #
-# \date Date of creation: TODO FILL IN DATE HERE
+# \date
+#   Date of creation: TODO FILL IN DATE HERE
 #
 # \brief
 #   TODO FILL IN BRIEF DESCRIPTION HERE
@@ -40,17 +39,17 @@
 #       this software without specific prior written permission. \n
 #
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License LGPL as 
-# published by the Free Software Foundation, either version 3 of the 
+# it under the terms of the GNU Lesser General Public License LGPL as
+# published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU Lesser General Public License LGPL for more details.
-# 
-# You should have received a copy of the GNU Lesser General Public 
-# License LGPL along with this program. 
+#
+# You should have received a copy of the GNU Lesser General Public
+# License LGPL along with this program.
 # If not, see <http://www.gnu.org/licenses/>.
 #
 #################################################################

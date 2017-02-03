@@ -7,13 +7,10 @@ client_list="
 cob-stud-1
 cob-stud-2
 cob-stud-3
+cob-stud-4
 cob-stud-5
 cob-stud-6
-cob-stud-7
-cob-stud-101
-cob-stud-102
-cob-stud-103
-cob-stud-104"
+cob-stud-7"
 
 echo "Executing adduser"
 sudo /usr/sbin/adduser $1 

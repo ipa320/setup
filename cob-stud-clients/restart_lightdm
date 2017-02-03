@@ -1,0 +1,2 @@
+sudo mount -a
+sudo service lightdm restart&

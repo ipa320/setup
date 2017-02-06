@@ -23,7 +23,6 @@ for client in $client_list; do
 	echo "Installing <<"$*">> on $client"
 	echo "-------------------------------------------"
 	echo ""
-	#ssh $client "sudo apt-get install $* -y"
 	ssh $client "sudo apt-get install $* "
 	ret=${PIPESTATUS[0]}
 	if [ $ret != 0 ] ; then

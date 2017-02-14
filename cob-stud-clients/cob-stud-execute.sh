@@ -11,7 +11,7 @@ fi
 
 client_list="
 cob-stud-1
-cob.stud-2
+cob-stud-2
 cob-stud-3
 cob-stud-4
 cob-stud-5

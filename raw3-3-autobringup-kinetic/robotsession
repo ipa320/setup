@@ -1,0 +1,3 @@
+neww -n roscore "bash -i -c roscore"
+neww -n bringup "bash -i -c 'until /opt/ros/kinetic/env.sh rostopic list; do sleep 1; done; sleep 20; roslaunch cob_bringup robot.launch'"
+neww -n autoinit "bash -i -c 'until /opt/ros/kinetic/env.sh rostopic list | grep base; do sleep 1; done; sleep 10; roslaunch cob_bringup autoinit.launch'"

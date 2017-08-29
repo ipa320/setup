@@ -1,0 +1,48 @@
+#pcan usb devices
+#upper usb plug, always plug in pcan module for neck/tablet
+KERNELS=="2-2" SUBSYSTEM=="usb_device",ATTRS{idVendor}=="0c72",SYMLINK+="pcanneck"
+#lower usb plug, always plug in pcan module for arm
+KERNELS=="2-1" SUBSYSTEM=="usb_device",ATTRS{idVendor}=="0c72",SYMLINK+="pcangarm"
+
+#firewire camera devices
+KERNEL=="raw1394*",GROUP="users",MODE="0664"
+KERNEL=="video1394*",GROUP="users",MODE="0664"
+
+#Logitech Joypad
+SUBSYSTEM=="usb",ATTR{idVendor}=="046d",ATTR{idProduct}=="c219",SYMLINK+="joypad"
+
+#Logitech Webcam
+SUBSYSTEM=="usb",ATTR{idVendor}=="046d",ATTR{idProduct}=="0809",SYMLINK+="video",GROUP="users"
+
+#Laserscanner
+SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="00",ATTRS{../idProduct}=="6010",MODE="0666",SYMLINK+="ttyScan0"
+SUBSYSTEM=="tty",ATTRS{bInterfaceNumber}=="01",ATTRS{../idProduct}=="6010",MODE="0666",SYMLINK+="ttyScan1"
+
+#Relaisboard
+SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001",ATTRS{bcdDevice}=="0400",MODE="0666",SYMLINK+="ttyRelais"
+
+#LED
+#cob4
+#SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001", ATTRS{serial}=="A800K9NH" , ATTRS{bcdDevice}=="0600",MODE="0666",SYMLINK+="ttyLed"
+#raw3-3
+SUBSYSTEM=="tty",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",ATTRS{bcdDevice}=="0100",SYMLINK+="ttyLED"
+
+#Hokuyo
+SUBSYSTEMS=="usb", KERNEL=="ttyACM[0-9]*",MODE="0666"
+
+#Tactile Sensors, N/A on raw3-3
+#SUBSYSTEM=="tty",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",ATTRS{bcdDevice}=="0100",SYMLINK+="ttyTact"
+#SUBSYSTEM=="tty",ATTRS{idVendor}=="067b",ATTRS{idProduct}=="2303",SYMLINK+="ttyTact"
+
+#Phidget rules for tray sensor
+SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="0925", ATTRS{idProduct}=="8101", MODE="666"
+SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="0925", ATTRS{idProduct}=="8104", MODE="666"
+SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="0925", ATTRS{idProduct}=="8201", MODE="666"
+
+# All current and future Phidgets - Vendor = 0x06c2, Product = 0x0030 - 0x00af
+SUBSYSTEMS=="usb", ACTION=="add", ATTRS{idVendor}=="06c2", ATTRS{idProduct}=="00[3-a][0-f]", MODE="666"
+
+
+# hardware control board
+SUBSYSTEM=="tty",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001", ATTRS{serial}=="A9005jbH" , ATTRS{bcdDevice}=="0600",SYMLINK+="ttyHwBoard", MODE="666"
+

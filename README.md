@@ -8,5 +8,6 @@ In the following is a list of manuals that you should read, if you start working
 
 - [Coding Introduction](coding_introduction/CodingIntroduction.md)
 - [IPA Manual](manual_ipa/IPA_manual.pdf)
+- [Care-O-bot 4 User Manual](http://wiki.ros.org/Robots/cob4/manual)
 - [Care-O-bot 3 Manual Indigo](manual_cob3Indigo/Care-O-bot_manual.pdf)
 - [legacy Care-O-bot 3 Manual (pre Indigo)](manual_cob3_old/Care-O-bot_manual.pdf)

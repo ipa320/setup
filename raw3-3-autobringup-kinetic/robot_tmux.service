@@ -1,0 +1,16 @@
+[Unit]
+Description=robot tmux session
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/tmux new-session -d -s robot
+ExecStartPost=/usr/bin/tmux source-file /home/robot/robotsession
+ExecStop=/home/robot/stopsession.sh
+#ExecStop=-/usr/bin/tmux kill-session -t robot
+TimeoutStopSec=30
+User=robot
+
+[Install]
+WantedBy=multi-user.target

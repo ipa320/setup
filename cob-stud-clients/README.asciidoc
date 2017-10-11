@@ -2,7 +2,7 @@
 
 ==== Install Ubuntu 14.04 LTS 
 ----
-username: ipa
+username: stud-admin
 systemname: cob-stud-<client number>
 password: ****
 ----
@@ -35,9 +35,12 @@ $ sudo sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' /etc/ss
 
 ==== Gain root rights for admin user's
 ----
+$ sudo adduser --home /home-local/Admin Admin --force-badname
+$ sudo adduser Admin sudo
 $ sudo nano /etc/sudoers
 ##add to the list###
 stud-admin ALL=(ALL) NOPASSWD: ALL
+Admin ALL=(ALL) NOPASSWD: ALL
 ----
 
 
@@ -137,4 +140,14 @@ $ rosdep update
 ----
 $ sudo apt-get install python-rosinstall python-rosdep
 $ sudo apt-get install python-setuptools ogre-tools 
+----
+
+=== Extra tools
+
+----
+$ sudo cp ~/setup/cob-stud-clients/upstart_lightdm /etc/init.d/.
+$ sudo update-rc.d upstart_lightdm defaults
+$ sudo cp ~/setup/cob-stud-clients/restart_lightdm /usr/sbin/.
+$ sudo cp ~/setup/cob-stud-clients/restart_lock /etc/init.d/.
+$ sudo update-rc.d restart_lock defaults
 ----

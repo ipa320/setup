@@ -16,23 +16,13 @@ cob-stud-3
 cob-stud-4
 cob-stud-5
 cob-stud-6
-cob-stud-7
-cob-stud-8
-cob-stud-9
-cob-stud-101
-cob-stud-102
-cob-stud-103
-cob-stud-104
-cob-stud-601
-cob-stud-602
-cob-stud-603"
+cob-stud-7"
 
 for client in $client_list; do
 	echo "-------------------------------------------"
 	echo "Installing <<"$*">> on $client"
 	echo "-------------------------------------------"
 	echo ""
-	#ssh $client "sudo apt-get install $* -y"
 	ssh $client "sudo apt-get install $* "
 	ret=${PIPESTATUS[0]}
 	if [ $ret != 0 ] ; then

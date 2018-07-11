@@ -5,6 +5,7 @@
 - git: {local-name: ipa_navigation_localization, uri: 'git@github.com:ipa320/ipa_navigation_localization.git'}
 - git: {local-name: ipa_navigation_perception, uri: 'git@github.com:ipa320/ipa_navigation_perception.git'}
 - git: {local-name: ipa_navigation_planning, uri: 'git@github.com:ipa320/ipa_navigation_planning.git'}
+- git: {local-name: ipa_license_verifier, uri: 'git@github.com:ipa320/ipa_license_verifier.git'}
 
 # The sandbox repository contains experimental features and potentially requires additional third party libraries.
 # Make sure, you actually want to install this.
